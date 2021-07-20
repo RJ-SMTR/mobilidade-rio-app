@@ -1,7 +1,7 @@
 # mobilidade-rio-app | Front-end
 Versão responsiva para o projeto. 
 
-## Desenvolvimento
+## Desenvolvimento Front-end
 Iplanrio - GTIS 7 - Versão 1.0.0
 
 ## Arquivos (.html)
