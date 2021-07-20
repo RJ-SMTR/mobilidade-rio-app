@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-br">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="icon" href="assets/img/favicon.ico">
+
+		<!-- Bootstrap CSS 4.6 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+		<link rel="stylesheet" href="assets/css/custom.css" >
+		<link rel="stylesheet" href="assets/css/styles.css" >
+		
+		<!-- fontawesome -->
+		<link href="assets/vendor/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+		<link href="assets/vendor/fontawesome-free-5.15.3-web/js/all.js" rel="stylesheet">
+
+		<title>Consulta - Ponto de Ônibus</title>
+	</head>
+	
+	<body class="bg-light page">
+		<nav class="navbar fixed-top navbar-transparent" >
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12" ><img src="assets/img/logo-transportes-vs2.png" class="img-fluid" /></div>
+				</div>
+			</div>
+		</nav>
+		
+		<div class="page-header header-filter grad1"></div>	
+	
+		<div class="section">
+			<div class="container">
+				<div class="main main-raised">	
+					<div class="row">
+						<div class="col-md-12" >
+						
+							<!-- CONTENT -->
+							<div class="py-1">
+
+								<!-- CONSULTA -->
+								<div id="search-point">
+									<h5 class="text-primary text-center"><i class="fas fa-chevron-circle-right"></i> Qual ponto você quer ter mais informações?</h5>
+									<div class="input-group">
+										<input type="text" class="form-control  text-center" placeholder="Informe o Código do Ponto Ex.: AA99" aria-label="Código do Ponto de ônibus" aria-describedby="basic-addon2">
+										<div class="input-group-append">
+											<button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+										</div>
+									</div>
+									<a class="btn btn-primary btn-block mt-2 mb-2" href="#"><i class="fas fa-qrcode"></i> Usar QRCode</a>
+									<hr class="bg-secondary" />
+								</div>
+								<!-- FIM CONSULTA -->
+								
+								<!-- LOCALIZAÇÃO -->
+								<div id="info-point" class="alert alert-primary" role="alert">
+									<i class="fas fa-map-marker-alt"></i>
+									<b>Você está aqui:</b> <span class="badge badge-primary">AA99</span>
+									Avenida presidente Vargas, 154 - Cidade Nova - CEP 21500-000
+								</div>
+								<!-- FIM LOCALIZAÇÃO -->
+			
+								<!-- BREADCRUMB -->
+								<div id="breadcrumb-point" aria-label="breadcrumb" class="mt-2">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item"><i class="fas fa-grip-lines"></i> Linhas e Serviços</li>
+										<li class="breadcrumb-item active"><i class="fas fa-directions"></i> Itinerários</li>
+									</ol>
+								</div>
+								<!-- FIM BREADCRUMB -->
+								
+								<!-- INFO TRANSPORTE -->
+								<div class="timeline-category-transport classic-tab-wrap" >
+									
+									<!-- TIMELINE  -->
+									<div class="card">
+										<div class="card-body">
+										
+											<div class="tab-wrap">
+												<ul class="nav nav-tabs" id="classicTab" role="tablist">
+													<li class="nav-item">
+														<a class="nav-link active" id="classic-1-tab" data-toggle="tab" href="#classic-1" role="tab"
+															aria-controls="classic-1" aria-selected="true"><i class="fas fa-arrow-circle-right"></i> IDA</a>
+													</li>
+													<li class="nav-item">
+														<a class="nav-link" id="classic-2-tab" data-toggle="tab" href="#classic-2" role="tab"
+															aria-controls="classic-2" aria-selected="false"><i class="fas fa-arrow-circle-left"></i> VOLTA</a>
+													</li>
+												</ul>
+												<div class="tab-content" id="classicTabContent">
+													<div class="tab-pane fade show active" id="classic-1" role="tabpanel" aria-labelledby="classic-1-tab">
+
+														<ul class="timeline">
+															<li class="event">
+																Castelo (Avenida Churchill)
+															</li>
+															<li class="event">
+																Avenida Franklin Rooselvelt, 181
+															</li>
+															<li class="event">
+																BRS 4 - Erasmo Braga
+															</li>
+															<li class="event active">
+																BRS 4 - Uruguaiana (pista central)
+															</li>
+															<li class="event">
+																BRS 4 - Praça Onze (pista lateral)
+															</li>
+															<li class="event">
+																BRS 2,4 - Cidade Nova (pista lateral)
+															</li>
+															<li class="event">
+																Rua Pedro Alves - sentido São Cristóvão
+															</li>
+														</ul> 
+
+													</div>
+													<div class="tab-pane fade" id="classic-2" role="tabpanel" aria-labelledby="classic-2-tab">
+
+														<ul class="timeline">
+															<li class="event">
+																Rua Pedro Alves - sentido São Cristóvão
+															</li>
+															<li class="event">
+																BRS 2,4 - Cidade Nova (pista lateral)
+															</li>
+															<li class="event">
+																BRS 4 - Praça Onze (pista lateral)
+															</li>
+															<li class="event">
+																BRS 4 - Uruguaiana (pista central)
+															</li>
+															<li class="event">
+																BRS 4 - Erasmo Braga
+															</li>
+															<li class="event">
+																Avenida Franklin Rooselvelt, 181
+															</li>												
+															<li class="event">
+																Castelo (Avenida Churchill)
+															</li>
+														</ul> 
+
+													</div>
+												</div>
+											</div>
+
+										</div>								
+									</div>								
+									<!-- FIM TIMELINE -->
+								
+								</div>	
+								<!-- FIM INFO TRANSPORTE -->
+							
+							</div>
+							<!-- FIM CONTENT -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<footer class="footer mb-3">
+			<div class="container">
+				<div class="copyright text-center">
+					<p class="text-muted">Desenvolvido pela <a href="https://prefeitura.rio" target="_BLANK">PCRJ</a> | <span class="badge badge-secondary">Versão 1.0.0</span></p>
+				</div>
+			</div>
+		</footer>	
+    
+		<!-- scripts -->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+
+	</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="../assets/img/favicon.ico" rel="icon" type="image/x-icon">
+	
+		<!-- Bootstrap CSS 4.6 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">      
+		<link href="../assets/css/theme.css" rel="stylesheet">
+
+		<!-- fontawesome -->
+		<link href="../assets/vendor/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+		<link href="../assets/vendor/fontawesome-free-5.15.3-web/js/all.js" rel="stylesheet">
+		
+		<title>Cadastro - Ponto de Ônibus</title>
+	</head>
+	
+	<body>
+		<div class="layout layout-nav-side">
+			<div class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #003e6b;">
+				<div class="navbar-brand" ><img src="../assets/img/logo-transportes-vs1.png" class="img-fluid" /></div>
+				
+				<div class="d-flex align-items-center">
+					<button class="btn btn-primary navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+						<i class="fas fa-bars"></i>
+					</button>
+				</div>
+				
+				<div class="collapse navbar-collapse flex-column" id="navbar-collapse">
+					<ul class="navbar-nav d-lg-block">
+						<li class="nav-item py-1">
+							<a class="btn btn-outline-light d-block" href="main.html"><i class="fa fa-home"></i> Página Principal </a>
+						</li>
+						<li class="nav-item py-1">
+							<a class="btn btn-primary d-block" href="cadastro.html" target="_blank" ><i class="fas fa-qrcode"></i> Associar QRCode</a>
+						</li>
+					</ul>
+					<hr>
+					<div class="d-lg-block w-100 ">
+						<div class="alert alert-primary py-2">
+							<span class="small d-block"><b><i class="fa fa-lock"></i> Matrícula:</b> 99.999/99</span>
+							<span class="small"><b><i class="fa fa-user"></i> Usuário:</b> Leonardo Andrade</span>
+							
+							<a class="btn btn-primary btn-block btn-sm mt-1" href="index.html"><i class="fas fa-sign-out-alt"></i> Sair</a>
+							<a class="btn btn-primary btn-block btn-sm" onClick="#"><i class="fas fa-key"></i> Alterar Senha</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="main-container">
+
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-12">
+							<div class="jumbotron mt-3">
+								<h3 class="display-6 text-secondary">Bem-vindo!</h3>
+								<h3 class="display-6 text-title"><i class="fas fa-qrcode"></i> Administração - Ponto de Ônibus</h3>
+								<p>Nesse módulo é possível associar os pontos de ônibus ao respectivo QRCode para alimentação do sistema de consultas.</p>
+							</div>     
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- scripts -->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+		
+	</body>
+
+</html>

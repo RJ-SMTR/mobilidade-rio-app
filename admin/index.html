@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="../assets/img/favicon.ico" rel="icon" type="image/x-icon">
+	
+		<!-- Bootstrap CSS 4.6 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">      
+		<link href="../assets/css/iplanrio-theme.css" rel="stylesheet">
+
+		<!-- fontawesome -->
+		<link href="../assets/vendor/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+		<link href="../assets/vendor/fontawesome-free-5.15.3-web/js/all.js" rel="stylesheet">
+		
+		<title>Cadastro - Ponto de Ônibus</title>
+	</head>
+   
+	<body draggable="true">
+		<div class="fullscreen_bg" id="fullscreen_bg">
+		  <div class="login">
+			<div class="container-fluid">
+				<div class="nav navbar mb-3">
+					<div class="col-sm navbar-left">
+						<img src="../assets/img/logo-transportes-vs1.png" class="img-fluid my-1">
+					</div>
+					<div class="col-sm navbar-right">
+						<h5 class="mb-0 text-uppercase">Ponto de Ônibus</h5>
+						<h5 class="mb-0 text-bolder"><i class="fa fa-caret-right"></i> Administração</h5>
+					</div>			
+				</div>
+			  
+				<form action="main.html" id="formLogin" name="formLogin" method="post" draggable="true" class="needs-validation" novalidate="" autocomplete="off">
+					<div class="form-group">
+						<input id="login" name="login" type="text" class="form-control input-lg" placeholder="Matrícula" required>
+					</div>
+
+					<div class="form-group" >
+						<input id="pass" name="pass" type="password" class="form-control input-lg" placeholder="Senha" required>
+					</div>
+					<div class="text-right" >
+						<button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-check-circle"></i> Entrar</button>
+					</div>	
+					<input type="hidden" name="v" id="v" value="" />
+					<input type="hidden" name="t" id="t" value="" />
+			  </form>
+			  
+			</div>
+		  </div>
+		  <p class="text-center text-white">Versão 1.0.0 - 2021 PCRJ / SMTR
+			<br>Prefeitura da Cidade do Rio de Janeiro</p>
+		</div>
+    
+		<!-- scripts -->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    
+	</body>
+
+</html>
