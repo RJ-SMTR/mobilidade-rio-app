@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="icon" href="assets/img/favicon.ico">
+
+	<!-- Bootstrap CSS 4.6 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+		integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+	<link rel="stylesheet" href="assets/css/custom.css">
+	<link rel="stylesheet" href="assets/css/styles.css">
+
+	<!-- fontawesome -->
+	<link href="assets/vendor/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+	<link href="assets/vendor/fontawesome-free-5.15.3-web/js/all.js" rel="stylesheet">
+
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+	<!-- axios -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+
+	<title>Consulta - Ponto de Ônibus</title>
+</head>
+
+<body class="bg-light page">
+	<script>
+		$.fn.triggerChange = function () {
+			return this.trigger("change");
+		}
+
+		$.fn.changeVal = function (v) {
+			return this.val(v).trigger("change");
+		}
+
+		$(document).ready(function () {
+
+			// Check for request inputs
+			let code = getUrlParameter("code");
+			let trip = getUrlParameter("trip");
+			let stop = '';
+
+			// Trigger on codigoPonto change
+			$('#codigoPonto').change(function () {
+				var codigo = $('#codigoPonto').val();
+				if (codigo.length == 4) {
+					axios.get(`https://api.mobilidade.rio/qrcode/?code=` + codigo)
+						.then(({ data }) => {
+							$('#locCodigoPonto').html($('#codigoPonto').val());
+							stop = data.results[0].stop.address;
+							$('#locEndereco').html(data.results[0].stop.address);
+							$('#info-point').css('display', 'block');
+							$('#infoDiv').css('display', 'block');
+						})
+					if (trip === undefined) {
+						axios.get(`https://api.mobilidade.rio/trip/?code=` + codigo)
+							.then(({ data }) => {
+								$('#sequenceDiv').css('display', 'none');
+								let modes = split_by_mode(data);
+								fill_modes(modes, codigo);
+							})
+					} else {
+						$('#infoDiv').css('display', 'none');
+						$('#sequenceDiv').css('display', 'block');
+						$('#breadcrumb-point').css('display', 'block');
+						axios.get(`https://api.mobilidade.rio/sequence/?trip_id=` + trip)
+							.then(({ data }) => {
+								let stops = get_list_of_stops(data);
+								fill_stops(stops, stop);
+							})
+
+					}
+
+				}
+			})
+
+			$("#btnPesquisar").click(function () {
+				$('#codigoPonto').triggerChange();
+			});
+
+			if (code) {
+				$('#codigoPonto').changeVal(code);
+			}
+		});
+
+
+		function getUrlParameter(sParam) {
+			var sPageURL = window.location.search.substring(1);
+			var sURLVariables = sPageURL.split('&');
+			for (var i = 0; i < sURLVariables.length; i++) {
+				var sParameterName = sURLVariables[i].split('=');
+				if (sParameterName[0] == sParam) {
+					return sParameterName[1];
+				}
+			}
+		}
+
+		function split_by_mode(data) {
+			var modes = {
+				'onibus': [],
+				'metro': [],
+				'barca': [],
+				'trem': [],
+				'vlt': [],
+			}
+			data.results.forEach((item) => {
+				if (item.route.mode.name == 'Ônibus') {
+					modes.onibus.push(item);
+				} else if (item.route.mode.name == 'Metrô') {
+					modes.metro.push(item);
+				} else if (item.route.mode.name == 'Barca') {
+					modes.barca.push(item);
+				} else if (item.route.mode.name == 'Trem') {
+					modes.trem.push(item);
+				} else if (item.route.mode.name == 'VLT') {
+					modes.vlt.push(item);
+				}
+			})
+			return modes;
+		}
+
+		function get_list_of_stops(data) {
+			var stops = []
+			data.results.forEach((item) => {
+				stops.push(item.stop.address);
+			})
+			return stops;
+		}
+
+		function fill_stops(stops, myStop) {
+			$('#sequenceIda').html('');
+			$('#sequenceVolta').html('');
+			for (let i = 0; i < stops.length; i++) {
+				if (stops[i] == myStop) {
+					$('#sequenceIda').append(`
+						<li class="event active">
+							` + stops[i] + `
+						</li>
+					`)
+				} else {
+					$('#sequenceIda').append(`
+						<li class="event">
+							` + stops[i] + `
+						</li>
+					`)
+				}
+				if (stops[stops.length - i - 1] == myStop) {
+					$('#sequenceVolta').append(`
+						<li class="event active">
+							` + stops[stops.length - i - 1] + `
+						</li>
+					`)
+				} else {
+					$('#sequenceVolta').append(`
+						<li class="event">
+							` + stops[stops.length - i - 1] + `
+						</li>
+					`)
+				}
+			}
+		}
+
+		function fill_modes(modes, code) {
+			if (modes.onibus.length > 0) {
+				$('#listaOnibus').html('');
+				modes.onibus.forEach((item) => {
+					$('#listaOnibus').append(`
+						<a href="?code=` + code + `&trip=` + item.id + `"
+							class="list-group-item d-flex align-items-center list-group-item-action ">
+							<div class="badge badge-light p-0 mr-2 "><img src="assets/img/modal/bus.png"
+									class="border border-success rounded" /></div>
+							<div class="w-75 small">` + item.route.linha.initials + `-` + item.route.short_name + ` (sentido ` + item.headsign + `)` + `</div>
+							<div class="text-right">
+								<!-- <span class="small"><i class="far fa-clock"></i> 50min</span> -->
+								<!-- <span class="badge badge-light badge-pill">Expresso</span> -->
+							</div>
+						</a>
+					`);
+				});
+				$('#categoriaOnibus').css('display', 'block');
+				$('#breadcrumb-point').css('display', 'block');
+			} else if (modes.metro.length > 0) {
+				$('#listaMetro').html('');
+				modes.metro.forEach((item) => {
+					$('#listaMetro').append(`
+						<a href="?code=` + code + `&trip=` + item.id + `"
+							class="list-group-item d-flex align-items-center list-group-item-action ">
+							<div class="badge badge-light p-0 mr-2 "><img src="assets/img/modal/metro.png"
+									class="border border-secondary rounded" /></div>
+							<div class="w-75 small">` + item.route.linha.initials + `-` + item.route.short_name + ` (sentido ` + item.headsign + `)` + `</div>
+							<div class="text-right">
+								<span class="small"><i class="far fa-clock"></i> 50min</span>
+								<span class="badge badge-light badge-pill">Expresso</span>
+							</div>
+						</a>
+					`);
+					$('#categoriaMetro').css('display', 'block');
+					$('#breadcrumb-point').css('display', 'block');
+				});
+			} else if (modes.barca.length > 0) {
+				$('#listaBarca').html('');
+				modes.barca.forEach((item) => {
+					$('#listaMetro').append(`
+						<a href="?code=` + code + `&trip=` + item.id + `"
+							class="list-group-item d-flex align-items-center list-group-item-action ">
+							<div class="badge badge-light p-0 mr-2 "><img src="assets/img/modal/barca.png"
+									class="border border-primary rounded" /></div>
+							<div class="w-75 small">` + item.route.linha.initials + `-` + item.route.short_name + ` (sentido ` + item.headsign + `)` + `</div>
+							<div class="text-right">
+								<span class="small"><i class="far fa-clock"></i> 50min</span>
+								<span class="badge badge-light badge-pill">Expresso</span>
+							</div>
+						</a>
+					`);
+				});
+				$('#categoriaBarca').css('display', 'block');
+				$('#breadcrumb-point').css('display', 'block');
+			} else if (modes.trem.length > 0) {
+				$('#listaTrem').html('');
+				modes.trem.forEach((item) => {
+					$('#listaTrem').append(`
+						<a href="?code=` + code + `&trip=` + item.id + `"
+							class="list-group-item d-flex align-items-center list-group-item-action ">
+							<div class="badge badge-light p-0 mr-2 "><img src="assets/img/modal/trem.png"
+									class="border border-warning rounded" /></div>
+							<div class="w-75 small">` + item.route.linha.initials + `-` + item.route.short_name + ` (sentido ` + item.headsign + `)` + `</div>
+							<div class="text-right">
+								<span class="small"><i class="far fa-clock"></i> 50min</span>
+								<span class="badge badge-light badge-pill">Expresso</span>
+							</div>
+						</a>
+					`);
+				});
+				$('#categoriaTrem').css('display', 'block');
+				$('#breadcrumb-point').css('display', 'block');
+			} else if (modes.vlt.length > 0) {
+				$('#listaVlt').html('');
+				modes.vlt.forEach((item) => {
+					$('#listaVlt').append(`
+						<a href="?code=` + code + `&trip=` + item.id + `"
+							class="list-group-item d-flex align-items-center list-group-item-action ">
+							<div class="badge badge-light p-0 mr-2 "><img src="assets/img/modal/vlt.png"
+									class="border border-info rounded" /></div>
+							<div class="w-75 small">` + item.route.linha.initials + `-` + item.route.short_name + ` (sentido ` + item.headsign + `)` + `</div>
+							<div class="text-right">
+								<span class="small"><i class="far fa-clock"></i> 50min</span>
+								<span class="badge badge-light badge-pill">Expresso</span>
+							</div>
+						</a>
+					`);
+				});
+				$('#categoriaVlt').css('display', 'block');
+				$('#breadcrumb-point').css('display', 'block');
+			}
+		}
+
+	</script>
+
+	<nav class="navbar fixed-top navbar-transparent">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12"><img src="assets/img/logo-transportes-vs2.png" class="img-fluid" /></div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="page-header header-filter grad1"></div>
+
+	<div class="section">
+		<div class="container">
+			<div class="main main-raised">
+				<div class="row">
+					<div class="col-md-12">
+
+						<!-- CONTENT -->
+						<div class="py-1">
+
+							<!-- CONSULTA -->
+							<div id="search-point">
+								<h5 class="text-primary text-center"><i class="fas fa-chevron-circle-right"></i> Qual ponto você quer
+									ter mais informações?</h5>
+								<div class="input-group">
+									<input type="text" id="codigoPonto" class="form-control  text-center"
+										placeholder="Informe o Código do Ponto Ex.: AA99" aria-label="Código do Ponto de ônibus"
+										aria-describedby="basic-addon2">
+									<div class="input-group-append">
+										<button class="btn btn-primary" type="button" id="btnPesquisar"><i
+												class="fas fa-search"></i></button>
+									</div>
+								</div>
+								<a class="btn btn-primary btn-block mt-2 mb-2" href="#"><i class="fas fa-qrcode"></i> Usar QRCode</a>
+								<hr class="bg-secondary" />
+							</div>
+							<!-- FIM CONSULTA -->
+
+							<!-- LOCALIZAÇÃO -->
+							<div id="info-point" class="alert alert-primary" role="alert" style="display: none;">
+								<i class="fas fa-map-marker-alt"></i>
+								<b>Você está aqui:</b> <span class="badge badge-primary" id="locCodigoPonto"></span>
+								<span id="locEndereco"></span>
+							</div>
+							<!-- FIM LOCALIZAÇÃO -->
+
+							<!-- BREADCRUMB -->
+							<div id="breadcrumb-point" aria-label="breadcrumb" class="mt-2" style="display: none;">
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item active"><i class="fas fa-grip-lines"></i> Linhas e Serviços</li>
+									<li class="breadcrumb-item"><i class="fas fa-directions"></i> Itinerários</li>
+								</ol>
+							</div>
+							<!-- FIM BREADCRUMB -->
+
+							<!-- INFO TRANSPORTE -->
+							<div class="list-category-transport" style="display: block;" id="infoDiv">
+
+								<!-- INICIO METRO -->
+								<div class="category-transport" style="display: none;" id="categoriaMetro">
+									<div class="bg-modal p-2 border-top text-primary">
+										<i class="fas fa-caret-right"></i>
+										<strong>Metrô</strong>
+									</div>
+									<div class="list-group list-group-flush" id="listaMetro">
+									</div>
+								</div>
+								<!-- FIM METRO -->
+
+								<!-- INICIO BUS -->
+								<div class="category-transport" style="display: none;" id="categoriaOnibus">
+									<div class="bg-modal p-2 border-top text-primary">
+										<i class="fas fa-caret-right"></i>
+										<strong>Ônibus</strong>
+									</div>
+									<div class="list-group list-group-flush" id="listaOnibus">
+									</div>
+								</div>
+								<!-- FIM BUS -->
+
+								<!-- INICIO BARCA -->
+								<div class="category-transport" style="display: none;" id="categoriaBarca">
+									<div class="bg-modal p-2 border-top text-primary">
+										<i class="fas fa-caret-right"></i>
+										<strong>Barca</strong>
+									</div>
+									<div class="list-group list-group-flush" id="listaBarca">
+									</div>
+								</div>
+								<!-- FIM BARCA -->
+
+								<!-- INICIO TREM -->
+								<div class="category-transport" style="display: none;" id="categoriaTrem">
+									<div class="bg-modal p-2 border-top text-primary">
+										<i class="fas fa-caret-right"></i>
+										<strong>Trem</strong>
+									</div>
+									<div class="list-group list-group-flush" id="listaTrem">
+									</div>
+								</div>
+								<!-- FIM TREM -->
+
+								<!-- INICIO VLT -->
+								<div class="category-transport" style="display: none;" id="categoriaVlt">
+									<div class="bg-modal p-2 border-top text-primary">
+										<i class="fas fa-caret-right"></i>
+										<strong>VLT</strong>
+									</div>
+									<div class="list-group list-group-flush" id="listaVlt">
+									</div>
+								</div>
+								<!-- FIM VLT -->
+
+							</div>
+							<!-- FIM INFO TRANSPORTE -->
+
+							<!-- INFO SEQUENCIA -->
+							<div class="timeline-category-transport classic-tab-wrap" id="sequenceDiv" style="display: none;">
+
+								<!-- TIMELINE  -->
+								<div class="card">
+									<div class="card-body">
+										<div class="tab-wrap">
+											<ul class="nav nav-tabs" id="classicTab" role="tablist">
+												<li class="nav-item">
+													<a class="nav-link active" id="classic-1-tab" data-toggle="tab" href="#classic-1" role="tab"
+														aria-controls="classic-1" aria-selected="true"><i class="fas fa-arrow-circle-right"></i>
+														IDA</a>
+												</li>
+												<li class="nav-item">
+													<a class="nav-link" id="classic-2-tab" data-toggle="tab" href="#classic-2" role="tab"
+														aria-controls="classic-2" aria-selected="false"><i class="fas fa-arrow-circle-left"></i>
+														VOLTA</a>
+												</li>
+											</ul>
+											<div class="tab-content" id="classicTabContent">
+												<div class="tab-pane fade show active" id="classic-1" role="tabpanel"
+													aria-labelledby="classic-1-tab">
+													<ul class="timeline" id="sequenceIda">
+														<li class="event">
+															Castelo (Avenida Churchill)
+														</li>
+														<li class="event">
+															Avenida Franklin Rooselvelt, 181
+														</li>
+														<li class="event">
+															BRS 4 - Erasmo Braga
+														</li>
+														<li class="event active">
+															BRS 4 - Uruguaiana (pista central)
+														</li>
+														<li class="event">
+															BRS 4 - Praça Onze (pista lateral)
+														</li>
+														<li class="event">
+															BRS 2,4 - Cidade Nova (pista lateral)
+														</li>
+														<li class="event">
+															Rua Pedro Alves - sentido São Cristóvão
+														</li>
+													</ul>
+												</div>
+												<div class="tab-pane fade" id="classic-2" role="tabpanel" aria-labelledby="classic-2-tab">
+													<ul class="timeline" id="sequenceVolta">
+														<li class="event">
+															Rua Pedro Alves - sentido São Cristóvão
+														</li>
+														<li class="event">
+															BRS 2,4 - Cidade Nova (pista lateral)
+														</li>
+														<li class="event">
+															BRS 4 - Praça Onze (pista lateral)
+														</li>
+														<li class="event">
+															BRS 4 - Uruguaiana (pista central)
+														</li>
+														<li class="event">
+															BRS 4 - Erasmo Braga
+														</li>
+														<li class="event">
+															Avenida Franklin Rooselvelt, 181
+														</li>
+														<li class="event">
+															Castelo (Avenida Churchill)
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- FIM TIMELINE -->
+							</div>
+							<!-- FIM INFO SEQUENCIA -->
+
+						</div>
+						<!-- FIM CONTENT -->
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="footer mb-3">
+		<div class="container">
+			<div class="copyright text-center">
+				<p class="text-muted">Desenvolvido pela <a href="https://prefeitura.rio" target="_BLANK">PCRJ</a> | <span
+						class="badge badge-secondary">Versão 1.0.0</span></p>
+			</div>
+		</div>
+	</footer>
+
+	<!-- scripts -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+		crossorigin="anonymous"></script>
+
+</body>
+
+</html>
