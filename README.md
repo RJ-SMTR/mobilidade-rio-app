@@ -1,10 +1,24 @@
-# mobilidade-rio-app | Front-end
-Versão responsiva para o projeto. 
+# mobilidade_rio
 
-## Desenvolvimento Front-end
-Iplanrio - GTIS 7 - Versão 1.0.0
+## Project setup
+```
+npm install
+```
 
-## Arquivos (.html)
-- mapa-index | mapa-itinerario (**Versão COM MAPA**)
-- sem-mapa-index | sem-mapa-itinerario (**Versão SEM MAPA**)
-- /admin > index | main | cadastro (**Administração**)
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
