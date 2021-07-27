@@ -80,7 +80,7 @@ const store = new Vuex.Store({
         .then(({ data }) => {
           let stops = []
           data.results.forEach((item) => {
-            stops.push(item.stop.address);
+            stops.push(item.stop.name);
           })
           commit('setStops', stops)
         })
@@ -94,7 +94,7 @@ const store = new Vuex.Store({
           `https://api.mobilidade.rio/qrcode/?code=` + code
         )
         .then(({ data }) => {
-          commit("setAddress", data.results[0].stop.address);
+          commit("setAddress", data.results[0].stop.name);
         })
         .catch(() => {
           commit("setAddress", "Não encontrado");

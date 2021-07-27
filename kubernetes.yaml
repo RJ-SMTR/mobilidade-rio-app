@@ -57,9 +57,20 @@ spec:
   tls:
     - hosts:
         - mobilidade.rio
+        - www.mobilidade.rio
       secretName: app-mobilidade-tls
   rules:
     - host: mobilidade.rio
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mobilidade-app
+                port:
+                  number: 80
+    - host: www.mobilidade.rio
       http:
         paths:
           - path: /
