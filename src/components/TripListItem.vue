@@ -9,9 +9,9 @@
     </div>
     <div class="w-75 small" style="text-align: left">
       {{
-        trip.route.linha.initials +
-        ` - ` +
         trip.route.short_name +
+        ` - ` +
+        trip.route.vista +
         ` (sentido ` +
         trip.headsign +
         `)`

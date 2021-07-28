@@ -11,7 +11,14 @@
           <a href="#"><i class="fas fa-grip-lines"></i> Linhas e Serviços</a>
         </li>
         <li :class="`breadcrumb-item ${trip !== '' ? 'active' : ''}`">
-          <i class="fas fa-directions"></i> Itinerários
+          <i class="fas fa-directions"></i>
+          <span v-if="trip_object !== null" style="padding-left: 10px">
+            <span class="badge badge-primary">
+              {{ trip_object.route.short_name }}
+            </span>
+            {{ trip_object.route.vista }}
+          </span>
+          <span v-else>Itinerários</span>
         </li>
       </ol>
     </div>
@@ -98,6 +105,7 @@ export default {
     address: (state) => state.address,
     modes: (state) => state.modes,
     trip: (state) => state.trip,
+    trip_object: (state) => state.trip_object,
   }),
   methods: {
     handleClickOnHome() {
