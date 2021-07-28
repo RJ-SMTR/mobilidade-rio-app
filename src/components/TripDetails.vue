@@ -16,8 +16,12 @@
                 role="tab"
                 aria-controls="classic-1"
                 aria-selected="true"
-                ><i class="fas fa-arrow-circle-right"></i> IDA</a
-              >
+                ><i class="fas fa-arrow-circle-right"></i>
+                <span v-if="trips_on_route.length > 0">
+                  {{ trip_object.headsign }}
+                </span>
+                <span v-else> IDA </span>
+              </a>
             </li>
             <li class="nav-item">
               <a
@@ -28,8 +32,16 @@
                 role="tab"
                 aria-controls="classic-2"
                 aria-selected="false"
-                ><i class="fas fa-arrow-circle-left"></i> VOLTA</a
-              >
+                ><i class="fas fa-arrow-circle-left"></i>
+                <span v-if="trips_on_route.length > 0">
+                  {{
+                    trip_object.id === trips_on_route[0].id
+                      ? trips_on_route[1].headsign
+                      : trips_on_route[0].headsign
+                  }}
+                </span>
+                <span v-else> VOLTA </span>
+              </a>
             </li>
           </ul>
           <div class="tab-content" id="classicTabContent">
@@ -56,7 +68,7 @@
             >
               <ul class="timeline" id="sequenceVolta">
                 <TripDetailsItem
-                  v-for="stop in stops.slice().reverse()"
+                  v-for="stop in reverse_stops"
                   :key="stop"
                   v-bind:stop="stop"
                   v-bind:currentStop="address"
@@ -83,7 +95,10 @@ export default {
   computed: mapState({
     address: (state) => state.address,
     trip: (state) => state.trip,
+    trip_object: (state) => state.trip_object,
+    trips_on_route: (state) => state.trips_on_route,
     stops: (state) => state.stops,
+    reverse_stops: (state) => state.reverse_stops,
   }),
 };
 </script>

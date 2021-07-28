@@ -25,6 +25,8 @@ const store = new Vuex.Store({
   state: {
     code: '',
     trip: '',
+    trip_object: null,
+    trips_on_route: [],
     address: '',
     modes: {
       count: 0,
@@ -35,6 +37,7 @@ const store = new Vuex.Store({
       vlt: [],
     },
     stops: [],
+    reverse_stops: [],
   },
   mutations: {
     setCode(state, code) {
@@ -42,6 +45,12 @@ const store = new Vuex.Store({
     },
     setTrip(state, trip) {
       state.trip = trip
+    },
+    setTripObject(state, trip_object) {
+      state.trip_object = trip_object
+    },
+    setTripsOnRoute(state, trips_on_route) {
+      state.trips_on_route = trips_on_route
     },
     setAddress(state, address) {
       state.address = address
@@ -51,7 +60,10 @@ const store = new Vuex.Store({
     },
     setStops(state, stops) {
       state.stops = stops
-    }
+    },
+    setReverseStops(state, reverse_stops) {
+      state.reverse_stops = reverse_stops
+    },
   },
   actions: {
     updateCode({ commit }, code) {
@@ -65,14 +77,55 @@ const store = new Vuex.Store({
     },
     updateTrip({ commit }, trip) {
       commit('setTrip', trip)
+      this.dispatch("fetchTripObject", trip);
       this.dispatch("fetchStops", trip);
+    },
+    updateTripObject({ commit }, trip_object) {
+      commit('setTripObject', trip_object)
+    },
+    updateTripsOnRoute({ commit }, trips_on_route) {
+      commit('setTripsOnRoute', trips_on_route)
+      this.dispatch("fetchReverseStops", trips_on_route);
     },
     clearTrip({ commit }) {
       commit('setTrip', '');
+      this.dispatch("clearTripObject");
+      this.dispatch("clearTripsOnRoute");
       this.dispatch("clearStops");
+      this.dispatch("clearReverseStops");
+    },
+    clearTripObject({ commit }) {
+      commit('setTripObject', null);
+    },
+    clearTripsOnRoute({ commit }) {
+      commit('setTripsOnRoute', []);
     },
     clearStops({ commit }) {
       commit('setStops', [])
+    },
+    clearReverseStops({ commit }) {
+      commit('setReverseStops', [])
+    },
+    fetchTripObject({ dispatch }, trip) {
+      axios
+        .get(`https://api.mobilidade.rio/trip/` + trip)
+        .then(({ data }) => {
+          dispatch("updateTripObject", data);
+          dispatch("fetchTripsOnRoute", data.route.id);
+        })
+        .catch(() => {
+          dispatch("clearTripObject");
+        });
+    },
+    fetchTripsOnRoute({ dispatch }, route_id) {
+      axios
+        .get(`https://api.mobilidade.rio/trip/?route_id=` + route_id)
+        .then(({ data }) => {
+          dispatch("updateTripsOnRoute", data.results);
+        })
+        .catch(() => {
+          dispatch("clearTripsOnRoute");
+        });
     },
     fetchStops({ commit }, trip_id) {
       function getStops(url) {
@@ -91,6 +144,25 @@ const store = new Vuex.Store({
       let url = `https://api.mobilidade.rio/sequence/?trip_id=` + trip_id
       getStops(url)
       commit('setStops', stops)
+    },
+    fetchReverseStops({ commit }, trips_on_route) {
+      function getStops(url) {
+        axios
+          .get(url)
+          .then(({ data }) => {
+            data.results.forEach((item) => {
+              reverse_stops.push(item.stop.name);
+            })
+            if (data.next) {
+              getStops(data.next)
+            }
+          })
+      }
+      let reverse_stops = []
+      let reverse_trip_id = trips_on_route[0].id === this.state.trip_object.id ? trips_on_route[1].id : trips_on_route[0].id
+      let url = `https://api.mobilidade.rio/sequence/?trip_id=` + reverse_trip_id
+      getStops(url)
+      commit('setReverseStops', reverse_stops)
     },
     clearAddress({ commit }) {
       commit('setAddress', '')
