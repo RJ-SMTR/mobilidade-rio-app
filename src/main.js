@@ -75,15 +75,22 @@ const store = new Vuex.Store({
       commit('setStops', [])
     },
     fetchStops({ commit }, trip_id) {
-      axios
-        .get(`https://api.mobilidade.rio/sequence/?trip_id=` + trip_id)
-        .then(({ data }) => {
-          let stops = []
-          data.results.forEach((item) => {
-            stops.push(item.stop.name);
+      function getStops(url) {
+        axios
+          .get(url)
+          .then(({ data }) => {
+            data.results.forEach((item) => {
+              stops.push(item.stop.name);
+            })
+            if (data.next) {
+              getStops(data.next)
+            }
           })
-          commit('setStops', stops)
-        })
+      }
+      let stops = []
+      let url = `https://api.mobilidade.rio/sequence/?trip_id=` + trip_id
+      getStops(url)
+      commit('setStops', stops)
     },
     clearAddress({ commit }) {
       commit('setAddress', '')
@@ -101,44 +108,49 @@ const store = new Vuex.Store({
         });
     },
     fetchModes({ commit }, code) {
-      axios
-        .get(
-          `https://api.mobilidade.rio/trip/?code=` + code
-        )
-        .then(({ data }) => {
-          var modes = {
-            count: 0,
-            onibus: [],
-            metro: [],
-            barca: [],
-            trem: [],
-            vlt: [],
-          }
-          data.results.forEach((item) => {
-            modes.count += 1;
-            if (item.route.mode.name == 'Ônibus') {
-              modes.onibus.push(item);
-            } else if (item.route.mode.name == 'Metrô') {
-              modes.metro.push(item);
-            } else if (item.route.mode.name == 'Barca') {
-              modes.barca.push(item);
-            } else if (item.route.mode.name == 'Trem') {
-              modes.trem.push(item);
-            } else if (item.route.mode.name == 'VLT') {
-              modes.vlt.push(item);
+      function getModes(url) {
+        axios
+          .get(url)
+          .then(({ data }) => {
+            data.results.forEach((item) => {
+              modes.count += 1;
+              if (item.route.mode.name == 'Ônibus') {
+                modes.onibus.push(item);
+              } else if (item.route.mode.name == 'Metrô') {
+                modes.metro.push(item);
+              } else if (item.route.mode.name == 'Barca') {
+                modes.barca.push(item);
+              } else if (item.route.mode.name == 'Trem') {
+                modes.trem.push(item);
+              } else if (item.route.mode.name == 'VLT') {
+                modes.vlt.push(item);
+              }
+            })
+            if (data.next) {
+              getModes(data.next)
             }
           })
-          commit("setModes", modes);
-        })
-        .catch(() => {
-          commit("setModes", {
-            onibus: [],
-            metro: [],
-            barca: [],
-            trem: [],
-            vlt: [],
+          .catch(() => {
+            commit("setModes", {
+              onibus: [],
+              metro: [],
+              barca: [],
+              trem: [],
+              vlt: [],
+            });
           });
-        });
+      }
+      let url = `https://api.mobilidade.rio/trip/?code=` + code
+      let modes = {
+        count: 0,
+        onibus: [],
+        metro: [],
+        barca: [],
+        trem: [],
+        vlt: [],
+      }
+      getModes(url)
+      commit("setModes", modes);
     }
   }
 })
