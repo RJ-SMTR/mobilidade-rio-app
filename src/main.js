@@ -38,6 +38,7 @@ const store = new Vuex.Store({
     },
     stops: [],
     reverse_stops: [],
+    read_qrcode: false,
   },
   mutations: {
     setCode(state, code) {
@@ -64,6 +65,9 @@ const store = new Vuex.Store({
     setReverseStops(state, reverse_stops) {
       state.reverse_stops = reverse_stops
     },
+    updateReadQrcode(state, read_qrcode) {
+      state.read_qrcode = read_qrcode
+    }
   },
   actions: {
     updateCode({ commit }, code) {
@@ -105,6 +109,13 @@ const store = new Vuex.Store({
     },
     clearReverseStops({ commit }) {
       commit('setReverseStops', [])
+    },
+    setReadQrcode({ commit, dispatch }) {
+      commit('updateReadQrcode', true)
+      dispatch('clearAll');
+    },
+    resetReadQrcode({ commit }) {
+      commit('updateReadQrcode', false);
     },
     fetchTripObject({ dispatch }, trip) {
       axios
@@ -167,6 +178,9 @@ const store = new Vuex.Store({
     clearAddress({ commit }) {
       commit('setAddress', '')
     },
+    clearModes({ commit }) {
+      commit('setModes', { count: 0, onibus: [], metro: [], barca: [], trem: [], vlt: [] });
+    },
     fetchAddress({ commit }, code) {
       axios
         .get(
@@ -223,6 +237,15 @@ const store = new Vuex.Store({
       }
       getModes(url)
       commit("setModes", modes);
+    },
+    clearAll({ dispatch }) {
+      dispatch('clearAddress');
+      dispatch('clearTrip');
+      dispatch('clearTripObject');
+      dispatch('clearTripsOnRoute');
+      dispatch('clearStops');
+      dispatch('clearReverseStops');
+      dispatch('clearModes');
     }
   }
 })
