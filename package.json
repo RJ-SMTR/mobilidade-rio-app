@@ -13,6 +13,7 @@
     "git-describe": "^4.0.4",
     "jquery": "^3.6.0",
     "vue": "^2.6.11",
+    "vue-qrcode-reader": "^3.0.3",
     "vuex": "^3.6.2"
   },
   "devDependencies": {

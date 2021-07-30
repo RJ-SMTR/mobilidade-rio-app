@@ -20,7 +20,10 @@
         </button>
       </div> -->
     </div>
-    <a class="btn btn-primary btn-block mt-2 mb-2" href="#"
+    <a
+      @click="handleQrCodeClick"
+      class="btn btn-primary btn-block mt-2 mb-2"
+      href="#"
       ><i class="fas fa-qrcode"></i> {{ qrcode_message }}</a
     >
   </div>
@@ -51,9 +54,13 @@ export default {
   methods: {
     handleChangeCode() {
       this.code = this.code.toUpperCase();
+      this.$store.dispatch("resetReadQrcode");
       this.$store.dispatch("updateCode", this.code);
       this.$store.dispatch("clearTrip");
       this.$store.dispatch("clearStops");
+    },
+    handleQrCodeClick() {
+      this.$store.dispatch("setReadQrcode");
     },
   },
 };
