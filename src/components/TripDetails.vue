@@ -51,13 +51,28 @@
               role="tabpanel"
               aria-labelledby="classic-1-tab"
             >
+              <span v-if="trips_on_route.length === 0"> Carregando... </span>
+              <span v-else>
+                <a href="#" @click="toggleStopsBefore()">{{
+                  toggle_stops_before
+                    ? "Mostrar paradas anteriores"
+                    : "Esconder paradas anteriores"
+                }}</a>
+              </span>
+              <p v-if="stops_after.length === 0">Carregando...</p>
               <ul class="timeline" id="sequenceIda">
-                <span v-if="trips_on_route.length === 0"> Carregando... </span>
                 <TripDetailsItem
-                  v-for="stop in stops"
+                  v-for="stop in stops_before"
                   :key="stop"
-                  v-bind:stop="stop"
-                  v-bind:currentStop="address"
+                  :stop="stop"
+                  :currentStop="address"
+                  :toggle="toggle_stops_before"
+                />
+                <TripDetailsItem
+                  v-for="stop in stops_after"
+                  :key="stop"
+                  :stop="stop"
+                  :currentStop="address"
                 />
               </ul>
             </div>
@@ -67,8 +82,8 @@
               role="tabpanel"
               aria-labelledby="classic-2-tab"
             >
+              <span v-if="reverse_stops.length === 0"> Carregando... </span>
               <ul class="timeline" id="sequenceVolta">
-                <span v-if="reverse_stops.length === 0"> Carregando... </span>
                 <TripDetailsItem
                   v-for="stop in reverse_stops"
                   :key="stop"
@@ -94,6 +109,13 @@ export default {
   components: {
     TripDetailsItem,
   },
+  data() {
+    return {
+      stops_before: [],
+      stops_after: [],
+      toggle_stops_before: true,
+    };
+  },
   computed: mapState({
     address: (state) => state.address,
     trip: (state) => state.trip,
@@ -102,5 +124,32 @@ export default {
     stops: (state) => state.stops,
     reverse_stops: (state) => state.reverse_stops,
   }),
+  watch: {
+    stops(newStops, oldStops) {
+      let stops_before = [];
+      let stops_after = [];
+      if (newStops.length > 0) {
+        let currentStopIndex = newStops.findIndex((stop) => {
+          return stop === this.address;
+        });
+        if (currentStopIndex > 0) {
+          stops_before = newStops.slice(0, currentStopIndex);
+          stops_after = newStops.slice(currentStopIndex);
+        } else {
+          stops_before = newStops.slice(0);
+          stops_after = [];
+        }
+      }
+      this.stops_before = stops_before;
+      this.stops_after = stops_after;
+      console.log("Number of stops before: " + stops_before.length);
+      console.log("Number of stops after: " + stops_after.length);
+    },
+  },
+  methods: {
+    toggleStopsBefore() {
+      this.toggle_stops_before = !this.toggle_stops_before;
+    },
+  },
 };
 </script>

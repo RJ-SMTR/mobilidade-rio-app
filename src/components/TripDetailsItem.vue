@@ -1,5 +1,5 @@
 <template>
-  <li :class="`event ${stop === currentStop ? 'active' : ''}`">
+  <li v-if="!toggle" :class="`event ${stop === currentStop ? 'active' : ''}`">
     {{ stop }}
   </li>
 </template>
@@ -15,6 +15,11 @@ export default {
     currentStop: {
       type: String,
       required: true,
+    },
+    toggle: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 };
