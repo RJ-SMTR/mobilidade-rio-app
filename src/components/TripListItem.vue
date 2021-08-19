@@ -3,18 +3,12 @@
     :to="$route.fullPath + `/rota/` + trip.id"
     class="list-group-item d-flex align-items-center list-group-item-action"
   >
-    <div class="badge badge-light p-0 mr-2">
-      <img :src="icon" class="border border-warning rounded" />
-    </div>
-    <div class="w-75 small" style="text-align: left">
-      {{
-        trip.route.short_name +
-        ` - ` +
-        trip.route.vista +
-        ` (sentido ` +
-        trip.headsign +
-        `)`
-      }}
+    <span class="badge badge badge-primary even-larger-badge">
+      {{ trip.route.short_name }}
+    </span>
+    <!-- <img :src="icon" class="border border-warning rounded" /> -->
+    <div class="w-75" style="text-align: left; padding-left: 5px">
+      {{ trip.route.vista + ` (sentido ` + trip.headsign + `)` }}
     </div>
     <!-- <div class="text-right">
       <span class="small"><i class="far fa-clock"></i> 50min</span>
@@ -62,3 +56,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.badge.even-larger-badge {
+  font-size: 1.05em;
+}
+</style>

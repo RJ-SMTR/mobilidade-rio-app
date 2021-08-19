@@ -7,12 +7,14 @@
   >
     <i class="fas fa-map-marker-alt"></i>
     <b style="padding: 5px">{{ notFoundMessage }}</b>
-    <span class="badge badge-secondary">{{ code }}</span>
+    <h1>
+      <span class="badge badge-secondary">{{ code }}</span>
+    </h1>
   </div>
   <div v-else class="alert alert-primary" role="alert">
     <i class="fas fa-map-marker-alt"></i>
     <b style="padding: 5px">{{ prefixMessage }}</b>
-    <span class="badge badge-primary">{{ code }}</span>
+    <span class="badge badge-primary even-larger-badge">{{ code }}</span>
     <span style="padding: 5px">{{ address }}</span>
   </div>
 </template>
@@ -38,3 +40,9 @@ export default {
   }),
 };
 </script>
+
+<style scoped>
+.badge.even-larger-badge {
+  font-size: 1.05em;
+}
+</style>

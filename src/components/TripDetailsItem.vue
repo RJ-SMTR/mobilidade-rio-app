@@ -1,5 +1,9 @@
 <template>
-  <li v-if="!toggle" :class="`event ${stop === currentStop ? 'active' : ''}`">
+  <li
+    v-if="!toggle"
+    :class="`event ${stop === currentStop ? 'active' : ''}`"
+    style="font-size: 16px"
+  >
     {{ stop }}
   </li>
 </template>
