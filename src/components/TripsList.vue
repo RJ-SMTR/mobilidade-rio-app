@@ -4,11 +4,11 @@
     <!-- BREADCRUMB -->
     <div aria-label="breadcrumb" class="mt-2">
       <ol class="breadcrumb">
-        <li
-          @click="handleClickOnHome"
-          :class="`breadcrumb-item ${trip === '' ? 'active' : ''}`"
-        >
-          <a href="#"><i class="fas fa-grip-lines"></i> Linhas e Serviços</a>
+        <li :class="`breadcrumb-item ${trip === '' ? 'active' : ''}`">
+          <router-link
+            :to="this.$route.fullPath.split(`/`).slice(0, 3).join(`/`)"
+            ><i class="fas fa-grip-lines"></i> Linhas e Serviços</router-link
+          >
         </li>
         <li :class="`breadcrumb-item ${trip !== '' ? 'active' : ''}`">
           <i class="fas fa-directions"></i>
@@ -107,10 +107,5 @@ export default {
     trip: (state) => state.trip,
     trip_object: (state) => state.trip_object,
   }),
-  methods: {
-    handleClickOnHome() {
-      this.$store.dispatch("clearTrip");
-    },
-  },
 };
 </script>

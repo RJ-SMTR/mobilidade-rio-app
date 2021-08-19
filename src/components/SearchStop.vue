@@ -20,12 +20,9 @@
         </button>
       </div> -->
     </div>
-    <a
-      @click="handleQrCodeClick"
-      class="btn btn-primary btn-block mt-2 mb-2"
-      href="#"
-      ><i class="fas fa-qrcode"></i> {{ qrcode_message }}</a
-    >
+    <router-link to="/qrcode" class="btn btn-primary btn-block mt-2 mb-2">
+      <i class="fas fa-qrcode"></i> {{ qrcode_message }}
+    </router-link>
   </div>
 </template>
 
@@ -54,13 +51,9 @@ export default {
   methods: {
     handleChangeCode() {
       this.code = this.code.toUpperCase();
-      this.$store.dispatch("resetReadQrcode");
-      this.$store.dispatch("updateCode", this.code);
-      this.$store.dispatch("clearTrip");
-      this.$store.dispatch("clearStops");
-    },
-    handleQrCodeClick() {
-      this.$store.dispatch("setReadQrcode");
+      if (this.code.length === 4) {
+        this.$router.push("/ponto/" + this.code);
+      }
     },
   },
 };
