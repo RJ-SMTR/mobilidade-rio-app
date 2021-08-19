@@ -20,8 +20,11 @@ export default new Vuex.Store({
       trem: [],
       vlt: [],
     },
+    modes_ok: false,
     stops: [],
+    stops_ok: false,
     reverse_stops: [],
+    reverse_stops_ok: false,
     read_qrcode: false,
   },
   mutations: {
@@ -43,11 +46,20 @@ export default new Vuex.Store({
     setModes(state, modes) {
       state.modes = modes
     },
+    setModesOk(state, modes_ok) {
+      state.modes_ok = modes_ok
+    },
     setStops(state, stops) {
       state.stops = stops
     },
+    setStopsOk(state, stops_ok) {
+      state.stops_ok = stops_ok
+    },
     setReverseStops(state, reverse_stops) {
       state.reverse_stops = reverse_stops
+    },
+    setReverseStopsOk(state, reverse_stops_ok) {
+      state.reverse_stops_ok = reverse_stops_ok
     },
     updateReadQrcode(state, read_qrcode) {
       state.read_qrcode = read_qrcode
@@ -90,9 +102,11 @@ export default new Vuex.Store({
     },
     clearStops({ commit }) {
       commit('setStops', [])
+      commit('setStopsOk', false)
     },
     clearReverseStops({ commit }) {
       commit('setReverseStops', [])
+      commit('setReverseStopsOk', false)
     },
     setReadQrcode({ commit, dispatch }) {
       commit('updateReadQrcode', true)
@@ -133,6 +147,9 @@ export default new Vuex.Store({
             if (data.next) {
               getStops(data.next)
             }
+            else {
+              commit('setStopsOk', true)
+            }
           })
       }
       let stops = []
@@ -151,6 +168,9 @@ export default new Vuex.Store({
             if (data.next) {
               getStops(data.next)
             }
+            else {
+              commit('setReverseStopsOk', true)
+            }
           })
       }
       let reverse_stops = []
@@ -164,6 +184,7 @@ export default new Vuex.Store({
     },
     clearModes({ commit }) {
       commit('setModes', { count: 0, onibus: [], metro: [], barca: [], trem: [], vlt: [] });
+      commit('setModesOk', false);
     },
     fetchAddress({ commit }, code) {
       axios
@@ -199,6 +220,9 @@ export default new Vuex.Store({
             if (data.next) {
               getModes(data.next)
             }
+            else {
+              commit('setModesOk', true)
+            }
           })
           .catch(() => {
             commit("setModes", {
@@ -208,6 +232,7 @@ export default new Vuex.Store({
               trem: [],
               vlt: [],
             });
+            commit("setModesOk", false);
           });
       }
       let url = `https://api.mobilidade.rio/trip/?code=` + code

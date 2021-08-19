@@ -51,15 +51,19 @@
               role="tabpanel"
               aria-labelledby="classic-1-tab"
             >
-              <span v-if="trips_on_route.length === 0"> Carregando... </span>
-              <span v-else>
+              <pulse-loader
+                :loading="!stops_ok"
+                :color="`#0275d8`"
+                :size="`10px`"
+              ></pulse-loader>
+              <p v-if="!stops_ok">Carregando...</p>
+              <span v-if="trips_on_route.length > 0">
                 <a href="#" @click="toggleStopsBefore()">{{
                   toggle_stops_before
                     ? "Mostrar paradas anteriores"
                     : "Esconder paradas anteriores"
                 }}</a>
               </span>
-              <p v-if="stops_after.length === 0">Carregando...</p>
               <ul class="timeline" id="sequenceIda">
                 <TripDetailsItem
                   v-for="stop in stops_before"
@@ -82,7 +86,12 @@
               role="tabpanel"
               aria-labelledby="classic-2-tab"
             >
-              <span v-if="reverse_stops.length === 0"> Carregando... </span>
+              <pulse-loader
+                :loading="!reverse_stops_ok"
+                :color="`#0275d8`"
+                :size="`10px`"
+              ></pulse-loader>
+              <p v-if="!reverse_stops_ok">Carregando...</p>
               <ul class="timeline" id="sequenceVolta">
                 <TripDetailsItem
                   v-for="stop in reverse_stops"
@@ -101,6 +110,7 @@
 
 <script>
 import { mapState } from "vuex";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
 import TripDetailsItem from "./TripDetailsItem.vue";
 
@@ -108,6 +118,7 @@ export default {
   name: "TripDetails",
   components: {
     TripDetailsItem,
+    PulseLoader,
   },
   data() {
     return {
@@ -122,7 +133,9 @@ export default {
     trip_object: (state) => state.trip_object,
     trips_on_route: (state) => state.trips_on_route,
     stops: (state) => state.stops,
+    stops_ok: (state) => state.stops_ok,
     reverse_stops: (state) => state.reverse_stops,
+    reverse_stops_ok: (state) => state.reverse_stops_ok,
   }),
   watch: {
     stops(newStops, oldStops) {
@@ -142,8 +155,6 @@ export default {
       }
       this.stops_before = stops_before;
       this.stops_after = stops_after;
-      console.log("Number of stops before: " + stops_before.length);
-      console.log("Number of stops after: " + stops_after.length);
     },
   },
   methods: {

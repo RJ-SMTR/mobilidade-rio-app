@@ -4,10 +4,12 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <img
-              src="../assets/img/logo-transportes-vs2.png"
-              class="img-fluid"
-            />
+            <a href="/">
+              <img
+                src="../assets/img/logo-transportes-vs2.png"
+                class="img-fluid"
+              />
+            </a>
           </div>
         </div>
       </div>
