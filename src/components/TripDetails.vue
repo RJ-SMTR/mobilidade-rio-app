@@ -52,6 +52,7 @@
               aria-labelledby="classic-1-tab"
             >
               <ul class="timeline" id="sequenceIda">
+                <span v-if="trips_on_route.length === 0"> Carregando... </span>
                 <TripDetailsItem
                   v-for="stop in stops"
                   :key="stop"
@@ -67,6 +68,7 @@
               aria-labelledby="classic-2-tab"
             >
               <ul class="timeline" id="sequenceVolta">
+                <span v-if="reverse_stops.length === 0"> Carregando... </span>
                 <TripDetailsItem
                   v-for="stop in reverse_stops"
                   :key="stop"

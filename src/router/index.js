@@ -11,8 +11,8 @@ const router = new VueRouter({
   base: "./",
   routes: [
     { path: "/", component: App },
-    { path: "/ponto/:stop_id", component: App },
-    { path: "/ponto/:stop_id/rota/:trip_id", component: App },
+    { path: "/:stop_id", component: App },
+    { path: "/:stop_id/rota/:trip_id", component: App },
     { path: "/qrcode", component: App }
   ],
 });
