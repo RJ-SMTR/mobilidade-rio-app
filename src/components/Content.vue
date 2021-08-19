@@ -6,7 +6,7 @@
           <div class="col-md-12">
             <div class="py-1">
               <SearchStop />
-              <QrCode v-if="read_qrcode"/>
+              <QrCode v-if="read_qrcode" />
               <Separator />
               <Location />
               <TripsList />
@@ -30,30 +30,42 @@ import { mapState } from "vuex";
 
 export default {
   name: "Content",
-  components: { SearchStop, QrCode, Separator, Location, TripsList, TripDetails },
+  components: {
+    SearchStop,
+    QrCode,
+    Separator,
+    Location,
+    TripsList,
+    TripDetails,
+  },
   mounted() {
-    function getUrlParameter(sParam) {
-      var sPageURL = window.location.search.substring(1);
-      var sURLVariables = sPageURL.split("&");
-      for (var i = 0; i < sURLVariables.length; i++) {
-        var sParameterName = sURLVariables[i].split("=");
-        if (sParameterName[0] == sParam) {
-          return sParameterName[1];
-        }
-      }
-    }
-
-    let code = getUrlParameter("code");
-    let trip = getUrlParameter("trip");
+    let to = this.$route;
+    let route = to.fullPath;
+    let params = to.params;
+    let code = params.stop_id;
+    let trip = params.trip_id;
     if (code) {
       this.$store.dispatch("updateCode", code.toUpperCase());
+      this.$store.dispatch("clearTrip");
+      this.$store.dispatch("clearStops");
+    } else {
+      this.$store.dispatch("updateCode", "");
+      this.$store.dispatch("clearTrip");
+      this.$store.dispatch("clearStops");
     }
     if (trip) {
       this.$store.dispatch("updateTrip", trip);
     }
+    if (route === "/qrcode") {
+      this.$store.dispatch("setReadQrcode");
+    } else {
+      this.$store.dispatch("resetReadQrcode");
+    }
   },
-  computed: mapState({
-    read_qrcode: (state) => state.read_qrcode,
-  }),
+  computed: {
+    ...mapState({
+      read_qrcode: (state) => state.read_qrcode,
+    }),
+  },
 };
 </script>

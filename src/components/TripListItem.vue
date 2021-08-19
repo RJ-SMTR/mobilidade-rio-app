@@ -1,7 +1,6 @@
 <template>
-  <a
-    @click="handleItemClick"
-    href="#"
+  <router-link
+    :to="$route.fullPath + `/rota/` + trip.id"
     class="list-group-item d-flex align-items-center list-group-item-action"
   >
     <div class="badge badge-light p-0 mr-2">
@@ -21,7 +20,7 @@
       <span class="small"><i class="far fa-clock"></i> 50min</span>
       <span class="badge badge-light badge-pill">Expresso</span>
     </div> -->
-  </a>
+  </router-link>
 </template>
 
 <script>
@@ -60,11 +59,6 @@ export default {
         this.mode = "onibus";
     }
     this.icon = require(`../assets/img/modal/${this.mode}.png`);
-  },
-  methods: {
-    handleItemClick() {
-      this.$store.dispatch("updateTrip", this.trip.id);
-    },
   },
 };
 </script>
