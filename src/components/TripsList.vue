@@ -6,7 +6,7 @@
       <ol class="breadcrumb">
         <li :class="`breadcrumb-item ${trip === '' ? 'active' : ''}`">
           <router-link
-            :to="this.$route.fullPath.split(`/`).slice(0, 3).join(`/`)"
+            :to="this.$route.fullPath.split(`/`).slice(0, 2).join(`/`)"
             ><i class="fas fa-grip-lines"></i> Linhas e Serviços</router-link
           >
         </li>

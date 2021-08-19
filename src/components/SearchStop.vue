@@ -52,7 +52,7 @@ export default {
     handleChangeCode() {
       this.code = this.code.toUpperCase();
       if (this.code.length === 4) {
-        this.$router.push("/ponto/" + this.code);
+        this.$router.push("/" + this.code);
       }
     },
   },
