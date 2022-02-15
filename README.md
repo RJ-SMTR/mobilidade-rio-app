@@ -1,9 +1,11 @@
 # mobilidade_rio
 
-## Project setup
-```
-npm install
-```
+## Desenvolvimento (local)
+
+1. Instale o app: `npm install`
+2. Execute localmente com: `npm run-script serve`
+
+## Produção
 
 ### Compiles and hot-reloads for development
 ```
