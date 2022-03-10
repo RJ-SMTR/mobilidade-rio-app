@@ -1,4 +1,4 @@
-name: Deploy to production
+name: Linting and auditing
 
 on:
   pull_request:
