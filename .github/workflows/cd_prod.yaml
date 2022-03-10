@@ -1,10 +1,9 @@
-name: Workflow
+name: Deploy to production
 
 on:
   push:
     branches:
-      - "*"
-  pull_request:
+      - "master"
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -13,20 +12,7 @@ env:
   IMAGE: mobilidade-rio-app
 
 jobs:
-  lint:
-    name: Dockerfiles linting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Run hadolint
-        uses: reviewdog/action-hadolint@v1
-        with:
-          hadolint_ignore: DL3018
-          reporter: github-pr-review
-
   build:
-    needs: [lint]
     name: Build and update deployments
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest

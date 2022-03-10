@@ -1,9 +1,8 @@
-FROM node:lts-alpine as build-stage
+FROM node:15-alpine as build-stage
 RUN apk update && apk add --no-cache --virtual build-deps git
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci \
-  && npm audit fix
+RUN npm ci
 COPY . ./
 RUN npm run build
 
