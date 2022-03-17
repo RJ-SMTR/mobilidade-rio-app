@@ -56,10 +56,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - pontos.mobilidade.rio
+        - mobilidade.rio
       secretName: app-mobilidade-tls
   rules:
-    - host: pontos.mobilidade.rio
+    - host: mobilidade.rio
       http:
         paths:
           - path: /
