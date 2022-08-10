@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: Deploy to sataging
+=======
+name: Deploy to production
+>>>>>>> d7fcdc4adddad8f7dc0a2004fd9aac76887f2b0b
 
 on:
   push:
