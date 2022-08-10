@@ -1,0 +1,34 @@
+name: Linting and auditing
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: Dockerfiles linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run hadolint
+        uses: reviewdog/action-hadolint@v1
+        with:
+          hadolint_ignore: DL3018
+          reporter: github-pr-review
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v2
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: Install dependencies
+        run: npm ci
+      - name: Run audit
+        uses: tangro/actions-audit@v1.1.39
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_CONTEXT: ${{ toJson(github) }}
