@@ -54,8 +54,6 @@ jobs:
 
       - name: Deploy
         run: |-
-          echo "Deploy to"
-          echo gcr.io/PROJECT_ID/IMAGE_APP:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_APP:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
           ./kustomize build . | kubectl apply -n mobilidade-v2-staging -f -
           kubectl get services -n mobilidade-v2-staging -o wide

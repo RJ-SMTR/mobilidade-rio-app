@@ -56,10 +56,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - staging.mobilidade.rio
+        - app.staging.mobilidade.rio
       secretName: app-mobilidade-tls
   rules:
-    - host: staging.mobilidade.rio
+    - host: app.taging.mobilidade.rio
       http:
         paths:
           - path: /
