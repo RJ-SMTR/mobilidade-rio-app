@@ -59,7 +59,7 @@ spec:
         - app.staging.mobilidade.rio
       secretName: app-mobilidade-tls
   rules:
-    - host: app.taging.mobilidade.rio
+    - host: app.staging.mobilidade.rio
       http:
         paths:
           - path: /
