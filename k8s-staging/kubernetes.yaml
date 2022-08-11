@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: mobilidade-app-stag
-          image: gcr.io/PROJECT_ID/IMAGE_APP:TAG
+          image: gcr.io/$PROJECT_ID/$IMAGE_APP:$TAG
           ports:
             - containerPort: 80
           resources:
