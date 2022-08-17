@@ -18,6 +18,7 @@ export default new Vuex.Store({
   state: {
     code: '',
     trip: '',
+    teste: 'xpto',
     trip_object: null,
     trips_on_route: [],
     address: '',
@@ -76,6 +77,7 @@ export default new Vuex.Store({
   },
   actions: {
     updateCode({ commit }, code) {
+      // axios.defaults.baseURL = `https://api.${(['7KKY', '7M9B'].includes(code.toUpperCase())?'staging.':'')}mobilidade.rio/`
       commit('setCode', code)
       if (code.length === 4) {
         this.dispatch("fetchAddress", code);
@@ -124,7 +126,8 @@ export default new Vuex.Store({
     resetReadQrcode({ commit }) {
       commit('updateReadQrcode', false);
     },
-    fetchTripObject({ dispatch }, trip) {
+    fetchTripObject({ dispatch }, trip, code) {
+      console.log(code)
       axios
         .get(`trip/` + trip)
         .then(({ data }) => {
