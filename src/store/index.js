@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+import axiosClient from 'axios'
+
+const axios = axiosClient.create({baseURL: 'https://api.mobilidade.rio/'})
 
 Vue.use(Vuex)
 
@@ -9,6 +11,7 @@ export default new Vuex.Store({
   state: {
     code: '',
     trip: '',
+    teste: 'xpto',
     trip_object: null,
     trips_on_route: [],
     address: '',
@@ -67,6 +70,7 @@ export default new Vuex.Store({
   },
   actions: {
     updateCode({ commit }, code) {
+      axios.defaults.baseURL = `https://api.${(['7KKY', '7M9B'].includes(code.toUpperCase())?'staging.':'')}mobilidade.rio/`
       commit('setCode', code)
       if (code.length === 4) {
         this.dispatch("fetchAddress", code);
@@ -115,9 +119,10 @@ export default new Vuex.Store({
     resetReadQrcode({ commit }) {
       commit('updateReadQrcode', false);
     },
-    fetchTripObject({ dispatch }, trip) {
+    fetchTripObject({ dispatch }, trip, code) {
+      console.log(code)
       axios
-        .get(`https://api.mobilidade.rio/trip/` + trip)
+        .get(`trip/` + trip)
         .then(({ data }) => {
           dispatch("updateTripObject", data);
           dispatch("fetchTripsOnRoute", data.route.id);
@@ -128,7 +133,7 @@ export default new Vuex.Store({
     },
     fetchTripsOnRoute({ dispatch }, route_id) {
       axios
-        .get(`https://api.mobilidade.rio/trip/?route_id=` + route_id)
+        .get(`trip/?route_id=` + route_id)
         .then(({ data }) => {
           dispatch("updateTripsOnRoute", data.results);
         })
@@ -153,7 +158,7 @@ export default new Vuex.Store({
           })
       }
       let stops = []
-      let url = `https://api.mobilidade.rio/sequence/?trip_id=` + trip_id
+      let url = `sequence/?trip_id=` + trip_id
       getStops(url)
       commit('setStops', stops)
     },
@@ -175,7 +180,7 @@ export default new Vuex.Store({
       }
       let reverse_stops = []
       let reverse_trip_id = trips_on_route[0].id === this.state.trip_object.id ? trips_on_route[1].id : trips_on_route[0].id
-      let url = `https://api.mobilidade.rio/sequence/?trip_id=` + reverse_trip_id
+      let url = `sequence/?trip_id=` + reverse_trip_id
       getStops(url)
       commit('setReverseStops', reverse_stops)
     },
@@ -189,7 +194,7 @@ export default new Vuex.Store({
     fetchAddress({ commit }, code) {
       axios
         .get(
-          `https://api.mobilidade.rio/qrcode/?code=` + code
+          `qrcode/?code=` + code
         )
         .then(({ data }) => {
           commit("setAddress", data.results[0].stop.name);
@@ -235,7 +240,7 @@ export default new Vuex.Store({
             commit("setModesOk", false);
           });
       }
-      let url = `https://api.mobilidade.rio/trip/?code=` + code
+      let url = `trip/?code=` + code
       let modes = {
         count: 0,
         onibus: [],
