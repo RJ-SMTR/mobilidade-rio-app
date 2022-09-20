@@ -77,7 +77,7 @@ export default new Vuex.Store({
   },
   actions: {
     updateCode({ commit }, code) {
-      // axios.defaults.baseURL = `https://api.${(['7KKY', '7M9B'].includes(code.toUpperCase())?'staging.':'')}mobilidade.rio/`
+      axios.defaults.baseURL = `https://api.${(['7KKY', '7M9B'].includes(code.toUpperCase())?'staging.':'')}mobilidade.rio/`
       commit('setCode', code)
       if (code.length === 4) {
         this.dispatch("fetchAddress", code);
@@ -216,32 +216,30 @@ export default new Vuex.Store({
         axios
           .get(url)
           .then(({ data }) => {
-
             let hasLetters = []
-            let fullArray = []
+            let regularStops = []
+            let highwayStops = []
             previousModes.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                function onlyNumbers(str) {
-                  return /^\d/.test(str);
-                }
-                if (!onlyNumbers(item.route.short_name)){
+                if (!/^\d/.test(item.route.short_name)){
                   hasLetters.push(item)
+                 } else if (/^[2]/.test(item.route.short_name)){
+                  highwayStops.push(item)
                  } else {
-                  fullArray.push(item)
+                  regularStops.push(item)
                  }
               } 
             })
             data.results.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                function onlyNumbers(str) {
-                  return /^\d/.test(str);
-                }
-                if (!onlyNumbers(item.route.short_name)) {
+                if (!/^\d/.test(item.route.short_name)) {
                   hasLetters.push(item)
+                } else if (/^[2]/.test(item.route.short_name)){
+                  highwayStops.push(item)
                 } else {
-                  fullArray.push(item)
+                  regularStops.push(item)
                 }
               } else if (item.route.mode.name == 'Metrô') {
                 modes.metro.push(item);
@@ -253,7 +251,7 @@ export default new Vuex.Store({
                 modes.vlt.push(item);
               }
             })
-            modes.onibus = [...fullArray, ...hasLetters,];
+            modes.onibus = [...regularStops, ...highwayStops, ...hasLetters ];
             if (data.next) {
               getModes(data.next, modes.onibus)
             }
