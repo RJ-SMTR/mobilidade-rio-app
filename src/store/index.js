@@ -168,6 +168,7 @@ export default new Vuex.Store({
       let url = `sequence/?trip_id=` + trip_id
       getStops(url)
       commit('setStops', stops)
+      
     },
     fetchReverseStops({ commit }, trips_on_route) {
       function getStops(url) {
@@ -211,14 +212,37 @@ export default new Vuex.Store({
         });
     },
     fetchModes({ commit }, code) {
-      function getModes(url) {
+      function getModes(url, previousModes = []) {
         axios
           .get(url)
           .then(({ data }) => {
+
+            let hasLetters = []
+            let fullArray = []
+            previousModes.forEach((item) => {
+              modes.count += 1;
+              if (item.route.mode.name == 'Ônibus') {
+                function onlyNumbers(str) {
+                  return /^\d/.test(str);
+                }
+                if (!onlyNumbers(item.route.short_name)){
+                  hasLetters.push(item)
+                 } else {
+                  fullArray.push(item)
+                 }
+              } 
+            })
             data.results.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                modes.onibus.push(item);
+                function onlyNumbers(str) {
+                  return /^\d/.test(str);
+                }
+                if (!onlyNumbers(item.route.short_name)) {
+                  hasLetters.push(item)
+                } else {
+                  fullArray.push(item)
+                }
               } else if (item.route.mode.name == 'Metrô') {
                 modes.metro.push(item);
               } else if (item.route.mode.name == 'Barca') {
@@ -229,8 +253,9 @@ export default new Vuex.Store({
                 modes.vlt.push(item);
               }
             })
+            modes.onibus = [...fullArray, ...hasLetters,];
             if (data.next) {
-              getModes(data.next)
+              getModes(data.next, modes.onibus)
             }
             else {
               commit('setModesOk', true)
@@ -258,6 +283,7 @@ export default new Vuex.Store({
       }
       getModes(url)
       commit("setModes", modes);
+
     },
     clearAll({ dispatch }) {
       dispatch('clearAddress');
