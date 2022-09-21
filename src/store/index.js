@@ -216,32 +216,26 @@ export default new Vuex.Store({
         axios
           .get(url)
           .then(({ data }) => {
-
-            let hasLetters = []
-            let fullArray = []
+            
+            let commonBusService = []
+            let executiveBusService = []
             previousModes.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                function onlyNumbers(str) {
-                  return /^\d/.test(str);
-                }
-                if (!onlyNumbers(item.route.short_name)){
-                  hasLetters.push(item)
+                 if (/[2]\d(?:\D*\d){2}/.test(item.route.short_name.replace(/\D/g,''))){
+                  executiveBusService.push(item)
                  } else {
-                  fullArray.push(item)
+                  commonBusService.push(item)
                  }
               } 
             })
             data.results.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                function onlyNumbers(str) {
-                  return /^\d/.test(str);
-                }
-                if (!onlyNumbers(item.route.short_name)) {
-                  hasLetters.push(item)
+                if (/[2]\d(?:\D*\d){2}/.test(item.route.short_name.replace(/\D/g,''))){
+                  executiveBusService.push(item)
                 } else {
-                  fullArray.push(item)
+                  commonBusService.push(item)
                 }
               } else if (item.route.mode.name == 'Metrô') {
                 modes.metro.push(item);
@@ -253,7 +247,7 @@ export default new Vuex.Store({
                 modes.vlt.push(item);
               }
             })
-            modes.onibus = [...fullArray, ...hasLetters,];
+            modes.onibus = [...commonBusService, ...executiveBusService ];
             if (data.next) {
               getModes(data.next, modes.onibus)
             }
