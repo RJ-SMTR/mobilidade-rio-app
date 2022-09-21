@@ -216,30 +216,26 @@ export default new Vuex.Store({
         axios
           .get(url)
           .then(({ data }) => {
-            let hasLetters = []
-            let regularStops = []
-            let highwayStops = []
+            
+            let commonBusService = []
+            let executiveBusService = []
             previousModes.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                if (!/^\d/.test(item.route.short_name)){
-                  hasLetters.push(item)
-                 } else if (/^[2]/.test(item.route.short_name)){
-                  highwayStops.push(item)
+                 if (/[2]\d(?:\D*\d){2}/.test(item.route.short_name.replace(/\D/g,''))){
+                  executiveBusService.push(item)
                  } else {
-                  regularStops.push(item)
+                  commonBusService.push(item)
                  }
               } 
             })
             data.results.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                if (!/^\d/.test(item.route.short_name)) {
-                  hasLetters.push(item)
-                } else if (/^[2]/.test(item.route.short_name)){
-                  highwayStops.push(item)
+                if (/[2]\d(?:\D*\d){2}/.test(item.route.short_name.replace(/\D/g,''))){
+                  executiveBusService.push(item)
                 } else {
-                  regularStops.push(item)
+                  commonBusService.push(item)
                 }
               } else if (item.route.mode.name == 'Metrô') {
                 modes.metro.push(item);
@@ -251,7 +247,7 @@ export default new Vuex.Store({
                 modes.vlt.push(item);
               }
             })
-            modes.onibus = [...regularStops, ...highwayStops, ...hasLetters ];
+            modes.onibus = [...commonBusService, ...executiveBusService ];
             if (data.next) {
               getModes(data.next, modes.onibus)
             }
