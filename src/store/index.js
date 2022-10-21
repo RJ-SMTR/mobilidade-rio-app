@@ -6,7 +6,9 @@ let baseURL = '';
 if(window.location.hostname === 'mobilidade.rio') {
     baseURL = 'https://api.mobilidade.rio/'
 } else if(window.location.hostname === 'app.staging.mobilidade.rio') {
-    baseURL = 'https://api.staging.mobilidade.rio/'
+//     baseURL = 'https://api.staging.mobilidade.rio/'
+    // FIXME - fizemos isso pra poder validar
+    baseURL = 'https://api.dev.mobilidade.rio/'
 }
 
 const axios = axiosClient.create({baseURL});
