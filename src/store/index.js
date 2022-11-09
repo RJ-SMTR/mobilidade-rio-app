@@ -6,9 +6,7 @@ let baseURL = '';
 if(window.location.hostname === 'mobilidade.rio') {
     baseURL = 'https://api.mobilidade.rio/'
 } else if(window.location.hostname === 'app.staging.mobilidade.rio') {
-//     baseURL = 'https://api.staging.mobilidade.rio/'
-    // FIXME - fizemos isso pra poder validar
-    baseURL = 'https://api.dev.mobilidade.rio/'
+    baseURL = 'https://api.staging.mobilidade.rio/'
 }
 
 const axios = axiosClient.create({baseURL});
@@ -79,7 +77,6 @@ export default new Vuex.Store({
   },
   actions: {
     updateCode({ commit }, code) {
-      // axios.defaults.baseURL = `https://api.${(['7KKY', '7M9B'].includes(code.toUpperCase())?'staging.':'')}mobilidade.rio/`
       commit('setCode', code)
       if (code.length === 4) {
         this.dispatch("fetchAddress", code);
