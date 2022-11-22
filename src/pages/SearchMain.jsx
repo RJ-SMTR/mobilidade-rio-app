@@ -1,5 +1,5 @@
 import { SelectInputs } from "../components/Selectinputs/SelectInputs"
-import { Header } from '../components/HeaderSearch/Header'
+import { Header } from '../components/Header/Header'
 import fromTo from '../assets/imgs/fromTo.svg'
 import qrCode from '../assets/imgs/qrCode.svg'
 

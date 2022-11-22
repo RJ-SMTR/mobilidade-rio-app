@@ -2,17 +2,19 @@ import styles from './styles.module.scss'
 import bus from '../../assets/imgs/bus.svg'
 import proximity from '../../assets/imgs/proximity.svg'
 
-export function InfoCard(){
+export function DestinationCard() {
 
-    return(
+    return (
         <>
             <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
-                {/* CARD SEM PESQUISAR DESTINO */}
-                <div className={styles.routesCard}>
-                    <p className='text-[#707070] text-sm'>Você está em</p>
-                    <h1 className="text-xl font-semibold">RioCentro</h1>
+                {/* CARD DEPOIS DE PESQUISAR DESTINO */}
+                <div className={styles.destinationCard}>
+                    <div className={styles.directionBanner}>
+                        <p className='text-sm'>Dirija-se à <span className='font-bold'>porta direita</span> em Rio Centro</p>
+                    </div>
+                    <h1 className="text-xl font-semibold">Morro do Outeiro</h1>
                     <p className="text-sm mb-3">Aberta todos os dias entre 04:00 e 00h</p>
-                    <p className="text-sm mb-6 text-[#707070]">Próximos ônibus na estação</p>
+                    <p className="text-sm mb-6 text-[#707070]">Próximos ônibus de Rio Centro para Morro do Outeiro </p>
                     <ul className={styles.routeList}>
                         <li className="flex justify-between border-b py-2.5">
                             <div className={styles.routeName}>
@@ -44,7 +46,7 @@ export function InfoCard(){
                             </div>
 
                         </li>
-                    
+
                     </ul>
                 </div>
             </div>

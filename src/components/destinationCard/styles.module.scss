@@ -1,4 +1,4 @@
-.routesCard {
+.destinationCard {
     background-color: var(--white);
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -9,25 +9,26 @@
 
 
 }
+.routeList {
 
-.routeList{
-
-    li:last-child{
+    li:last-child {
         border-bottom: none !important;
     }
+
     .routeName {
+        display: flex;
+        align-items: center;
+
+        .shortName {
             display: flex;
-            align-items: center;
-    
-            .shortName {
-                display: flex;
-                background-color: var(--yellow-100);
-                border-radius: 3px;
-                padding: 4px 3px;
-            }
+            background-color: var(--yellow-100);
+            border-radius: 3px;
+            padding: 4px 3px;
         }
+    }
 }
-.directionBanner{
+
+.directionBanner {
     background-color: var(--gray-100);
     text-align: center;
     padding: 8px;
