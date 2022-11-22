@@ -1,6 +1,6 @@
 import { Header } from "../components/Header/Header"
 import { MapContainer, TileLayer } from 'react-leaflet'
-import { DestinationCard } from "../components/DestinationCard/DestinationCard"
+import { SequenceCard } from "../components/SequenceCard/SequenceCard"
 
 export function Home(){
     const position = [51.505, -0.09]
@@ -17,7 +17,7 @@ export function Home(){
                  <div id="map"></div>
              </MapContainer>
            </div>
-        <DestinationCard/>
+        <SequenceCard/>
         </>
     )
 }
