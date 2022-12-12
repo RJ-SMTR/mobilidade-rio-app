@@ -35,7 +35,6 @@ export function TripProvider({ children }) {
 
     // GET SEQUENCESTOPS
     useEffect(() => {
-
         axios.get('https://api.dev.mobilidade.rio/gtfs/trips/?trip_id=' + trip)
             .then(response => setStopInfo(response.data.results[0]))
         getAllStops('https://api.dev.mobilidade.rio/gtfs/stop_times/?trip_id='+trip)
