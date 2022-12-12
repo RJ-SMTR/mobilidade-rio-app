@@ -13,7 +13,7 @@ export  function SearchMain() {
     const searchQueryHandler = () => {
         searchHandler(searchQuery);
     };
-    const teste = event => {
+    const searchCode = event => {
         setSearchQuery(event.target.value)
        
     }
@@ -33,7 +33,7 @@ export  function SearchMain() {
                 <div className="flex content-center mb-6">
                     <img src={fromTo} alt="" />
                     <div className="flex flex-col w-full ml-4">
-                            <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" maxLength={4} onChange={teste}  />
+                            <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" maxLength={4} onChange={searchCode}  />
                           <SelectInputs id="whereTo">
                               <option value="">
                                   Selecione a estação de destino

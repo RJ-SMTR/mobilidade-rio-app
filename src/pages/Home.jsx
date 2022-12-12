@@ -34,7 +34,7 @@ export function Home() {
     const yourPosition = new Icon({
         iconUrl: centerMarker,
         iconSize: [28, 28],
-        className: "teste"
+        className: "z-1000"
     })
 
     const normalMarker = new Icon({

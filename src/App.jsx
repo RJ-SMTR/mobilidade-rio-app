@@ -11,13 +11,6 @@ function App() {
   return (
     <>
       {!code ? <SearchMain /> : <Home props={code} />}
-      
-      
-      {/* PÁGINA INICIAL */}
-       
-      
-      {/* PÁGINA DPS DE LER QRCODE */}
-     
     </>
   )
 }

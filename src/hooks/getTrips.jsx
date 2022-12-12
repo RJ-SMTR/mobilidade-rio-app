@@ -46,11 +46,9 @@ export function TripProvider({ children }) {
  
     useEffect(() => {
         const mapSequence = allSequenceStops?.map(e => e.stop_id.stop_id).indexOf(stopId)
-        const teste = allSequenceStops?.splice(mapSequence)
-        setSequenceInfo(teste)
-        // console.log(teste)
+        const filteredSequence = allSequenceStops?.splice(mapSequence)
+        setSequenceInfo(filteredSequence)
     }, [allSequenceStops])
-    console.log(sequenceInfo)
     return (
         <TripContext.Provider value={{ trip, setTrip, tripSelector, sequenceInfo, stopInfo , setSequenceInfo}}>
             {children}
