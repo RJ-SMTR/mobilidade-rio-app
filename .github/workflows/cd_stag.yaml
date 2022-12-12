@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - "dev"
+      - "dev-v2"
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -14,7 +14,7 @@ env:
 jobs:
   build:
     name: Build and update deployments
-    if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/dev-2'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
