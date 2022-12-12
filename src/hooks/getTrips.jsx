@@ -35,10 +35,7 @@ export function TripProvider({ children }) {
 
     // GET SEQUENCESTOPS
     useEffect(() => {
-        // axios.get('http://localhost:8010/gtfs/stop_times/?trip_id='+trip)
-        //     .then(response => setSequenceInfo(response.data.results))
-        // axios.get('http://localhost:8010/gtfs/stop_times/?trip_id='+trip)
-        //     .then(response => console.log(response.data.results[14]))
+
         axios.get('http://localhost:8010/gtfs/trips/?trip_id=' + trip)
             .then(response => setStopInfo(response.data.results[0]))
         getAllStops('http://localhost:8010/gtfs/stop_times/?trip_id='+trip)

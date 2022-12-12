@@ -3,11 +3,13 @@ import bus from '../../assets/imgs/bus.svg'
 import { TripContext } from '../../hooks/getTrips'
 import { useContext } from 'react'
 import { Oval } from 'react-loader-spinner'
+import { RoutesContext } from '../../hooks/getRoutes'
 
 
 export function SequenceCard() {
 
     const { setTrip, sequenceInfo, stopInfo } = useContext(TripContext)
+    const {stopId} = useContext(RoutesContext)
 
     return (
         <>
@@ -46,7 +48,7 @@ export function SequenceCard() {
 
                             <ul className={styles.timeline}>
                                 {sequenceInfo.map((e) => {
-                                    return <li key={e.id} className={`${styles.event}`} >
+                                    return <li key={e.id} className={`${styles.event} ${ e.stop_id.stop_id == stopId ? styles.active: ''}`} >
                                         {e.stop_id.stop_name}
                                     </li>
                                 })}
