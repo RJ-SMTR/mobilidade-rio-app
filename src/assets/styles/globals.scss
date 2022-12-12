@@ -35,9 +35,24 @@ a {
 }
 
 #map {
-    height: 100vh;
-    margin-top: 211px;
+    height: calc(100vh - 211px);
+    // margin-top: 211px;
 }
 .mapWrapper{
     max-height: calc(100vh - 211px);
+}
+.loaderWrapper{
+    margin-top: 211px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+.inputShadow{
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.27);
+}
+.teste{
+    z-index: 1000 !important;
+}
+.leaflet-routing-container{
+    display: none;
 }

@@ -1,11 +1,27 @@
 import { SelectInputs } from "../components/Selectinputs/SelectInputs"
-import { Header } from '../components/Header/Header'
+import { Header } from '../components/HeaderSearch/Header'
 import fromTo from '../assets/imgs/fromTo.svg'
 import qrCode from '../assets/imgs/qrCode.svg'
+import { CodeContext } from "../hooks/getCode";
+import { useContext, useState, useEffect } from "react";
 
 
 
 export  function SearchMain() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const { searchHandler } = useContext(CodeContext);
+    const searchQueryHandler = () => {
+        searchHandler(searchQuery);
+    };
+    const teste = event => {
+        setSearchQuery(event.target.value)
+       
+    }
+    useEffect(() => {
+        if (searchQuery.length == 4){
+            searchQueryHandler()
+        } 
+    }, [searchQuery])
     return (
         <>
             <Header />
@@ -17,17 +33,12 @@ export  function SearchMain() {
                 <div className="flex content-center mb-6">
                     <img src={fromTo} alt="" />
                     <div className="flex flex-col w-full ml-4">
-                        <SelectInputs id="fromTo" className="mb-5">
-                            <option value="" selected>
-                                Selecione a estação de origem
-                            </option>
-                        </SelectInputs>
-
-                        <SelectInputs id="whereTo">
-                            <option value="">
-                                Selecione a estação de destino
-                            </option>
-                        </SelectInputs>
+                            <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" maxLength={4} onChange={teste}  />
+                          <SelectInputs id="whereTo">
+                              <option value="">
+                                  Selecione a estação de destino
+                              </option>
+                          </SelectInputs>
                     </div>
                 </div>
                 {/* Inputs end */}

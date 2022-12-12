@@ -1,10 +1,20 @@
 
 import { SelectInputs } from '../Selectinputs/SelectInputs'
 import logo from '../../assets/imgs/dark_logo.png'
-import fromTo from '../../assets/imgs/fromTo.svg'
+import { GrFormClose } from 'react-icons/gr'
 import styles from './styles.module.scss'
+import { useContext } from 'react'
+import { CodeContext } from '../../hooks/getCode'
+import { TripContext } from '../../hooks/getTrips'
 
-export function Header() {
+export function Header(props) {
+    const {code, setCode} = useContext(CodeContext)
+    const {setTrip} = useContext(TripContext)
+
+    function clearInfo(){
+        setCode('')
+        setTrip('')
+    }
     return (
         <>
             <header className={styles.header}>
@@ -24,17 +34,19 @@ export function Header() {
                         </svg>
                         {/* SVG END */}
                         <div className="flex flex-col w-full ml-4">
-                            <SelectInputs id="fromTo" className="mb-5">
-                                <option value="" selected>
-                                    Selecione a estação de origem
-                                </option>
-                            </SelectInputs>
-
-                            <SelectInputs id="whereTo">
-                                <option value="">
-                                    Selecione a estação de destino
-                                </option>
-                            </SelectInputs>
+                      <form>
+                           <div className='relative'>
+                                    <button className='absolute right-0 top-0 bottom-0' onClick={() => clearInfo()}>
+                                        <GrFormClose/>
+                            </button>
+                             <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full  inputShadow" value={code.toUpperCase()} />
+                           </div>
+                              <SelectInputs id="whereTo">
+                                  <option value="">
+                                      Selecione a estação de destino
+                                  </option>
+                              </SelectInputs>
+                      </form>
                         </div>
                     </div>
                 </div>
