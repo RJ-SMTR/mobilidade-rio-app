@@ -4,6 +4,7 @@ import { TripContext } from '../../hooks/getTrips'
 import { useContext } from 'react'
 import { Oval } from 'react-loader-spinner'
 import { RoutesContext } from '../../hooks/getRoutes'
+import { GrClose } from 'react-icons/gr'
 
 
 export function SequenceCard() {
@@ -15,12 +16,11 @@ export function SequenceCard() {
         <>
             <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
                 <div className={styles.sequenceCard}>
-                    {/* <div className={styles.directionBanner}>
-                        <p className='text-sm'>Dirija-se à <span className='font-bold'>porta direita</span> em Rio Centro</p>
-                    </div> */}
-                    <button className='text-sm underline' onClick={() => setTrip('')}>
-                        Voltar
+                    <div className='flex justify-end'>
+                    <button  onClick={() => setTrip('')}>
+                         <GrClose/>
                     </button>
+                       </div>
                     {!stopInfo ?
                         <div className='flex justify-center'>
                             <Oval

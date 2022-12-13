@@ -8,6 +8,9 @@ module.exports = {
     extend: {
       zIndex: {
         '401': '401',
+      },
+      right: {
+        '12px': '12px',
       }
     },
   },

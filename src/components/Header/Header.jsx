@@ -5,12 +5,11 @@ import styles from './styles.module.scss'
 import { useContext, useEffect, useState } from 'react'
 import { CodeContext } from '../../hooks/getCode'
 import { TripContext } from '../../hooks/getTrips'
-import { redirect } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
 export function Header(props) {
     let navigate = useNavigate()
-    const { code, setCode } = useContext(CodeContext)
+    const { setCode } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
     const [newCode, setNewCode] = useState("")
 
@@ -35,12 +34,13 @@ export function Header(props) {
 
     return (
         <>
-            <header className={styles.header}>
+            <header className={`z-[401] relative + ${styles.header}` }  >
                 <div className="p-3">
                     <div className='flex justify-end mb-6'>
                         <img src={logo} alt="" className={styles.logo} />
                     </div>
-                    <div className="flex-column items-center">
+                    <div className="flex-column items-center mb-5">
+                        <h1 className='text-lg text-center'>Busque pelo código da estação</h1>
                         <div className="flex flex-col w-full">
                             <div className='relative'>
                                 <button className='absolute right-[12px] top-0 bottom-0' onClick={() => clearInfo()}>

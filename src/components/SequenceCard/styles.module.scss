@@ -29,7 +29,6 @@
 .timeline {
     position: relative;
     line-height: 1em;
-    // font-size: 0.9em;
     list-style: none;
     text-align: left;
     margin-left: 6px;
@@ -42,7 +41,7 @@
     li.event {
         border-left: 3px solid var(--black);
         padding-left: 12px;
-        padding-bottom: 15px;
+        padding-bottom: 30px;
     }
     .event.active{
     font-weight: 600;

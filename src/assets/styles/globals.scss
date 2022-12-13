@@ -35,11 +35,10 @@ a {
 }
 
 #map {
-    height: calc(100vh - 211px);
-    // margin-top: 211px;
+    height: calc(100vh - 171px);
 }
 .mapWrapper{
-    max-height: calc(100vh - 211px);
+    max-height: calc(100vh - 171px);
 }
 .loaderWrapper{
     margin-top: 211px;
@@ -55,4 +54,7 @@ a {
 }
 .leaflet-routing-container{
     display: none;
+}
+.leaflet-pane{
+    margin-top: -100px;
 }

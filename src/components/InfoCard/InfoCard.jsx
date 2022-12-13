@@ -50,14 +50,8 @@ export function InfoCard(){
                                     </div>
                                     <p className="text-sm ml-2.5">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
                                 </div>
-                                {/* <div className='flex items-center'>
-                                    <img src={proximity} width="24%" alt="" />
-                                    <p className='font-bold w-90'>3 min</p>
-                                </div> */}
                             </li>
                         })} 
-                       
-                    
                     </ul>
                 </div>
             </div>
