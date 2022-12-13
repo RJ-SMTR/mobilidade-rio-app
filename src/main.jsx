@@ -4,6 +4,7 @@ import App from './App'
 import { RoutesProvider } from './hooks/getRoutes'
 import { CodeProvider } from './hooks/getCode'
 import { TripProvider } from './hooks/getTrips'
+import { ThemeProvider } from './hooks/getTheme'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import 'leaflet/dist/leaflet.css'
@@ -12,11 +13,13 @@ import 'leaflet/dist/leaflet.css'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
-
     <CodeProvider>
       <RoutesProvider>
         <TripProvider>
+          <ThemeProvider>
           <App />
+          </ThemeProvider>
+          
         </TripProvider>
       </RoutesProvider>
     </CodeProvider>

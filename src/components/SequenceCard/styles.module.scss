@@ -12,10 +12,11 @@
 
 .routeHeader {
     display: flex;
-    background-color: var(--yellow-100);
+    background-color: var(--items-bg);
     border-radius: 3px;
     padding: 4px 3px;
     margin-right: 12px;
+    color: var(--text-color);
 }
 
 

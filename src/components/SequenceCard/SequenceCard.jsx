@@ -1,16 +1,19 @@
 import styles from './styles.module.scss'
 import bus from '../../assets/imgs/bus.svg'
+import busSppo from '../../assets/imgs/busSppo.svg'
 import { TripContext } from '../../hooks/getTrips'
 import { useContext } from 'react'
 import { Oval } from 'react-loader-spinner'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { GrClose } from 'react-icons/gr'
+import { ThemeContext } from '../../hooks/getTheme'
 
 
 export function SequenceCard() {
 
     const { setTrip, sequenceInfo, stopInfo } = useContext(TripContext)
     const {stopId} = useContext(RoutesContext)
+    const {theme} = useContext(ThemeContext)
 
     return (
         <>
@@ -38,7 +41,9 @@ export function SequenceCard() {
                         <>
                             <h1 className="text-xl font-semibold flex">
                                 <div className={styles.routeHeader}>
-                                    <img src={bus} alt="" />
+                                     {theme ? <img src={busSppo} alt="" /> :
+                                        <img src={bus} alt="" />
+                                    }
                                     <p className='ml-2 font-semibold leading-none'>
                                         {stopInfo.trip_short_name}
                                     </p>
