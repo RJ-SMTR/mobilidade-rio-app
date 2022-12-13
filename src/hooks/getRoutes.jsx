@@ -14,7 +14,7 @@ export function RoutesProvider({children}){
      
     useEffect(() => {
         axios
-            .get("http://localhost:8010/gtfs/stops/?stop_code=" + code.toUpperCase())
+            .get("https://api.dev.mobilidade.rio/gtfs/stops/?stop_code=" + code.toUpperCase())
             .then(response => setStopId(response.data.results[0].stop_id))
     }, [code])
 
@@ -35,7 +35,7 @@ export function RoutesProvider({children}){
     }
     
     useEffect(() => {
-        getMultiplePages("http://localhost:8010/gtfs/stop_times/?stop_id=" + stopId)
+        getMultiplePages("https://api.dev.mobilidade.rio/gtfs/stop_times/?stop_id=" + stopId)
     }, [stopId])
     
 
