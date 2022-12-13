@@ -2,26 +2,27 @@ import { SelectInputs } from "../components/Selectinputs/SelectInputs"
 import { Header } from '../components/HeaderSearch/Header'
 import fromTo from '../assets/imgs/fromTo.svg'
 import qrCode from '../assets/imgs/qrCode.svg'
-import { CodeContext } from "../hooks/getCode";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 
 export  function SearchMain() {
-    const [searchQuery, setSearchQuery] = useState("");
-    const { searchHandler } = useContext(CodeContext);
-    const searchQueryHandler = () => {
-        searchHandler(searchQuery);
-    };
+    const navigate = useNavigate()
+    const [firstCode, setFirstCode] = useState("")
+  
     const searchCode = event => {
-        setSearchQuery(event.target.value)
-       
+        setFirstCode(event.target.value)
+
     }
+
     useEffect(() => {
-        if (searchQuery.length == 4){
-            searchQueryHandler()
-        } 
-    }, [searchQuery])
+        if (firstCode.length == 4) {
+            navigate(`/${firstCode}`)
+            console.log(firstCode)
+        }
+    }, [firstCode])
+
     return (
         <>
             <Header />
@@ -31,14 +32,8 @@ export  function SearchMain() {
                 </h1>
                 {/* Inputs */}
                 <div className="flex content-center mb-6">
-                    <img src={fromTo} alt="" />
-                    <div className="flex flex-col w-full ml-4">
+                    <div className="flex flex-col w-full">
                             <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" maxLength={4} onChange={searchCode}  />
-                          <SelectInputs id="whereTo">
-                              <option value="">
-                                  Selecione a estação de destino
-                              </option>
-                          </SelectInputs>
                     </div>
                 </div>
                 {/* Inputs end */}

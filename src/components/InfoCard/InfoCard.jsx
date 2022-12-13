@@ -27,7 +27,7 @@ export function InfoCard(){
                     <p className='text-[#707070] text-sm'>Você está em</p>
                     <h1 className="text-xl font-semibold">{name}</h1>
                     <p className="text-sm mb-3">Aberta todos os dias entre 04:00 e 00h</p>
-                    <p className="text-sm mb-6 text-[#707070]">Próximos ônibus na estação</p>
+                    {/* <p className="text-sm mb-6 text-[#707070]">Próximos ônibus na estação</p> */}
                     <ul className={styles.routeList}>
                          {!routes ? <>
                             <Oval
@@ -48,7 +48,7 @@ export function InfoCard(){
                                         <img src={bus} alt="" />
                                         <p className='ml-2 font-semibold leading-none'>{e.trip_id.trip_short_name}</p>
                                     </div>
-                                    <p className="text-sm ml-2.5">{e.trip_id.route_id.route_long_name}</p>
+                                    <p className="text-sm ml-2.5">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
                                 </div>
                                 {/* <div className='flex items-center'>
                                     <img src={proximity} width="24%" alt="" />

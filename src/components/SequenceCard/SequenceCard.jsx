@@ -15,9 +15,9 @@ export function SequenceCard() {
         <>
             <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
                 <div className={styles.sequenceCard}>
-                    <div className={styles.directionBanner}>
+                    {/* <div className={styles.directionBanner}>
                         <p className='text-sm'>Dirija-se à <span className='font-bold'>porta direita</span> em Rio Centro</p>
-                    </div>
+                    </div> */}
                     <button className='text-sm underline' onClick={() => setTrip('')}>
                         Voltar
                     </button>

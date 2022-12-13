@@ -21,8 +21,17 @@ import { Oval } from 'react-loader-spinner'
 import centerMarker from '../assets/imgs/centerMarker.svg'
 import marker from '../assets/imgs/marker.svg'
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import { useParams } from "react-router-dom";
 
 export function Home() {
+    const [center, setCenter] = useState()
+    const { code, setCode } = useContext(CodeContext)
+    const { trip, sequenceInfo } = useContext(TripContext)
+    let params = useParams()
+
+    console.log(params.codeURL)
+    setCode(params.codeURL)
+
     const ComponentResize = () => {
         const map = useMap()
         setTimeout(() => {
@@ -41,15 +50,15 @@ export function Home() {
         iconUrl: marker,
         iconSize: [28, 28]
     })
+    const FixCenter = () => {
+        const map = useMap()
+        useEffect(() => {
+            map.setView(center);
+        }, [center])
 
-
-    const [center, setCenter] = useState()
-    const { code } = useContext(CodeContext)
-    const { trip, sequenceInfo } = useContext(TripContext)
+    }
     function Routing() {
-
         const map = useMap();
-
         useEffect(() => {
             if (!map) return;
             const routingControl = L.Routing.control({
@@ -74,7 +83,6 @@ export function Home() {
                     ]
                 },
             }).addTo(map);
-
             return () => map.removeControl(routingControl);
         }, [trip]);
 
@@ -82,15 +90,13 @@ export function Home() {
     }
 
 
-
     useEffect(() => {
         axios.get('https://api.dev.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
             .then(response => setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)]))
-
     }, [code])
-
-    const position = center
-
+    
+ 
+   
 
     return (
         <>
@@ -111,7 +117,7 @@ export function Home() {
 
                         />
                     </div>
-                    : <MapContainer center={position} zoom={15} scrollWheelZoom={false} className="">
+                    : <MapContainer center={center} zoom={15} scrollWheelZoom={false} className="">
 
                         <TileLayer
                             onLoad={(e) => { e.target._map.invalidateSize() }}
@@ -121,6 +127,7 @@ export function Home() {
                         />
                         <div id="map"></div>
                         <ComponentResize />
+                        <FixCenter />
                         <LayerGroup>
                             {!trip ? <> </> : <Routing />}
                             {sequenceInfo.map((e) => (
@@ -128,7 +135,7 @@ export function Home() {
                             ))}
 
                         </LayerGroup>
-                        <Marker position={position} icon={yourPosition} />
+                        <Marker position={center} icon={yourPosition} />
                     </MapContainer>}
 
            
