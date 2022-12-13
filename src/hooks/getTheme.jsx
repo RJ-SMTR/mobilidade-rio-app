@@ -21,7 +21,7 @@ export function ThemeProvider({ children }) {
     };
 
     useEffect(() => {
-        if (code == "7kky") {
+        if (code != "7kky" && code != "1k84") {
             setSppo();
             setTheme("sppo")
         } else {
