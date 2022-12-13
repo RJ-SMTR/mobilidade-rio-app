@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import logo from '../../assets/imgs/light_logo.png'
-// import triangles from '../../assets/imgs/triangles.svg'
+import triangles from '../../assets/imgs/triangles.svg'
 // import trianglesSppo from '../../assets/imgs/trianglesSppo.svg'
 import { ThemeContext } from '../../hooks/getTheme'
 import styles from './styles.module.scss'
