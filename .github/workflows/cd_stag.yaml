@@ -14,7 +14,7 @@ env:
 jobs:
   build:
     name: Build and update deployments
-    if: github.ref == 'refs/heads/dev-2'
+    if: github.ref == 'refs/heads/dev-v2'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
