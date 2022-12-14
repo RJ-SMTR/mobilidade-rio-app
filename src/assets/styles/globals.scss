@@ -6,13 +6,23 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+     
 :root {
     --white: #FFFFFF;
     --gray-100: #F0EFEF;
-    --yellow-100: #F8AC04;
+    --items-bg: #F8AC04;
     --black: #010101
 }
+   [data-theme="brt"] {
+    --items-bg: #F8AC04
+
+
+   }
+   [data-theme="sppo"] {
+    --items-bg: #004a80;
+    --text-color: #fff
+    
+   }
 
 
 body {
@@ -36,7 +46,6 @@ a {
 
 #map {
     height: calc(100vh - 211px);
-    // margin-top: 211px;
 }
 .mapWrapper{
     max-height: calc(100vh - 211px);
@@ -55,4 +64,7 @@ a {
 }
 .leaflet-routing-container{
     display: none;
+}
+.leaflet-pane{
+    margin-top: -100px;
 }

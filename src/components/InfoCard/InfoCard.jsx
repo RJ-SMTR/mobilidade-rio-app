@@ -1,17 +1,19 @@
 import styles from './styles.module.scss'
 import bus from '../../assets/imgs/bus.svg'
-import proximity from '../../assets/imgs/proximity.svg'
+import busSppo from '../../assets/imgs/busSppo.svg'
 import { useState, useEffect, useContext } from "react"
 import { CodeContext } from '../../hooks/getCode'
 import { TripContext } from '../../hooks/getTrips'
 import axios from 'axios'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { Oval } from 'react-loader-spinner'
+import { ThemeContext } from '../../hooks/getTheme'
 
 export function InfoCard(){
     const [name, setName] = useState()
+    const {theme} = useContext(ThemeContext)
     const {code} = useContext(CodeContext)
-    const {routes, setRoutes, getMultiplePages, stopId} = useContext(RoutesContext)
+    const {routes} = useContext(RoutesContext)
     const { setTrip } = useContext(TripContext);
 
 
@@ -27,7 +29,6 @@ export function InfoCard(){
                     <p className='text-[#707070] text-sm'>Você está em</p>
                     <h1 className="text-xl font-semibold">{name}</h1>
                     <p className="text-sm mb-3">Aberta todos os dias entre 04:00 e 00h</p>
-                    <p className="text-sm mb-6 text-[#707070]">Próximos ônibus na estação</p>
                     <ul className={styles.routeList}>
                          {!routes ? <>
                             <Oval
@@ -45,19 +46,15 @@ export function InfoCard(){
                             return <li key={e.id} onClick={() => setTrip(e.trip_id.trip_id)} className="flex justify-between border-b py-2.5">
                                 <div className={styles.routeName}>
                                     <div className={styles.shortName}>
+                                        {theme ? <img src={busSppo} alt="" /> : 
                                         <img src={bus} alt="" />
+                                        }
                                         <p className='ml-2 font-semibold leading-none'>{e.trip_id.trip_short_name}</p>
                                     </div>
-                                    <p className="text-sm ml-2.5">{e.trip_id.route_id.route_long_name}</p>
+                                    <p className="text-sm ml-2.5">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
                                 </div>
-                                {/* <div className='flex items-center'>
-                                    <img src={proximity} width="24%" alt="" />
-                                    <p className='font-bold w-90'>3 min</p>
-                                </div> */}
                             </li>
                         })} 
-                       
-                    
                     </ul>
                 </div>
             </div>

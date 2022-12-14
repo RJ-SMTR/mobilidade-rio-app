@@ -3,16 +3,20 @@ import { SearchMain } from './pages/SearchMain'
 import './assets/styles/globals.scss'
 import {useContext, useEffect} from 'react'
 import { CodeContext } from "./hooks/getCode"
+import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
 
 function App() {
   const {code} = useContext(CodeContext)
 
   return (
-    <>
-      {!code ? <SearchMain /> : <Home props={code} />}
-    </>
+    <Routes>
+      <Route path="/" element={<SearchMain/>}/>
+      <Route  path="/:codeURL" action={({params}) => {}} element={<Home/>} />
+    </Routes>
   )
 }
+
+// { !code ? <SearchMain /> : }
 
 export default App
