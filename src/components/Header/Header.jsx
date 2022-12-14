@@ -25,6 +25,7 @@ export function Header(props) {
 
     const searchNewCode = event => {
         setNewCode(event.target.value)
+        setTrip('')
 
     }
 
