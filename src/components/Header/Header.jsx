@@ -26,13 +26,13 @@ export function Header(props) {
 
     }
 
+   
     const searchNewCode = event => {
         setNewCode(event.target.value)
         setTrip('')
         setPoints('')
-
-
     }
+
 
     useEffect(() => {
         if (newCode.length == 4) {
