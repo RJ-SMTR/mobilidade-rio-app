@@ -8,17 +8,20 @@ import { CodeContext } from '../../hooks/getCode'
 import { TripContext } from '../../hooks/getTrips'
 import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../../hooks/getTheme'
+import { ShapeContext } from '../../hooks/getShape'
 
 export function Header(props) {
     let navigate = useNavigate()
     const { setCode } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
     const {theme} = useContext(ThemeContext)
+    const{setPoints} = useContext(ShapeContext)
     const [newCode, setNewCode] = useState("")
 
     function clearInfo() {
         setTrip('')
         setCode("")
+        setPoints("")
         navigate('/')
 
     }
@@ -26,6 +29,7 @@ export function Header(props) {
     const searchNewCode = event => {
         setNewCode(event.target.value)
         setTrip('')
+        setPoints('')
 
 
     }

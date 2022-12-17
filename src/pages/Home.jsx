@@ -3,12 +3,13 @@ import { CodeContext } from "../hooks/getCode"
 import { TripContext } from "../hooks/getTrips"
 import axios from "axios"
 
-//  MAP IMMORTS
+//  MAP IMPORTS
 import L from "leaflet";
-import { MapContainer, TileLayer, Marker, LayerGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, LayerGroup, Polyline } from 'react-leaflet'
 import { Icon } from 'leaflet'
 import { useMap } from 'react-leaflet/hooks'
 import "leaflet-routing-machine";
+
 
 // COMPONENTS
 import { Header } from "../components/Header/Header"
@@ -22,16 +23,19 @@ import centerMarker from '../assets/imgs/centerMarker.svg'
 import marker from '../assets/imgs/marker.svg'
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import { useParams } from "react-router-dom";
+import { ShapeContext } from "../hooks/getShape";
 
 export function Home() {
-    const [center, setCenter] = useState()
     const { code, setCode } = useContext(CodeContext)
     const { trip, sequenceInfo } = useContext(TripContext)
-    let params = useParams()
+    const {points} = useContext(ShapeContext)
+    const [center, setCenter] = useState('')
 
-    console.log(params.codeURL)
+
+    let params = useParams()
     setCode(params.codeURL)
 
+    // AJUSTAR TAMANHO DO MAPA DE ACORDO COM A TELA
     const ComponentResize = () => {
         const map = useMap()
         setTimeout(() => {
@@ -39,7 +43,7 @@ export function Home() {
         }, 0)
         return null
     }
-
+    // MARCADORES CUSTOMIZADOS
     const yourPosition = new Icon({
         iconUrl: centerMarker,
         iconSize: [28, 28],
@@ -50,6 +54,13 @@ export function Home() {
         iconUrl: marker,
         iconSize: [28, 28]
     })
+
+    // USADO PARA CENTRALIAR O MAPA
+    useEffect(() => {
+        axios.get('https://api.dev.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
+            .then(response => setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)]))
+    }, [code])
+
     const FixCenter = () => {
         const map = useMap()
         useEffect(() => {
@@ -57,46 +68,9 @@ export function Home() {
         }, [center])
 
     }
-    function Routing() {
-        const map = useMap();
-        useEffect(() => {
-            if (!map) return;
-            const routingControl = L.Routing.control({
-                show: false,
-                collapsible: false,
-                waypoints: sequenceInfo.map((e) => {
-                    return [e.stop_id.stop_lat, e.stop_id.stop_lon];
-                }),
-                fitSelectedRoutes: true,
-                draggableWaypoints: false,
-                showAlternatives: false,
-                routeWhileDragging: false,
-                addWaypoints: false,
-                createMarker: function () { return null; },
-                lineOptions: {
-                    styles: [
-                        {
-                            color: "#000",
-                            opacity: 1,
-                            weight: 3
-                        }
-                    ]
-                },
-            }).addTo(map);
-            return () => map.removeControl(routingControl);
-        }, [trip]);
 
-        return null;
-    }
-
-
-    useEffect(() => {
-        axios.get('https://api.dev.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
-            .then(response => setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)]))
-    }, [code])
-    
- 
    
+    const blackOptions = { color: 'black' }
 
     return (
         <>
@@ -117,11 +91,10 @@ export function Home() {
 
                         />
                     </div>
-                    : <MapContainer center={center} zoom={15} scrollWheelZoom={false} className="">
+                    : <MapContainer center={center} zoom={15} scrollWheelZoom={true} className="">
 
                         <TileLayer
                             onLoad={(e) => { e.target._map.invalidateSize() }}
-                            // attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                             subdomains="abcd"
                         />
@@ -129,16 +102,13 @@ export function Home() {
                         <ComponentResize />
                         <FixCenter />
                         <LayerGroup>
-                            {!trip ? <> </> : <Routing />}
                             {sequenceInfo.map((e) => (
                                 <Marker key={e.id} position={[e.stop_id.stop_lat, e.stop_id.stop_lon]} icon={normalMarker} />
-                            ))}
-
+                            ))} 
+                            {points ? <Polyline pathOptions={blackOptions}  positions={points} /> : <></> }
                         </LayerGroup>
                         <Marker position={center} icon={yourPosition} />
                     </MapContainer>}
-
-           
 
             </div>
             {trip ?

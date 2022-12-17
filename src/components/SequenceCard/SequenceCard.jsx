@@ -7,6 +7,7 @@ import { Oval } from 'react-loader-spinner'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { GrClose } from 'react-icons/gr'
 import { ThemeContext } from '../../hooks/getTheme'
+import { ShapeContext } from '../../hooks/getShape'
 
 
 export function SequenceCard() {
@@ -14,13 +15,18 @@ export function SequenceCard() {
     const { setTrip, sequenceInfo, stopInfo } = useContext(TripContext)
     const {stopId} = useContext(RoutesContext)
     const {theme} = useContext(ThemeContext)
+    const {setPoints} =useContext(ShapeContext)
+    function clearMapInfo(){
+        setTrip('')
+        setPoints('')
+    }
 
     return (
         <>
             <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
                 <div className={styles.sequenceCard}>
                     <div className='flex justify-end'>
-                    <button  onClick={() => setTrip('')}>
+                    <button  onClick={() => clearMapInfo()}>
                          <GrClose/>
                     </button>
                        </div>
