@@ -2,7 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axiosClient from 'axios'
 
-const axios = axiosClient.create({baseURL: 'https://api.mobilidade.rio/'})
+let baseURL = '';
+if(window.location.hostname === 'mobilidade.rio') {
+    baseURL = 'https://api.mobilidade.rio/'
+} else if(window.location.hostname === 'app.staging.mobilidade.rio') {
+    baseURL = 'https://api.staging.mobilidade.rio/'
+}
+
+const axios = axiosClient.create({baseURL});
 
 Vue.use(Vuex)
 
@@ -70,7 +77,6 @@ export default new Vuex.Store({
   },
   actions: {
     updateCode({ commit }, code) {
-      axios.defaults.baseURL = `https://api.mobilidade.rio/`
       commit('setCode', code)
       if (code.length === 4) {
         this.dispatch("fetchAddress", code);
@@ -161,6 +167,7 @@ export default new Vuex.Store({
       let url = `sequence/?trip_id=` + trip_id
       getStops(url)
       commit('setStops', stops)
+      
     },
     fetchReverseStops({ commit }, trips_on_route) {
       function getStops(url) {
@@ -204,14 +211,31 @@ export default new Vuex.Store({
         });
     },
     fetchModes({ commit }, code) {
-      function getModes(url) {
+      function getModes(url, previousModes = []) {
         axios
           .get(url)
           .then(({ data }) => {
+            
+            let commonBusService = []
+            let executiveBusService = []
+            previousModes.forEach((item) => {
+              modes.count += 1;
+              if (item.route.mode.name == 'Ônibus') {
+                 if (/[2]\d(?:\D*\d){2}/.test(item.route.short_name.replace(/\D/g,''))){
+                  executiveBusService.push(item)
+                 } else {
+                  commonBusService.push(item)
+                 }
+              } 
+            })
             data.results.forEach((item) => {
               modes.count += 1;
               if (item.route.mode.name == 'Ônibus') {
-                modes.onibus.push(item);
+                if (/[2]\d(?:\D*\d){2}/.test(item.route.short_name.replace(/\D/g,''))){
+                  executiveBusService.push(item)
+                } else {
+                  commonBusService.push(item)
+                }
               } else if (item.route.mode.name == 'Metrô') {
                 modes.metro.push(item);
               } else if (item.route.mode.name == 'Barca') {
@@ -222,8 +246,9 @@ export default new Vuex.Store({
                 modes.vlt.push(item);
               }
             })
+            modes.onibus = [...commonBusService, ...executiveBusService ];
             if (data.next) {
-              getModes(data.next)
+              getModes(data.next, modes.onibus)
             }
             else {
               commit('setModesOk', true)
@@ -251,6 +276,7 @@ export default new Vuex.Store({
       }
       getModes(url)
       commit("setModes", modes);
+
     },
     clearAll({ dispatch }) {
       dispatch('clearAddress');
