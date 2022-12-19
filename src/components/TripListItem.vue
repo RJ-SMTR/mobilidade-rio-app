@@ -7,9 +7,13 @@
       {{ trip.route.short_name }}
     </span>
     <!-- <img :src="icon" class="border border-warning rounded" /> -->
-    <div class="w-75" style="text-align: left; padding-left: 5px">
+    <div v-if="(trip.headsign !=0)" class="w-75" style="text-align: left; padding-left: 5px">
       {{ trip.route.vista + ` (sentido ` + trip.headsign + `)` }}
     </div>
+    <div v-else class="w-75" style="text-align: left; padding-left: 5px">
+      {{ trip.route.vista + ` (sentido Circular)` }}
+    </div>
+    
     <!-- <div class="text-right">
       <span class="small"><i class="far fa-clock"></i> 50min</span>
       <span class="badge badge-light badge-pill">Expresso</span>
