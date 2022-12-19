@@ -12,7 +12,7 @@ import { ThemeContext } from '../../hooks/getTheme'
 export function InfoCard(){
     const [name, setName] = useState()
     const {theme} = useContext(ThemeContext)
-    const {code} = useContext(CodeContext)
+    const {code, codeExists} = useContext(CodeContext)
     const {routes} = useContext(RoutesContext)
     const { setTrip } = useContext(TripContext);
 
@@ -30,7 +30,7 @@ export function InfoCard(){
                     <h1 className="text-xl font-semibold">{name}</h1>
                     <p className="text-sm mb-3">Aberta todos os dias entre 04:00 e 00h</p>
                     <ul className={styles.routeList}>
-                         {!routes ? <>
+                         {!routes && !codeExists ? <>
                             <Oval
                                 height={40}
                                 width={40}

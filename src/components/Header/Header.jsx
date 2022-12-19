@@ -9,11 +9,13 @@ import { TripContext } from '../../hooks/getTrips'
 import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../../hooks/getTheme'
 import { ShapeContext } from '../../hooks/getShape'
+import { RoutesContext } from '../../hooks/getRoutes'
 
 export function Header(props) {
     let navigate = useNavigate()
     const { setCode } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
+    const {setRoutes} = useContext(RoutesContext)
     const {theme} = useContext(ThemeContext)
     const{setPoints} = useContext(ShapeContext)
     const [newCode, setNewCode] = useState("")
@@ -23,6 +25,7 @@ export function Header(props) {
         setCode("")
         setPoints("")
         navigate('/')
+        setRoutes([])
 
     }
 
@@ -31,15 +34,16 @@ export function Header(props) {
         setNewCode(event.target.value)
         setTrip('')
         setPoints('')
-    }
+        setRoutes([])
 
+    }
 
     useEffect(() => {
         if (newCode.length == 4) {
             navigate(`/${newCode}`)
         }
     }, [newCode])
-
+    
     return (
         <>
             <header className={`z-[401] relative + ${styles.header}` }  >

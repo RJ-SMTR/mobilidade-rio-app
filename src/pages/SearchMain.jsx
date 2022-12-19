@@ -19,7 +19,6 @@ export  function SearchMain() {
     useEffect(() => {
         if (firstCode.length == 4) {
             navigate(`/${firstCode}`)
-            console.log(firstCode)
         }
     }, [firstCode])
 
