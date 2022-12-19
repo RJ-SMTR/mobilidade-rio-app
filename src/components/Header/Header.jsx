@@ -13,7 +13,7 @@ import { RoutesContext } from '../../hooks/getRoutes'
 
 export function Header(props) {
     let navigate = useNavigate()
-    const { setCode } = useContext(CodeContext)
+    const { setCode, setCodeExists } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
     const {setRoutes} = useContext(RoutesContext)
     const {theme} = useContext(ThemeContext)
@@ -26,6 +26,7 @@ export function Header(props) {
         setPoints("")
         navigate('/')
         setRoutes([])
+        setCodeExists('')
 
     }
 
@@ -35,6 +36,7 @@ export function Header(props) {
         setTrip('')
         setPoints('')
         setRoutes([])
+        setCodeExists('')
 
     }
 

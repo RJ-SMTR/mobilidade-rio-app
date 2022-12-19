@@ -45,7 +45,7 @@ export function CodeProvider({ children }) {
         checkCode()
     }, [code])
     return (
-        <CodeContext.Provider value={{ code, setCode, setSearchParams,codeExists }}>
+        <CodeContext.Provider value={{ code, setCode, setSearchParams,codeExists, setCodeExists }}>
             {children}
         </CodeContext.Provider>
     )
