@@ -35,7 +35,6 @@ export function ShapeProvider({ children }) {
                 let response = { data: {} }
 
                 do {
-                    // TODO - api deve permitir retornar pelo menos 1000 resultados por página
                     response = await axios.get(response.data.next || "https://api.dev.mobilidade.rio/gtfs/shapes/?shape_id=" + shape) 
                     points.push(...response.data.results)
                     i += 20
