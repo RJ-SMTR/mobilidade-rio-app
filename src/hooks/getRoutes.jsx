@@ -35,7 +35,7 @@ export function RoutesProvider({children}){
     }
     
     useEffect(() => {
-        getMultiplePages("https://api.dev.mobilidade.rio/gtfs/stop_times/?stop_id__any=" + stopId)
+        getMultiplePages("https://api.dev.mobilidade.rio/gtfs/stop_times/?stop_id=" + stopId)
     }, [stopId])
     
 
