@@ -1,0 +1,100 @@
+.sequenceCard {
+    background-color: var(--white);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    max-height: 230px;
+    overflow: scroll;
+
+
+}
+
+.routeHeader {
+    display: flex;
+    background-color: var(--items-bg);
+    border-radius: 3px;
+    padding: 4px 3px;
+    margin-right: 12px;
+    color: var(--text-color);
+}
+
+
+.directionBanner {
+    background-color: var(--gray-100);
+    text-align: center;
+    padding: 8px;
+    margin-bottom: 25px;
+}
+
+.timeline {
+    position: relative;
+    line-height: 1em;
+    list-style: none;
+    text-align: left;
+    margin-left: 6px;
+    margin-top: 42px;
+
+    .event {
+        position: relative;
+    }
+
+    li.event {
+        border-left: 3px solid var(--black);
+        padding-left: 12px;
+        padding-bottom: 30px;
+    }
+    .event.active{
+    font-weight: 600;
+    }
+
+    .event:last-of-type {
+    padding-left: 15px;
+        
+        padding-bottom: 12px;
+        border: none;
+    }
+
+    .event:before,
+    .event:after {
+        position: absolute;
+        display: block;
+        top: 0;
+    }
+        li:last-child
+
+    .event:before {
+        left: -207px;
+        content: attr(data-date);
+        text-align: right;
+        font-weight: 600;
+        font-size: 0.9em;
+        min-width: 120px;
+    }
+            .event:after {
+            -webkit-box-shadow: 0 0 0 3px var(--black);
+            box-shadow: 0 0 0 3px var(--black);
+            left: -6px;
+            background: #fff;
+            border-radius: 50%;
+            height: 8px;
+            width: 8px;
+            content: "";
+            top: 5px;
+        }
+
+            .event.active:after {
+            -webkit-box-shadow: 0 0 0 3px var(--black);
+            box-shadow: 0 0 0 3px var(--black);
+            background: var(--black);
+        }
+    
+            li:last-child:after {
+            top: 3px;
+            left: -3px;
+        }
+    
+            li:first-child:after {
+            top: 3px;
+        }
+}
