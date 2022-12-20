@@ -91,7 +91,7 @@ export function Home() {
 
 
     useEffect(() => {
-        axios.get('https://api.dev.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
+        axios.get('https://api.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
             .then(response => setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)]))
     }, [code])
     
