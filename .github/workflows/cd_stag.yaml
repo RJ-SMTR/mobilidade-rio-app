@@ -1,9 +1,10 @@
-name: Deploy to staging
+name: "CD: Deploy to staging (from release or hotfix)"
 
 on:
   push:
     branches:
-      - "staging"
+      - "release/*"
+      - "hotfix/*"
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
