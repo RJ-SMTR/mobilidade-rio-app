@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - "release/*"
+      - "staging"
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
