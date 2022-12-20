@@ -5,9 +5,11 @@ import { RoutesProvider } from './hooks/getRoutes'
 import { CodeProvider } from './hooks/getCode'
 import { TripProvider } from './hooks/getTrips'
 import { ThemeProvider } from './hooks/getTheme'
+import {ToastContainer} from 'react-toastify'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import 'leaflet/dist/leaflet.css'
+import 'react-toastify/dist/ReactToastify.css';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -19,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <ThemeProvider>
           <App />
           </ThemeProvider>
-          
+          <ToastContainer/>
         </TripProvider>
       </RoutesProvider>
     </CodeProvider>

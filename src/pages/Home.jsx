@@ -29,7 +29,7 @@ export function Home() {
     const { trip, sequenceInfo } = useContext(TripContext)
     let params = useParams()
 
-    console.log(params.codeURL)
+  
     setCode(params.codeURL)
 
     const ComponentResize = () => {
