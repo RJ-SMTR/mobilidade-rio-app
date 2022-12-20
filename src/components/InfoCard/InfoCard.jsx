@@ -18,7 +18,7 @@ export function InfoCard(){
 
 
     useEffect(() => {
-        axios.get('https://api.dev.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
+        axios.get('https://api.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
                .then(response => setName(response.data.results[0].stop_name)) 
     }, [code])
 
