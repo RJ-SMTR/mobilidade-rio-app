@@ -10,7 +10,7 @@ env:
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER_NAME }}
   GKE_ZONE: us-central1-c
   IMAGE: mobilidade-rio-app
-  MY_ENV: staging
+  MY_ENV: production
   
 jobs:
   build:
