@@ -14,7 +14,7 @@ export function CodeProvider({ children }) {
     const [code, setCode] = useState('')
     const [searchParams, setSearchParams] = useSearchParams();
     const [codeExists, setCodeExists] = useState(false)
-    const [toggle, setToggle] = useState(false)
+    const [active, setActive] = useState(false)
 
 
     // const searchHandler = (query) => {
@@ -51,7 +51,7 @@ export function CodeProvider({ children }) {
         checkCode()
     }, [code])
     return (
-        <CodeContext.Provider value={{ code, setCode,  setSearchParams, codeExists, toggle, setToggle }}>
+        <CodeContext.Provider value={{ code, setCode,  setSearchParams, codeExists, active, setActive }}>
             {children}
         </CodeContext.Provider>
     )

@@ -1,7 +1,7 @@
 {
   "name": "base-project",
   "private": true,
-  "version": "2.0.1",
+  "version": "2.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,7 +19,7 @@
     "react-icons": "^4.7.1",
     "react-leaflet": "^4.1.0",
     "react-loader-spinner": "^5.3.4",
-    "react-qr-reader": "^3.0.0-beta-1",
+    "react-zxing": "^1.0.7",
     "react-router-dom": "^6.4.5",
     "react-toastify": "^9.1.1",
     "sass": "^1.56.1"
