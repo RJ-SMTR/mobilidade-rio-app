@@ -17,6 +17,5 @@ function App() {
   )
 }
 
-// { !code ? <SearchMain /> : }
 
 export default App
