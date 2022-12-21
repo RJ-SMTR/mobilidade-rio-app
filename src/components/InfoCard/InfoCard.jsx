@@ -27,8 +27,7 @@ export function InfoCard(){
             <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
                 <div className={styles.routesCard}>
                     <p className='text-[#707070] text-sm'>Você está em</p>
-                    <h1 className="text-xl font-semibold">{name}</h1>
-                    <p className="text-sm mb-3">Aberta todos os dias entre 04:00 e 00h</p>
+                    <h1 className="text-xl font-semibold mb-3">{name}</h1>
                     <ul className={styles.routeList}>
                          {!routes ? <>
                             <Oval
