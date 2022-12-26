@@ -1,9 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {toast } from 'react-toastify'
-
-import axios from 'axios'
-
+import { api } from "../services/api";
 
 export const CodeContext = createContext()
 
@@ -29,7 +27,7 @@ export function CodeProvider({ children }) {
     }, [])
     // CHECA SE CÓDIGO PESQUISADO EXISTE
     function checkCode() {
-        axios.get("https://api.mobilidade.rio/gtfs/stops/?stop_code=" + code.toUpperCase())
+        api.get("/stops/?stop_code=" + code.toUpperCase())
             .then(response => {
                 if (response.data.count == 0 && code.length == 4) {
                     toast.error(`O código ${code.toUpperCase()} não existe`, {

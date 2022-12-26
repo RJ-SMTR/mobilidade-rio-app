@@ -8,6 +8,7 @@ import axios from 'axios'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { Oval } from 'react-loader-spinner'
 import { ThemeContext } from '../../hooks/getTheme'
+import { api } from '../../services/api'
 
 export function InfoCard(){
     const [name, setName] = useState()
@@ -18,7 +19,7 @@ export function InfoCard(){
 
 
     useEffect(() => {
-        axios.get('https://api.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
+        api.get('/stops/?stop_code=' + code.toUpperCase())
                .then(response => setName(response.data.results[0].stop_name)) 
     }, [code])
 
