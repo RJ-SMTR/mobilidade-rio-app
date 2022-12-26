@@ -6,13 +6,17 @@ import styles from './styles.module.scss'
 import { useContext, useEffect, useState} from 'react'
 import { CodeContext } from '../../hooks/getCode'
 import { TripContext } from '../../hooks/getTrips'
+import { ShapeContext } from '../../hooks/getShape'
 import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../../hooks/getTheme'
+import { RoutesContext } from '../../hooks/getRoutes'
 
 export function Header(props) {
     let navigate = useNavigate()
     const { code, setCode } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
+    const {setPoints} = useContext(ShapeContext)
+    const {setRoutes} = useContext(RoutesContext)
     const {theme} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
@@ -21,6 +25,8 @@ export function Header(props) {
         setTrip('')
         setCode("")
         navigate('/')
+        setPoints("")
+        setRoutes([])
 
     }
 
@@ -32,6 +38,8 @@ export function Header(props) {
         setNewCode(event.target.value)
         setTrip('')
         setValue()
+        setPoints("")
+        setRoutes([])
 
     }
 
