@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { CodeContext } from "./getCode";
-import axios from "axios";
-
+import { api } from "../services/api";
 export const RoutesContext = createContext()
 
 
@@ -13,15 +12,15 @@ export function RoutesProvider({children}){
 
      
     useEffect(() => {
-        axios
-            .get("https://api.mobilidade.rio/gtfs/stops/?stop_code=" + code.toUpperCase())
+        api
+            .get("/stops/?stop_code=" + code.toUpperCase())
             .then(response => setStopId(response.data.results[0].stop_id))
     }, [code])
 
 
     let allTrips = []
    async function getMultiplePages(url) {
-       await  axios
+       await  api
             .get(url)
             .then(({ data }) => {
                 data.results.forEach((item) => { allTrips.push(item) })
@@ -35,7 +34,7 @@ export function RoutesProvider({children}){
     }
     
     useEffect(() => {
-        getMultiplePages("https://api.mobilidade.rio/gtfs/stop_times/?stop_id=" + stopId)
+        getMultiplePages("/stop_times/?stop_id=" + stopId)
     }, [stopId])
     
 

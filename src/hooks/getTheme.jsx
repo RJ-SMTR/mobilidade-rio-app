@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { CodeContext } from "./getCode";
 import { RoutesContext } from "./getRoutes";
-import axios from "axios";
+import { api } from "../services/api";
 
 
 
@@ -17,7 +17,7 @@ export function ThemeProvider({ children }) {
     const {stopId} = useContext(RoutesContext)
 
     useEffect(() => {
-        axios.get('https://api.mobilidade.rio/gtfs/stop_times/?stop_id=' + stopId)
+        api.get('/stop_times/?stop_id=' + stopId)
             .then(response => setRouteType(response.data.results[0].trip_id.route_id.route_type))
     }, [code])
 

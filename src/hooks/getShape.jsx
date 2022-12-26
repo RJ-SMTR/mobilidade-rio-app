@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { TripContext } from "./getTrips";
 import { CodeContext } from "./getCode";
 import * as turf from '@turf/turf'
-import axios from 'axios'
+import { api } from "../services/api";
 
 
 export const ShapeContext = createContext()
@@ -17,12 +17,12 @@ export function ShapeProvider({ children }) {
 
 
     useEffect(() => {
-        axios.get('https://api.mobilidade.rio/gtfs/stops/?stop_code=' + code.toUpperCase())
+        api.get('/stops/?stop_code=' + code.toUpperCase())
             .then(response => setStopCoords([response.data.results[0].stop_lon, response.data.results[0].stop_lat]))
     }, [code])
 
     useEffect(() => {
-        axios.get('https://api.mobilidade.rio/gtfs/trips/?trip_id=' + trip)
+        api.get('/trips/?trip_id=' + trip)
             .then(reponse => setShape(reponse.data.results[0].shape_id))
     }, [trip])
 
@@ -35,7 +35,7 @@ export function ShapeProvider({ children }) {
                 let response = { data: {} }
 
                 do {
-                    response = await axios.get(response.data.next || "https://api.mobilidade.rio/gtfs/shapes/?shape_id=" + shape)
+                    response = await api.get(response.data.next || "/shapes/?shape_id=" + shape)
                     points.push(...response.data.results)
                     i += 20
                 } while (response.data.next);

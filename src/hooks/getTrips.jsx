@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState , useContext} from "react";
 import axios from 'axios'
 import {  RoutesContext } from "./getRoutes";
+import { api } from "../services/api";
 
 
 export const TripContext = createContext()
@@ -20,7 +21,7 @@ export function TripProvider({ children }) {
 
     let allStops = []
     async function getAllStops(url) {
-        await axios
+        await api
             .get(url)
             .then(({ data }) => {
                 data.results.forEach((item) => { allStops.push(item) })
@@ -35,9 +36,9 @@ export function TripProvider({ children }) {
 
     // GET SEQUENCESTOPS
     useEffect(() => {
-        axios.get('https://api.mobilidade.rio/gtfs/trips/?trip_id=' + trip)
+        api.get('/trips/?trip_id=' + trip)
             .then(response => setStopInfo(response.data.results[0]))
-        getAllStops('https://api.mobilidade.rio/gtfs/stop_times/?trip_id='+trip)
+        getAllStops('/stop_times/?trip_id='+trip)
     }, [trip])
  
     useEffect(() => {
