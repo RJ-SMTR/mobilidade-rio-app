@@ -16,7 +16,6 @@ export function Header(props) {
     const { code, setCode } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
     const {setPoints} = useContext(ShapeContext)
-    const {setRoutes} = useContext(RoutesContext)
     const {theme} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
@@ -26,7 +25,6 @@ export function Header(props) {
         setCode("")
         navigate('/')
         setPoints("")
-        setRoutes([])
 
     }
 
@@ -39,7 +37,6 @@ export function Header(props) {
         setTrip('')
         setValue()
         setPoints("")
-        setRoutes([])
 
     }
 
