@@ -27,10 +27,13 @@ export function SequenceCard() {
             <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
                 <div className={styles.sequenceCard}>
                     <div className='flex justify-end'>
-                    <button  onClick={() => clearMapInfo()}>
-                         <GrClose/>
-                    </button>
-                       </div>
+                        <button onClick={() => clearMapInfo()}>
+                            <GrClose />
+                        </button>
+                    </div>
+                    <div className={styles.directionBanner}>
+                        <p className='text-sm'>Dirija-se à <span className='font-bold'>porta direita</span> em Rio Centro</p>
+                    </div>
                     {!stopInfo ?
                         <div className='flex justify-center'>
                             <Oval
@@ -46,11 +49,9 @@ export function SequenceCard() {
                         </div>
                         :
                         <>
-                            <h1 className="text-xl font-semibold flex">
+                            <h1 className="text-xl font-semibold flex items-start">
                                 <div className={styles.routeHeader}>
-                                     {theme ? <img src={busSppo} alt="" /> :
-                                        <img src={bus} alt="" />
-                                    }
+                                    {theme ? <img src={busSppo} alt="" /> : <img src={bus} alt="" />}
                                     <p className='ml-2 font-semibold leading-none'>
                                         {stopInfo.trip_short_name}
                                     </p>
@@ -60,7 +61,7 @@ export function SequenceCard() {
 
                             <ul className={styles.timeline}>
                                 {sequenceInfo.map((e) => {
-                                    return <li key={e.id} className={`${styles.event} ${ e.stop_id.stop_id == stopId ? styles.active: ''}`} >
+                                    return <li key={e.id} className={`${styles.event} ${e.stop_id.stop_id == stopId ? styles.active : ''}`} >
                                         {e.stop_id.stop_name}
                                     </li>
                                 })}
