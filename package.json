@@ -1,7 +1,7 @@
 {
   "name": "base-project",
   "private": true,
-  "version": "2.2.6",
+  "version": "2.3.7",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -22,7 +22,8 @@
     "react-router-dom": "^6.4.5",
     "react-toastify": "^9.1.1",
     "react-zxing": "^1.0.7",
-    "sass": "^1.56.1"
+    "sass": "^1.56.1",
+    "underscore": "^1.13.6"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",

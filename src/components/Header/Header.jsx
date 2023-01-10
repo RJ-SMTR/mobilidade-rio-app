@@ -19,12 +19,14 @@ export function Header(props) {
     const {theme} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
-
+    const { setRoutes, setPlataforms} = useContext(RoutesContext)
     function clearInfo() {
         setTrip('')
         setCode("")
         navigate('/')
         setPoints("")
+        setPlataforms([])
+        setRoutes()
 
     }
 
@@ -36,6 +38,8 @@ export function Header(props) {
         setNewCode(event.target.value)
         setTrip('')
         setValue()
+        setPlataforms([])
+        setRoutes()
         setPoints("")
 
     }

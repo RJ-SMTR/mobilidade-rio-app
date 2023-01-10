@@ -20,7 +20,7 @@ export function SequenceCard() {
         setTrip('')
         setPoints('')
     }
-
+  
 
     return (
         <>
@@ -30,9 +30,6 @@ export function SequenceCard() {
                         <button onClick={() => clearMapInfo()}>
                             <GrClose />
                         </button>
-                    </div>
-                    <div className={styles.directionBanner}>
-                        <p className='text-sm'>Dirija-se à <span className='font-bold'>porta direita</span> em Rio Centro</p>
                     </div>
                     {!stopInfo ?
                         <div className='flex justify-center'>
