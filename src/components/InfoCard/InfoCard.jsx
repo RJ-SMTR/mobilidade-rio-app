@@ -23,7 +23,7 @@ export function InfoCard(){
         api.get('/stops/?stop_code=' + code.toUpperCase())
                .then(response => setName(response.data.results[0].stop_name)) 
     }, [code])
-
+    
     return(
 
         <>
@@ -51,13 +51,13 @@ export function InfoCard(){
                                     strokeWidth={4}
                                     strokeWidthSecondary={4}
 
-                                /> : Object.values(plataforms).map((e) => Object.values(e).map((values) => {
-                                    return <li className='flex justify-between border-b py-2.5' onClick={() => getMultiplePages("/stop_times/?stop_id=" + values.stop_id.stop_id)}>
+                                /> : plataforms.map((e) => Object.values(e).map((values) => {
+                                    return <li className='flex justify-between border-b py-2.5' onClick={() => getMultiplePages("/stop_times/?stop_id=" + Object.keys(values))}>
                                         <div className={styles.routeName}>
                                             <div className={styles.shortName}>
                                                 <img src={pin} alt="" />
                                             </div>
-                                            <p className="text-sm ml-2.5">{values.stop_id.stop_desc}</p>
+                                            <p className="text-sm ml-2.5">{Object.values(values)[0].stop_desc}</p>
                                         </div>
                                     </li>
                                 }))

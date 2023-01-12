@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { CodeContext } from "./getCode";
 import { api } from "../services/api";
-import{ indexBy } from 'underscore';
 export const RoutesContext = createContext()
 
 
@@ -73,13 +72,18 @@ export function RoutesProvider({ children }) {
     }, [stopId, locationType])
     useEffect(() => {
         if (locationType != null || locationType != undefined || stations != undefined) {
-            const result = indexBy(stations, 'stop_id');
+            const iteratee =  stations.map((e) => e.stop_id)
+            const result = iteratee.reduce((acc, curr) => {
+                acc[curr.stop_desc] = acc[curr.stop_desc] || {};
+                acc[curr.stop_desc][curr.stop_id] = curr;
+                return acc;
+            }, {});
             setPlataforms((prevResults) => [...prevResults, result]);
         }
     }, [stations]);
     
     return (
-        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms }}>
+        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations }}>
             {children}
         </RoutesContext.Provider>
     )
