@@ -22,8 +22,10 @@ export function InfoCard(){
     useEffect(() => {
         api.get('/stops/?stop_code=' + code.toUpperCase())
                .then(response => setName(response.data.results[0].stop_name)) 
+        setRoutes()
+        console.log(isParent)
     }, [code])
-    
+
     return(
 
         <>

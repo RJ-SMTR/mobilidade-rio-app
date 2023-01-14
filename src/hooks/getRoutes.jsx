@@ -20,10 +20,13 @@ export function RoutesProvider({ children }) {
         api
             .get("/stops/?stop_code=" + code.toUpperCase())
             .then(response => setStopId(response.data.results[0].stop_id))
+    }, [code])
+
+    useEffect(() => {
+     
         api.get("/stops/?stop_code=" + code.toUpperCase())
             .then(response => setLocationType(response.data.results[0].location_type))
-    
-    }, [code])
+    }, [code, stopId])
 
     let allTrips = []
     async function getMultiplePages(url) {
@@ -62,14 +65,20 @@ export function RoutesProvider({ children }) {
     }
     useEffect(() => {
         if(stopId != undefined || stopId != null){
-            if(locationType ===1){
+            checkParent()
+        }
+    }, [code, locationType])
+
+    useEffect(() => {
+        if(stopId != undefined || stopId != null){
+            if(locationType === 1){
                 getStations("/stop_times/?stop_id=" + stopId)
             } else if(locationType === 0){
                 getMultiplePages("/stop_times/?stop_id=" + stopId)
             }
-            checkParent()
         }
-    }, [stopId, locationType])
+    }, [isParent])
+
     useEffect(() => {
         if (locationType != null || locationType != undefined || stations != undefined) {
             const iteratee =  stations.map((e) => e.stop_id)
@@ -83,7 +92,7 @@ export function RoutesProvider({ children }) {
     }, [stations]);
     
     return (
-        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations }}>
+        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType }}>
             {children}
         </RoutesContext.Provider>
     )
