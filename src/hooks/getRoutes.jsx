@@ -13,17 +13,20 @@ export function RoutesProvider({ children }) {
     const [plataforms, setPlataforms] = useState([])
     const [locationType, setLocationType] = useState()
     const [stations, setStations] = useState()
-    const [isParent, setIsParent] = useState(false)
+    const [isParent, setIsParent] = useState()
+    const [teste, setTeste] = useState()
 
 
     useEffect(() => {
-        api
-            .get("/stops/?stop_code=" + code.toUpperCase())
-            .then(response => setStopId(response.data.results[0].stop_id))
-        api.get("/stops/?stop_code=" + code.toUpperCase())
-            .then(response => setLocationType(response.data.results[0].location_type))
+        if (code != undefined) {
+            api
+                .get("/stops/?stop_code=" + code.toUpperCase())
+                .then(response => {
+                    setStopId(response.data.results[0].stop_id)
+                    setLocationType(response.data.results[0].location_type)
+                })
+        }
     }, [code])
-
 
     let allTrips = []
     async function getMultiplePages(url) {
@@ -34,7 +37,7 @@ export function RoutesProvider({ children }) {
                 if (data.next) {
                     getMultiplePages(data.next)
                 }
-                    setRoutes([...allTrips])
+                        setRoutes([...allTrips])
             })
    
     }
@@ -53,30 +56,20 @@ export function RoutesProvider({ children }) {
    
     }
 
-    function checkParent(){
-        if(locationType != null || locationType != undefined){
-        if (locationType === 1 ){
-            setIsParent(true)
-        } else if (locationType === 0) {
-            setIsParent(false)
-        }
-    }
-}
-    useEffect(() => {
-        if(stopId != undefined || stopId != null){
-            checkParent()
-        }
-    }, [code, locationType])
 
     useEffect(() => {
-        if(stopId != undefined || stopId != null){
-            if(locationType === 1){
+        if (code && locationType != undefined) {
+            if (locationType === 1) {
                 getStations("/stop_times/?stop_id=" + stopId)
-            } else if(locationType === 0){
+                setIsParent(true)
+            } else if (locationType === 0) {
                 getMultiplePages("/stop_times/?stop_id=" + stopId)
+                setIsParent(false)
             }
         }
-    }, [isParent])
+    }, [stopId, locationType])
+
+
 
     useEffect(() => {
         if (locationType != null || locationType != undefined || stations != undefined) {
@@ -91,7 +84,7 @@ export function RoutesProvider({ children }) {
     }, [stations]);
     
     return (
-        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType }}>
+        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations}}>
             {children}
         </RoutesContext.Provider>
     )

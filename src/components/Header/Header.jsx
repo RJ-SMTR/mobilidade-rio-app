@@ -21,8 +21,9 @@ export function Header(props) {
     const {theme} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
+    const [codeIdentifier, setCodeIdentifier] = useState()
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
-    const { setResults, results, codeR, setCodeR, similarNames } = useContext(NameContext)
+    const { setResults, results, similarNames } = useContext(NameContext)
     function clearInfo() {
         setTrip('')
         setCode("")
@@ -55,20 +56,20 @@ export function Header(props) {
             .then(response => {
                 if (response.data.count == 0 && newCode != '') {
                     similarNames('/stops/?stop_name=' + newCode)
-                    setCodeR(false)
+                    setCodeIdentifier(false)
                     console.log(newCode)
                 } else {
-                    setCodeR(true)
+                    setCodeIdentifier(true)
                     setResults()
                 }
             })
     }, [newCode])
 
     useEffect(() => {
-        if (newCode.length == 4 && codeR === true && !/^[a-zA-Z]+$/.test(newCode)) {
+        if (newCode.length == 4 && codeIdentifier === true && !/^[a-zA-Z]+$/.test(newCode)) {
             navigate(`/${newCode}`)
         }
-    }, [codeR])
+    }, [codeIdentifier])
 
  
     return (
