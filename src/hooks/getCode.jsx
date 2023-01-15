@@ -22,7 +22,7 @@ export function CodeProvider({ children }) {
     useEffect(() => {
         const urlCode = searchParams.get('code');
         if(urlCode !== null){
-            setCode(urlCode.toUpperCase)
+            setCode(urlCode.toUpperCase())
         }
     }, [])
     // CHECA SE CÓDIGO PESQUISADO EXISTE

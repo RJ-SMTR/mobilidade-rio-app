@@ -20,13 +20,10 @@ export function RoutesProvider({ children }) {
         api
             .get("/stops/?stop_code=" + code.toUpperCase())
             .then(response => setStopId(response.data.results[0].stop_id))
-    }, [code])
-
-    useEffect(() => {
-     
         api.get("/stops/?stop_code=" + code.toUpperCase())
             .then(response => setLocationType(response.data.results[0].location_type))
-    }, [code, stopId])
+    }, [code])
+
 
     let allTrips = []
     async function getMultiplePages(url) {
@@ -57,12 +54,14 @@ export function RoutesProvider({ children }) {
     }
 
     function checkParent(){
-        if (locationType === 1){
+        if(locationType != null || locationType != undefined){
+        if (locationType === 1 ){
             setIsParent(true)
         } else if (locationType === 0) {
             setIsParent(false)
         }
     }
+}
     useEffect(() => {
         if(stopId != undefined || stopId != null){
             checkParent()
