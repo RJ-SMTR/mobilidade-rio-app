@@ -1,7 +1,7 @@
 import { Header } from '../components/HeaderSearch/Header'
 import qrCode from '../assets/imgs/qrCodeWhite.svg'
 import qrCodeBrt from '../assets/imgs/qrCode.svg'
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useZxing } from "react-zxing";
 import { CodeContext } from '../hooks/getCode';

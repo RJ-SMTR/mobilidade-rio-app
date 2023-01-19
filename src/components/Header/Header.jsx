@@ -54,7 +54,7 @@ export function Header(props) {
     useEffect(() => {
         api.get("/stops/?stop_code=" + newCode.toUpperCase())
             .then(response => {
-                if (response.data.count == 0 && newCode != '') {
+                if (response.data.count == 0) {
                     similarNames('/stops/?stop_name=' + newCode)
                     setCodeIdentifier(false)
                     console.log(newCode)

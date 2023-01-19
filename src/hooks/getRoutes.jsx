@@ -14,7 +14,6 @@ export function RoutesProvider({ children }) {
     const [locationType, setLocationType] = useState()
     const [stations, setStations] = useState()
     const [isParent, setIsParent] = useState()
-    const [teste, setTeste] = useState()
 
 
     useEffect(() => {

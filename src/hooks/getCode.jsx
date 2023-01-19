@@ -15,10 +15,6 @@ export function CodeProvider({ children }) {
     const [active, setActive] = useState(false)
 
 
-    // const searchHandler = (query) => {
-    //     setCode(query);
-    // }
-
     useEffect(() => {
         const urlCode = searchParams.get('code');
         if(urlCode !== null){

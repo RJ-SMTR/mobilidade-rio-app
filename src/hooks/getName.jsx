@@ -44,7 +44,7 @@ export function NameProvider({ children }) {
     useEffect(() => {
         api.get("/stops/?stop_code=" + firstCode.toUpperCase())
             .then(response => {
-                if (response.data.count == 0 && firstCode != '' ) {
+                if (response.data.count == 0 ) {
                     similarNames('/stops/?stop_name=' + firstCode)
                     setCodeR(false)
                     console.log(firstCode)
