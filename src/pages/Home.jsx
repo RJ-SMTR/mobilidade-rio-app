@@ -24,12 +24,14 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import { useParams } from "react-router-dom";
 import { ShapeContext } from "../hooks/getShape";
 import { api } from "../services/api";
+import { NameContext } from "../hooks/getName";
 
 export function Home() {
     const [center, setCenter] = useState()
     const { code, setCode } = useContext(CodeContext)
     const {points} = useContext(ShapeContext)
     const { trip, sequenceInfo } = useContext(TripContext)
+    const {setResults} = useContext(NameContext)
     let params = useParams()
 
   
@@ -64,6 +66,7 @@ export function Home() {
     useEffect(() => {
         api.get('/stops/?stop_code=' + code.toUpperCase())
             .then(response => setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)]))
+        setResults()
     }, [code])
     
     const blackOptions = { color: 'black' }

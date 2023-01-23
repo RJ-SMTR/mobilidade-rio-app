@@ -10,6 +10,8 @@ import { ShapeContext } from '../../hooks/getShape'
 import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../../hooks/getTheme'
 import { RoutesContext } from '../../hooks/getRoutes'
+import { NameContext } from '../../hooks/getName'
+import { api } from '../../services/api'
 
 export function Header(props) {
     let navigate = useNavigate()
@@ -19,7 +21,9 @@ export function Header(props) {
     const {theme} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
+    const [codeIdentifier, setCodeIdentifier] = useState()
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
+    const { setResults, results, similarNames } = useContext(NameContext)
     function clearInfo() {
         setTrip('')
         setCode("")
@@ -27,6 +31,7 @@ export function Header(props) {
         setPoints("")
         setPlataforms([])
         setRoutes()
+        setResults()
 
     }
 
@@ -41,14 +46,31 @@ export function Header(props) {
         setPlataforms([])
         setRoutes()
         setPoints("")
+        if (event.target.value.length == 0) {
+            setResults()
+        }
 
     }
+    useEffect(() => {
+        api.get("/stops/?stop_code=" + newCode.toUpperCase())
+            .then(response => {
+                if (response.data.count == 0) {
+                    similarNames('/stops/?stop_name=' + newCode)
+                    setCodeIdentifier(false)
+                    console.log(newCode)
+                } else {
+                    setCodeIdentifier(true)
+                    setResults()
+                }
+            })
+    }, [newCode])
 
     useEffect(() => {
-        if (newCode.length == 4) {
+        if (newCode.length == 4 && codeIdentifier === true && !/^[a-zA-Z]+$/.test(newCode)) {
             navigate(`/${newCode}`)
         }
-    }, [newCode])
+    }, [codeIdentifier])
+
  
     return (
         <>
@@ -66,7 +88,21 @@ export function Header(props) {
                                 <button className='absolute right-[12px] top-0 bottom-0' onClick={() => clearInfo()}>
                                     <GrFormClose />
                                 </button>
-                                <input type="text" className="rounded-lg py-3.5 px-3 w-full inputShadow uppercase" maxLength={4} onChange={searchNewCode} value={value}/>
+                                <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" onKeyUp={searchNewCode} onPaste={searchNewCode} value={value} />
+                                {code.length === 0 || !results ? <></> :
+                                    <ul className='bg-white border-[1px] rounded-lg absolute max-h-[120px] z-[1001] py-3.5 px-3 overflow-scroll'>
+                                        {results.length == 0 ? <li>
+                                            Não foi possível encontrar a estação
+                                        </li> :
+                                            results.map((e, index) => {
+                                                return <li className={index === 0 ? 'border-t-0' : "" + 'py-2 border-t-2 border-gray-300'} onClick={() => navigate(`/${e.stop_code}`)}>
+                                                    {e.stop_name}
+                                                </li>
+                                            })
+                                        }
+
+                                    </ul>
+                                }
                             </div>
                         </div>
                     </div>
