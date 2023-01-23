@@ -88,7 +88,7 @@ export function Header(props) {
                                 <button className='absolute right-[12px] top-0 bottom-0' onClick={() => clearInfo()}>
                                     <GrFormClose />
                                 </button>
-                                <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" onKeyUp={searchNewCode} value={value} />
+                                <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" onKeyUp={searchNewCode} onPaste={searchNewCode} value={value} />
                                 {code.length === 0 || !results ? <></> :
                                     <ul className='bg-white border-[1px] rounded-lg absolute max-h-[120px] z-[1001] py-3.5 px-3 overflow-scroll'>
                                         {results.length == 0 ? <li>

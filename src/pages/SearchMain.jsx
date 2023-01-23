@@ -32,7 +32,7 @@ export function SearchMain() {
                 {/* Inputs */}
                 <div className="flex content-center mb-6">
                     <div className="flex flex-col w-full">
-                        <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" onKeyUp={searchCode}  />
+                        <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" onKeyUp={searchCode} onPaste={searchCode}  />
                         {firstCode && firstCode.length === 0 || !results ? <></> :
                             <ul className='bg-white border-[1px] rounded-lg absolute max-h-[120px] mt-12 py-3.5 px-3 overflow-scroll'>
                                 {results.length == 0 ? <li>
