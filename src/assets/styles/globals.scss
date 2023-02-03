@@ -70,3 +70,28 @@ a {
 .leaflet-top{
     z-index: 400 !important;
 }
+.marker-test{
+    div{
+background-image: url(../imgs/movingMarker.svg);
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    width: 25px !important;
+    z-index: 1;
+    height: 35px !important;
+    }
+    position: relative;
+    p{
+        position: absolute;
+        padding-left: 15px;
+        padding-right: 4px;
+        border-radius: 4px;
+        left: 10px ;
+        top: 12.5px;
+        background-color: #F8AC04;
+        font-weight: bold;
+    }
+}
+.marker-test.shadowed{
+    opacity: 0.5 !important;
+}

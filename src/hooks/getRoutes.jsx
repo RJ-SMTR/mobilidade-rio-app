@@ -14,6 +14,7 @@ export function RoutesProvider({ children }) {
     const [locationType, setLocationType] = useState()
     const [stations, setStations] = useState()
     const [isParent, setIsParent] = useState()
+    const [childName, setChildName] = useState()
 
 
     useEffect(() => {
@@ -22,6 +23,7 @@ export function RoutesProvider({ children }) {
                 .get("/stops/?stop_code=" + code.toUpperCase())
                 .then(response => {
                     setStopId(response.data.results[0].stop_id)
+                    setChildName(response.data.results[0].stop_name)
                     setLocationType(response.data.results[0].location_type)
                 })
         }
@@ -83,7 +85,7 @@ export function RoutesProvider({ children }) {
     }, [stations]);
     
     return (
-        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations}}>
+        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType, childName}}>
             {children}
         </RoutesContext.Provider>
     )

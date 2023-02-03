@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState , useContext} from "react";
-import axios from 'axios'
 import {  RoutesContext } from "./getRoutes";
 import { api } from "../services/api";
 
@@ -9,7 +8,7 @@ export const TripContext = createContext()
 
 
 export function TripProvider({ children }) {
-    const { stopId } = useContext(RoutesContext)
+    const { stopId, locationType, childName } = useContext(RoutesContext)
     const [trip, setTrip] = useState('')
     const [stopInfo, setStopInfo] = useState()
     const [sequenceInfo, setSequenceInfo] = useState()
@@ -45,6 +44,12 @@ export function TripProvider({ children }) {
         const mapSequence = allSequenceStops?.map(e => e.stop_id.stop_id).indexOf(stopId)
         const filteredSequence = allSequenceStops?.splice(mapSequence)
         setSequenceInfo(filteredSequence)
+
+        if(locationType === 1){
+            const mapSequence = allSequenceStops?.map(e => e.stop_id.stop_name).indexOf(childName)
+            const filteredSequence = allSequenceStops?.splice(mapSequence + 1)
+            setSequenceInfo(filteredSequence)
+        }
     }, [allSequenceStops])
     return (
         <TripContext.Provider value={{ trip, setTrip, tripSelector, sequenceInfo, stopInfo , setSequenceInfo}}>

@@ -47,7 +47,6 @@ export function NameProvider({ children }) {
                 if (response.data.count == 0 ) {
                     similarNames('/stops/?stop_name=' + firstCode)
                     setCodeR(false)
-                    console.log(firstCode)
                 } else {
                     setCodeR(true)
                     setResults()
