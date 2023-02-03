@@ -12,7 +12,6 @@ import L from "leaflet";
 import { MapContainer, TileLayer, Marker, LayerGroup, Polyline, Polygon } from 'react-leaflet'
 import { Icon } from 'leaflet'
 import { useMap } from 'react-leaflet/hooks'
-import "leaflet-routing-machine";
 import BusMarker from "../components/MovingMarkers";
 
 // COMPONENTS
@@ -27,7 +26,6 @@ import { garageShape } from "../components/garages";
 import centerMarker from '../assets/imgs/centerMarker.svg'
 import marker from '../assets/imgs/marker.svg'
 import movingMarker from '../assets/imgs/movingMarker.svg'
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
 
 
