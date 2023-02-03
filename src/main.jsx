@@ -6,6 +6,7 @@ import { CodeProvider } from './hooks/getCode'
 import { TripProvider } from './hooks/getTrips'
 import { ThemeProvider } from './hooks/getTheme'
 import { ShapeProvider } from './hooks/getShape'
+import { GPSProvider } from './hooks/getGPS'
 import { ToastContainer } from 'react-toastify'
 import { BrowserRouter as Router } from 'react-router-dom'
 
@@ -23,7 +24,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <TripProvider>
               <ShapeProvider>
                 <ThemeProvider>
-                  <App />
+                  <GPSProvider>
+                    <App />
+                  </GPSProvider>
                 </ThemeProvider>
                 <ToastContainer />
               </ShapeProvider>

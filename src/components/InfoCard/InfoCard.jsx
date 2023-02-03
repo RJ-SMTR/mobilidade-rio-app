@@ -10,12 +10,14 @@ import { Oval } from 'react-loader-spinner'
 import { ThemeContext } from '../../hooks/getTheme'
 import { api } from '../../services/api'
 import { GrClose } from 'react-icons/gr'
+import { GPSContext } from '../../hooks/getGPS'
 
 export function InfoCard() {
     const [name, setName] = useState()
     const { theme } = useContext(ThemeContext)
     const { code } = useContext(CodeContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, stopId, locationType } = useContext(RoutesContext)
+    const {setTracked} = useContext(GPSContext)
     const { setTrip } = useContext(TripContext);
 
 
@@ -30,7 +32,7 @@ export function InfoCard() {
             {isParent ? <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
                 <div className={styles.routesCard}>
                     {!routes ? <></> : <div className='flex justify-end'>
-                        <button onClick={() => setRoutes()}>
+                        <button onClick={() => (setRoutes(), setTracked())}>
                             <GrClose />
                         </button>
                     </div>}

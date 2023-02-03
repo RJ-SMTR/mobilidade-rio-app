@@ -12,6 +12,7 @@ import { ThemeContext } from '../../hooks/getTheme'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { NameContext } from '../../hooks/getName'
 import { api } from '../../services/api'
+import { GPSContext } from '../../hooks/getGPS'
 
 export function Header(props) {
     let navigate = useNavigate()
@@ -24,6 +25,7 @@ export function Header(props) {
     const [codeIdentifier, setCodeIdentifier] = useState()
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
+    const {setTracked} = useContext(GPSContext)
     function clearInfo() {
         setTrip('')
         setCode("")
@@ -32,6 +34,7 @@ export function Header(props) {
         setPlataforms([])
         setRoutes()
         setResults()
+        setTracked()
 
     }
 
@@ -46,6 +49,7 @@ export function Header(props) {
         setPlataforms([])
         setRoutes()
         setPoints("")
+        setTracked()
         if (event.target.value.length == 0) {
             setResults()
         }
@@ -57,7 +61,6 @@ export function Header(props) {
                 if (response.data.count == 0) {
                     similarNames('/stops/?stop_name=' + newCode)
                     setCodeIdentifier(false)
-                    console.log(newCode)
                 } else {
                     setCodeIdentifier(true)
                     setResults()
