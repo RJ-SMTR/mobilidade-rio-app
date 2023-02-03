@@ -18,11 +18,10 @@ export function GPSProvider({ children }) {
     const [tracked, setTracked] = useState([])
     const [currentTrack, setCurrentTrack] = useState({});
 
-    const URL = atob(import.meta.env.BRT_URL)
-    const Login = atob(import.meta.env.BRT_USR)
-    const Pass = atob(import.meta.env.BRT_PW)
-    const Client = atob(import.meta.env.BRT_ID)
-
+    const URL = atob(import.meta.env.VITE_BRT_URL)
+    const Login = atob(import.meta.env.VITE_BRT_USR)
+    const Pass = atob(import.meta.env.VITE_BRT_PW)
+    const Client = atob(import.meta.env.VITE_BRT_ID)
 
     useEffect(() => {
         const interval = setInterval(() => {
