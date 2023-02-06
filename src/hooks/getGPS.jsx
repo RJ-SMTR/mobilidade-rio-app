@@ -23,6 +23,9 @@ export function GPSProvider({ children }) {
     const Pass = import.meta.env.VITE_BRT_PW
     const Client = import.meta.env.VITE_BRT_ID
 
+    console.log(URL)
+    console.log(Login)
+    console.log(Pass)
     useEffect(() => {
         const interval = setInterval(() => {
             axios.get(URL, {
@@ -30,7 +33,7 @@ export function GPSProvider({ children }) {
                 mode: "cors",
                 headers: {
                     'Access-Control-Allow-Origin': '*',
-                    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+                    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
                     'login': Login,
                     'senha': Pass,
                     'idcliente': Client
@@ -38,6 +41,7 @@ export function GPSProvider({ children }) {
                 }
             })
                 .then(response => {
+                 
                     let trackedBuses = [];
                     response.data.veiculos.forEach((item) => {
                         const currentTime = new Date().getTime();
