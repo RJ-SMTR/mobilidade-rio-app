@@ -18,30 +18,14 @@ export function GPSProvider({ children }) {
     const [tracked, setTracked] = useState([])
     const [currentTrack, setCurrentTrack] = useState({});
 
-    const URL = import.meta.env.VITE_BRT_URL
-    const Login = import.meta.env.VITE_BRT_USR
-    const Pass = import.meta.env.VITE_BRT_PW
-    const Client = import.meta.env.VITE_BRT_ID
-
-    console.log(URL)
-    console.log(Login)
-    console.log(Pass)
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.get(URL, {
+            axios.get('https://dados.mobilidade.rio/gps/brt', {
                 method: 'GET',
                 mode: "cors",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-                    'login': Login,
-                    'senha': Pass,
-                    'idcliente': Client
-
-                }
+              
             })
                 .then(response => {
-                 
                     let trackedBuses = [];
                     response.data.veiculos.forEach((item) => {
                         const currentTime = new Date().getTime();
