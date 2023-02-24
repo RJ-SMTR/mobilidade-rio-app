@@ -13,19 +13,20 @@ import { RoutesContext } from '../../hooks/getRoutes'
 import { NameContext } from '../../hooks/getName'
 import { api } from '../../services/api'
 import { GPSContext } from '../../hooks/getGPS'
+import { MovingMarkerContext } from '../../hooks/getMovingMarkers'
 
 export function Header(props) {
     let navigate = useNavigate()
     const { code, setCode } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
     const {setPoints} = useContext(ShapeContext)
-    const {theme} = useContext(ThemeContext)
+    const {theme, setTheme, setSppo} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
     const [codeIdentifier, setCodeIdentifier] = useState()
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
-    const {setTracked} = useContext(GPSContext)
+    const {setTracked} = useContext(MovingMarkerContext)
     function clearInfo() {
         setTrip('')
         setCode("")
@@ -35,6 +36,8 @@ export function Header(props) {
         setRoutes()
         setResults()
         setTracked()
+        setTheme("sppo")
+        setSppo()
 
     }
 

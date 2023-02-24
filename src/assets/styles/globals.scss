@@ -9,7 +9,7 @@
 
 :root {
     --white: #FFFFFF;
-    --body-bg: #F0EFEF;
+
     --gray-100: #F0EFEF;
     --items-bg: #F8AC04;
     --black: #010101
@@ -29,6 +29,9 @@ body {
     color: var(--black-900);
     max-height: 100vh;
 }
+body.homepage{
+    background-color: #004a80 !important;
+}
 
 body,
 input,
@@ -44,10 +47,13 @@ a {
 }
 
 #map {
-    height: calc(100vh - 211px);
+    height: calc(100vh - 170px);
 }
 .mapWrapper{
-    max-height: calc(100vh - 211px);
+    max-height: calc(100vh - 170px);
+}
+.leaflet-control-attribution{
+    display: none !important;
 }
 .loaderWrapper{
     margin-top: 211px;
@@ -65,7 +71,7 @@ a {
     display: none;
 }
 .leaflet-pane{
-    margin-top: -100px;
+    margin-top: -20px;
 }
 .leaflet-top{
     z-index: 400 !important;

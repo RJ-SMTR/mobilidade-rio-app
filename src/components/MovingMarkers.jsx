@@ -28,7 +28,8 @@ export default function BusMarker({ data, icon }) {
                 <Popup>
                     {data.code ? <h1> Código: {data.code} </h1> : <></>}
                     <h1>{data.hora[0]}:{data.hora[1]}s atrás</h1>
-                    {data.velocidade} km/h
+                    {data.velocidade} km/h<br/>
+                  Sentido de {data.sentido}
                 </Popup>
             </LeafletTrackingMarker>
 

@@ -10,14 +10,16 @@ import { Oval } from 'react-loader-spinner'
 import { ThemeContext } from '../../hooks/getTheme'
 import { api } from '../../services/api'
 import { GrClose } from 'react-icons/gr'
-import { GPSContext } from '../../hooks/getGPS'
+import { MovingMarkerContext } from '../../hooks/getMovingMarkers'
+import { info } from 'autoprefixer'
 
 export function InfoCard() {
     const [name, setName] = useState()
+    const [linha, setLinha ] = useState(false)
     const { theme } = useContext(ThemeContext)
     const { code } = useContext(CodeContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, stopId, locationType } = useContext(RoutesContext)
-    const {setTracked} = useContext(GPSContext)
+    const {setTracked} = useContext(MovingMarkerContext)
     const { setTrip } = useContext(TripContext);
 
 
@@ -26,19 +28,27 @@ export function InfoCard() {
             .then(response => setName(response.data.results[0].stop_name))
     }, [code])
 
+    function infoLinha() {
+        if(!linha){
+            setLinha(true)
+        } else {
+            setLinha(false)
+        }
+    }
+
     return (
 
         <>
             {isParent ? <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
                 <div className={styles.routesCard}>
                     {!routes ? <></> : <div className='flex justify-end'>
-                        <button onClick={() => (setRoutes(), setTracked())}>
+                        <button onClick={() => (setRoutes(), setTracked(), infoLinha())}>
                             <GrClose />
                         </button>
                     </div>}
                     <p className='text-[#707070] text-sm'>Você está em </p>
                     <h1 className="text-xl font-semibold mb-3">{name}</h1>
-                    <p className='text-[#707070] text-sm'>Selecione o sentido para mais informações:</p>
+                    <p className='text-[#707070] text-sm'>Selecione {linha ? 'a linha' : 'o sentido' } para mais informações:</p>
                     <ul className={styles.routeList}>
                         {!routes ? <>
                             {plataforms.length < 1 ?
@@ -54,7 +64,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : plataforms.map((e) => Object.values(e).map((values) => {
-                                    return <li className='flex justify-between border-b py-2.5' onClick={() => getMultiplePages("/stop_times/?stop_id=" + Object.keys(values))}>
+                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)), infoLinha()}}>
                                         <div className={styles.routeName}>
                                             <div className={styles.shortName}>
                                                 <img src={pin} alt="" />
