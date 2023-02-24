@@ -7,6 +7,7 @@ import { TripProvider } from './hooks/getTrips'
 import { ThemeProvider } from './hooks/getTheme'
 import { ShapeProvider } from './hooks/getShape'
 import { GPSProvider } from './hooks/getGPS'
+import { MovingMarkerProvider } from './hooks/getMovingMarkers'
 import { ToastContainer } from 'react-toastify'
 import { BrowserRouter as Router } from 'react-router-dom'
 
@@ -25,7 +26,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <ShapeProvider>
                 <ThemeProvider>
                   <GPSProvider>
-                    <App />
+                    <MovingMarkerProvider>
+                      <App />
+                    </MovingMarkerProvider>
                   </GPSProvider>
                 </ThemeProvider>
                 <ToastContainer />

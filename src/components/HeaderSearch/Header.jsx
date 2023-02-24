@@ -9,19 +9,12 @@ export function Header() {
     const {theme} = useContext(ThemeContext)
     return (
         <>
-            {theme ? <header>
+        <header>
                 <img className="absolute top-0 z-0 w-full " src={triangles} alt="" />
                 <div className="flex justify-end p-4">
                     <img src={logo} alt="" className={styles.logo} />
                 </div>
-            </header > :
-                <header>
-                    <img className="absolute top-0 z-0 w-full " src={trianglesBrt} alt="" />
-                    <div className="flex justify-end p-4">
-                        <img src={logoBrt} alt="" className={styles.logo} />
-                    </div>
-                </header>
-            }
+            </header > 
         </>
     )
 }

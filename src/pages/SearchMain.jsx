@@ -1,12 +1,11 @@
 import { Header } from '../components/HeaderSearch/Header'
 import qrCode from '../assets/imgs/qrCodeWhite.svg'
-import qrCodeBrt from '../assets/imgs/qrCode.svg'
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useZxing } from "react-zxing";
 import { CodeContext } from '../hooks/getCode';
-import { ThemeContext } from '../hooks/getTheme';
 import { NameContext } from '../hooks/getName';
+import { useEffect } from 'react';
 
 
 export function SearchMain() {
@@ -14,19 +13,24 @@ export function SearchMain() {
 
     const {searchCode, results, firstCode } = useContext(NameContext)
     const { active, setActive } = useContext(CodeContext)
-    const { theme } = useContext(ThemeContext)
     const { ref } = useZxing({
         onResult(result) {
             window.location.href = result;
         },
     });
+    function setBg(){
+        document.body.classList.add('homepage');
+    }
+    useEffect(() => {
+        setBg()
+    }, [])
 
 
     return (
         <>
             <Header />
             <div className="px-4 mt-60 relative z-1">
-                <h1 className={theme ? 'text-xl text-center mb-3 text-white' : 'text-xl text-center mb-3 text-black'}>
+                <h1 className='text-xl text-center mb-3 text-white'>
                     Saiba quais linhas de ônibus passam nos pontos da cidade
                 </h1>
                 {/* Inputs */}
@@ -51,15 +55,12 @@ export function SearchMain() {
                     </div>
                 </div>
                 {/* Inputs end */}
-                {theme ?
+
                     <button className="w-full rounded-lg bg-white uppercase py-3" onClick={() => setActive(true)}>
                         <img className="inline-block mr-3" src={qrCode} alt="" />
                         Usar qrcode
                     </button>
-                    : <button className="w-full rounded-lg bg-black text-white uppercase py-3" onClick={() => setActive(true)}>
-                        <img className="inline-block mr-3" src={qrCodeBrt} alt="" />
-                        Usar qrcode
-                    </button>}
+                  
                 <ul>
 
                 </ul>

@@ -40,7 +40,7 @@ export function ThemeProvider({ children }) {
     }, [routeType])
 
     return (
-        <ThemeContext.Provider value={{ theme }}>
+        <ThemeContext.Provider value={{ theme, setTheme, setSppo }}>
             {children}
         </ThemeContext.Provider>
     )
