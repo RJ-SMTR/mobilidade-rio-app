@@ -37,7 +37,7 @@ export function ThemeProvider({ children }) {
             setBrt();
             setTheme("")
         }
-    }, [routeType])
+    }, [routeType, stopId])
 
     return (
         <ThemeContext.Provider value={{ theme, setTheme, setSppo }}>
