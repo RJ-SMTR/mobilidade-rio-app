@@ -29,18 +29,23 @@ export function RoutesProvider({ children }) {
         }
     }, [code])
 
-    let allTrips = []
     async function getMultiplePages(url) {
+        const filteredTrips = [];
         await api
             .get(url)
             .then(({ data }) => {
-                data.results.forEach((item) => { allTrips.push(item) })
+                data.results.forEach((item) => {
+                    const existingTrip = filteredTrips.find((trip) => trip.trip_id.trip_short_name === item.trip_id.trip_short_name);
+                    if (!existingTrip) {
+                        filteredTrips.push(item);
+                    }
+                });
                 if (data.next) {
-                    getMultiplePages(data.next)
+                    getMultiplePages(data.next);
+                } else {
+                    setRoutes([...filteredTrips]);
                 }
-                        setRoutes([...allTrips])
             })
-   
     }
 
     let allStations = []

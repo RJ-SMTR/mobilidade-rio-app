@@ -26,7 +26,7 @@ export function Header(props) {
     const [codeIdentifier, setCodeIdentifier] = useState()
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
-    const {setTracked} = useContext(MovingMarkerContext)
+    const {setTracked, setInnerCircle} = useContext(MovingMarkerContext)
     function clearInfo() {
         setTrip('')
         setCode("")
@@ -38,6 +38,7 @@ export function Header(props) {
         setTracked()
         setTheme("sppo")
         setSppo()
+        setInnerCircle([])
 
     }
 
@@ -53,6 +54,7 @@ export function Header(props) {
         setRoutes()
         setPoints("")
         setTracked()
+        setInnerCircle([])
         if (event.target.value.length == 0) {
             setResults()
         }

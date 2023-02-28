@@ -102,7 +102,7 @@ export function MovingMarkerProvider({ children }) {
     }, [realtime, radius])
 
     return (
-        <MovingMarkerContext.Provider value={{ center, tracked, setTracked, innerCircle }}>
+        <MovingMarkerContext.Provider value={{ center, tracked, setTracked, innerCircle, setInnerCircle }}>
             {children}
         </MovingMarkerContext.Provider>
     )
