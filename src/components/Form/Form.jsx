@@ -40,7 +40,6 @@ export function Form() {
             }
 
 
-            console.log(formData)
             axios.post('https://api.dev.mobilidade.rio/feedback/brt', formData)
                 .then(function () {
                     setMessage("Feedback enviado com sucesso!");
