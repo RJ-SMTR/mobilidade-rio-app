@@ -29,8 +29,8 @@ export function RoutesProvider({ children }) {
         }
     }, [code])
 
+    const filteredTrips = [];
     async function getMultiplePages(url) {
-        const filteredTrips = [];
         await api
             .get(url)
             .then(({ data }) => {
@@ -54,10 +54,8 @@ export function RoutesProvider({ children }) {
             .get(url)
             .then(({ data }) => {
                 data.results.forEach((item) => { allStations.push(item) })
-                if (data.next) {
-                    getStations(data.next)
-                }
-                    setStations([...allStations])
+              
+                    setStations(allStations)
             })
    
     }

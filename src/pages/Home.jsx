@@ -3,6 +3,8 @@ import { CodeContext } from "../hooks/getCode"
 import { TripContext } from "../hooks/getTrips"
 import { useParams } from "react-router-dom";
 import { ShapeContext } from "../hooks/getShape";
+import { FormContext } from "../hooks/useForm";
+
 
 //  MAP IMMORTS
 import L from "leaflet";
@@ -16,7 +18,7 @@ import { Header } from "../components/Header/Header"
 import { InfoCard } from "../components/InfoCard/InfoCard"
 import { SequenceCard } from '../components/SequenceCard/SequenceCard'
 import { Oval } from 'react-loader-spinner'
-import { garageShape } from "../components/garages";
+import { Form } from "../components/Form/Form";
 
 
 // STYLING
@@ -33,9 +35,10 @@ export function Home() {
     const {center, tracked, innerCircle} = useContext(MovingMarkerContext)
     const {points} = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
-    let params = useParams()
+    const {activeForm, activateForm} = useContext(FormContext)
 
-  
+    // Usa código da URL para setar código para as pesquisas
+    let params = useParams()
     setCode(params.codeURL)
 
     const ComponentResize = () => {
@@ -59,7 +62,7 @@ export function Home() {
   
 
    
-
+    // Centraliza ponto pesquisado no mapa
     const FixCenter = () => {
         const map = useMap()
         useEffect(() => {
@@ -70,7 +73,7 @@ export function Home() {
     
     const blackOptions = { color: 'black' }
 
-    
+    // Ícones do gps no mapa
     function markerOptions (e) {
         if(stopInfo && trip){
 
@@ -93,6 +96,9 @@ export function Home() {
 
         }
     }
+
+   
+
 
     return (
         <>
@@ -148,12 +154,15 @@ export function Home() {
                         <Marker position={center} icon={yourPosition} />
                     </MapContainer>}
             </div>
+         
             {trip ?
             // CARD COM TRIP ESCOLHIDA
              <SequenceCard /> 
              : 
             //  CARD COM LISTA DE TRIPS
              <InfoCard />}
+            {activeForm ? <Form /> : <></> }
+           
         </>
     )
 }
