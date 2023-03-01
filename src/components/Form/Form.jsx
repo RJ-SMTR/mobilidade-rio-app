@@ -40,7 +40,7 @@ export function Form() {
             }
 
 
-            axios.post('https://api.dev.mobilidade.rio/feedback/brt', formData)
+            axios.post('https://api.dev.mobilidade.rio/feedback/brt/', formData)
                 .then(function () {
                     setMessage("Feedback enviado com sucesso!");
                 })
