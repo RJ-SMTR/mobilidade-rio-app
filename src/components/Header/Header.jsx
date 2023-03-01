@@ -12,7 +12,6 @@ import { ThemeContext } from '../../hooks/getTheme'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { NameContext } from '../../hooks/getName'
 import { api } from '../../services/api'
-import { GPSContext } from '../../hooks/getGPS'
 import { MovingMarkerContext } from '../../hooks/getMovingMarkers'
 
 export function Header(props) {
