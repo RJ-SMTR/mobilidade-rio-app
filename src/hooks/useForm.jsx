@@ -8,6 +8,7 @@ export const FormContext = createContext()
 
 export function FormProvider({ children }) {
     const [activeForm, setActiveForm] = useState(false)
+    const [selectedPlatform, setSelectedPlatform] = useState()
 
     function activateForm() {
         if (activeForm) {
@@ -16,9 +17,9 @@ export function FormProvider({ children }) {
             setActiveForm(true)
         }
     }
-   
+
     return (
-        <FormContext.Provider value={{activeForm, setActiveForm, activateForm}}>
+        <FormContext.Provider value={{activeForm, setActiveForm, activateForm, selectedPlatform, setSelectedPlatform}}>
             {children}
         </FormContext.Provider>
     )

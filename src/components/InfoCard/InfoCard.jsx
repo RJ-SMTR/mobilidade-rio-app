@@ -24,10 +24,10 @@ export function InfoCard() {
     const [linha, setLinha ] = useState(false)
     const { theme } = useContext(ThemeContext)
     const { code } = useContext(CodeContext)
-    const { routes, isParent, getMultiplePages, plataforms, setRoutes, stopId, locationType } = useContext(RoutesContext)
+    const { routes, isParent, getMultiplePages, plataforms, setRoutes } = useContext(RoutesContext)
     const {setTracked} = useContext(MovingMarkerContext)
     const { setTrip } = useContext(TripContext);
-    const { activateForm } = useContext(FormContext)
+    const { activateForm, setSelectedPlatform } = useContext(FormContext)
 
 
     useEffect(() => {
@@ -78,7 +78,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : plataforms.map((e) => Object.values(e).map((values) => {
-                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)), infoLinha()}}>
+                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)), infoLinha(), setSelectedPlatform(Object.keys(values))}}>
                                         <div className={styles.routeName}>
                                             <div className={styles.shortName}>
                                                 <img src={pin} alt="" />
