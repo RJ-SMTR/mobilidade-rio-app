@@ -20,7 +20,7 @@ export function NameProvider({ children }) {
             setResults()
         }
     }
-    
+
     let allSimilar = []
     async function similarNames(url) {
         await api
@@ -55,17 +55,19 @@ export function NameProvider({ children }) {
     }, [firstCode])
 
     useEffect(() => {
-        if (firstCode.length == 4 && codeR === true && !/^[a-zA-Z]+$/.test(firstCode)) {
+        if (firstCode.length == 4 && codeR && !/^[a-zA-Z]+$/.test(firstCode)) {
+            navigate(`/${firstCode}`)
+        } else if (firstCode.length == 5 && codeR) {
             navigate(`/${firstCode}`)
         }
     }, [codeR])
 
 
-    
- 
-   
+
+
+
     return (
-        <NameContext.Provider value={{ setFirstCode, searchCode, results, setResults,codeR, setCodeR, similarNames }}>
+        <NameContext.Provider value={{ setFirstCode, searchCode, results, setResults, codeR, setCodeR, similarNames }}>
             {children}
         </NameContext.Provider>
     )
