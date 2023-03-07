@@ -75,6 +75,8 @@ export function Header(props) {
     useEffect(() => {
         if (newCode.length == 4 && codeIdentifier === true && !/^[a-zA-Z]+$/.test(newCode)) {
             navigate(`/${newCode}`)
+        } else if (newCode.length == 5 && codeIdentifier) {
+            navigate(`/${newCode}`)
         }
     }, [codeIdentifier])
 
