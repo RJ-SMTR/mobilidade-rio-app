@@ -19,7 +19,7 @@ export function ThemeProvider({ children }) {
     useEffect(() => {
         api.get('/stop_times/?stop_id=' + stopId)
             .then(response => setRouteType(response.data.results[0].trip_id.route_id.route_type))
-    }, [code])
+    }, [stopId])
 
     const setBrt = () => {
         document.documentElement.setAttribute("data-theme", "brt");
@@ -30,17 +30,17 @@ export function ThemeProvider({ children }) {
     };
 
     useEffect(() => {
-        if (routeType != 702) {
+        if (routeType === 700 || routeType === 3) {
             setSppo();
             setTheme("sppo")
-        } else {
+        } else if (routeType === 702) {
             setBrt();
             setTheme("")
         }
-    }, [code])
+    }, [routeType, stopId])
 
     return (
-        <ThemeContext.Provider value={{ theme }}>
+        <ThemeContext.Provider value={{ theme, setTheme, setSppo }}>
             {children}
         </ThemeContext.Provider>
     )

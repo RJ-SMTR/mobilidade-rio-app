@@ -1,4 +1,4 @@
-name: "CD: Deploy to staging (from release or hotfix)"
+name: "cd-staging"
 
 on:
   push:

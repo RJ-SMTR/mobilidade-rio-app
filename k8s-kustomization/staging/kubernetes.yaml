@@ -24,6 +24,27 @@ spec:
           image: gcr.io/PROJECT_ID/IMAGE_APP:TAG
           ports:
             - containerPort: 80
+          env:
+            - name: VITE_BRT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: envs
+                  key: VITE_BRT_ID
+            - name: VITE_BRT_PW
+              valueFrom:
+                secretKeyRef:
+                  name: envs
+                  key: VITE_BRT_PW
+            - name: VITE_BRT_USR
+              valueFrom:
+                secretKeyRef:
+                  name: envs
+                  key: VITE_BRT_USR
+            - name: VITE_BRT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: envs
+                  key: VITE_BRT_URL
           resources:
             requests:
               memory: 64Mi

@@ -1,38 +1,44 @@
-import { useContext, useState, useEffect, useRef } from "react"
+import { useContext, useEffect } from "react"
 import { CodeContext } from "../hooks/getCode"
 import { TripContext } from "../hooks/getTrips"
-import axios from "axios"
+import { useParams } from "react-router-dom";
+import { ShapeContext } from "../hooks/getShape";
+import { FormContext } from "../hooks/useForm";
+
 
 //  MAP IMMORTS
 import L from "leaflet";
-import { MapContainer, TileLayer, Marker, LayerGroup, Polyline } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, LayerGroup, Polyline, Polygon,Circle } from 'react-leaflet'
 import { Icon } from 'leaflet'
 import { useMap } from 'react-leaflet/hooks'
-import "leaflet-routing-machine";
+import BusMarker from "../components/MovingMarkers";
 
 // COMPONENTS
 import { Header } from "../components/Header/Header"
 import { InfoCard } from "../components/InfoCard/InfoCard"
 import { SequenceCard } from '../components/SequenceCard/SequenceCard'
 import { Oval } from 'react-loader-spinner'
+import { Form } from "../components/Form/Form";
 
 
 // STYLING
 import centerMarker from '../assets/imgs/centerMarker.svg'
 import marker from '../assets/imgs/marker.svg'
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import { useParams } from "react-router-dom";
-import { ShapeContext } from "../hooks/getShape";
-import { api } from "../services/api";
+import { MovingMarkerContext } from "../hooks/getMovingMarkers";
+
+
+
 
 export function Home() {
-    const [center, setCenter] = useState()
-    const { code, setCode } = useContext(CodeContext)
-    const {points} = useContext(ShapeContext)
-    const { trip, sequenceInfo } = useContext(TripContext)
-    let params = useParams()
 
-  
+    const { setCode } = useContext(CodeContext)
+    const {center, tracked, innerCircle} = useContext(MovingMarkerContext)
+    const {points} = useContext(ShapeContext)
+    const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
+    const {activeForm, activateForm} = useContext(FormContext)
+
+    // Usa código da URL para setar código para as pesquisas
+    let params = useParams()
     setCode(params.codeURL)
 
     const ComponentResize = () => {
@@ -53,6 +59,10 @@ export function Home() {
         iconUrl: marker,
         iconSize: [28, 28]
     })
+  
+
+   
+    // Centraliza ponto pesquisado no mapa
     const FixCenter = () => {
         const map = useMap()
         useEffect(() => {
@@ -60,13 +70,35 @@ export function Home() {
         }, [center])
 
     }
-
-    useEffect(() => {
-        api.get('/stops/?stop_code=' + code.toUpperCase())
-            .then(response => setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)]))
-    }, [code])
     
     const blackOptions = { color: 'black' }
+
+    // Ícones do gps no mapa
+    function markerOptions (e) {
+        if(stopInfo && trip){
+
+        const options = {
+            className: 'marker-test',
+            html: '<div></div>' +
+                `<p>${e.linha}</p>`
+        }
+        if(e.linha != stopInfo.trip_short_name){
+            options.className = ' marker-test shadowed' 
+        }
+            return options
+        } else{
+            const options = {
+                className: 'marker-test',
+                html: '<div></div>' +
+                    `<p>${e.linha}</p>`
+            }
+            return options
+
+        }
+    }
+
+   
+
 
     return (
         <>
@@ -87,7 +119,7 @@ export function Home() {
 
                         />
                     </div>
-                    : <MapContainer center={center} zoom={15} scrollWheelZoom={false} className="">
+                    : <MapContainer center={center} zoom={13} scrollWheelZoom={false} className="">
 
                         <TileLayer
                             onLoad={(e) => { e.target._map.invalidateSize() }}
@@ -103,15 +135,34 @@ export function Home() {
                             ))}
                             {points ? <Polyline pathOptions={blackOptions} positions={points} /> : <></>}
                         </LayerGroup>
+                        <LayerGroup>
+                        {innerCircle && innerCircle.length > 0  ? innerCircle.map((e) => {
+                                 return <div>
+                                    <BusMarker data={e} icon={L.divIcon(
+                                        markerOptions(e)
+                                    )} />
+                                </div>
+                            }) : tracked ? tracked.map((e) => {
+                                return <div>
+                                    <BusMarker data={e} icon={L.divIcon(
+                                        markerOptions(e)
+                                    )} />
+                                </div>
+                            }) : <></>}
+                           
+                        </LayerGroup>
                         <Marker position={center} icon={yourPosition} />
                     </MapContainer>}
             </div>
+         
             {trip ?
             // CARD COM TRIP ESCOLHIDA
              <SequenceCard /> 
              : 
             //  CARD COM LISTA DE TRIPS
              <InfoCard />}
+            {activeForm ? <Form /> : <></> }
+           
         </>
     )
 }

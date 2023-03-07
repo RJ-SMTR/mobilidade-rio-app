@@ -6,29 +6,31 @@
     padding: 0;
     box-sizing: border-box;
 }
-     
+
 :root {
     --white: #FFFFFF;
+
     --gray-100: #F0EFEF;
     --items-bg: #F8AC04;
     --black: #010101
 }
-   [data-theme="brt"] {
+[data-theme="brt"] {
     --items-bg: #F8AC04
-
-
-   }
-   [data-theme="sppo"] {
+}
+[data-theme="sppo"] {
     --items-bg: #004a80;
+    --body-bg: #004a80;
     --text-color: #fff
-    
-   }
+}
 
 
 body {
-    background: #004a80;
+    background: var(--body-bg);
     color: var(--black-900);
     max-height: 100vh;
+}
+body.homepage{
+    background-color: #004a80 !important;
 }
 
 body,
@@ -45,10 +47,13 @@ a {
 }
 
 #map {
-    height: calc(100vh - 211px);
+    height: calc(100vh - 170px);
 }
 .mapWrapper{
-    max-height: calc(100vh - 211px);
+    max-height: calc(100vh - 170px);
+}
+.leaflet-control-attribution{
+    display: none !important;
 }
 .loaderWrapper{
     margin-top: 211px;
@@ -57,7 +62,7 @@ a {
     justify-content: center;
 }
 .inputShadow{
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.27);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.27);
 }
 .z-1000{
     z-index: 1000 !important;
@@ -66,5 +71,43 @@ a {
     display: none;
 }
 .leaflet-pane{
-    margin-top: -100px;
+    margin-top: -20px;
+}
+.leaflet-top{
+    z-index: 400 !important;
+}
+.marker-test{
+    div{
+background-image: url(../imgs/movingMarker.svg);
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    width: 25px !important;
+    z-index: 1;
+    height: 35px !important;
+    }
+    position: relative;
+    p{
+        position: absolute;
+        padding-left: 15px;
+        padding-right: 4px;
+        border-radius: 4px;
+        left: 10px ;
+        top: 12.5px;
+        background-color: #F8AC04;
+        font-weight: bold;
+    }
+}
+.marker-test.shadowed{
+    opacity: 0.5 !important;
+}
+.formButton{
+    background-color: var(--items-bg);
+    z-index: 1001;
+    position: absolute;
+    top: -50px;
+    right: 0;
+    padding: 8px;
+    border-radius: 50em;
+    
 }
