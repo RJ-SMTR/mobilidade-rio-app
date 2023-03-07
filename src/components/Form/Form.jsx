@@ -39,8 +39,16 @@ export function Form() {
                 formData.stop_id = selectedPlatform[0]
             }
 
+            let baseURL = '';
+            if (window.location.hostname === 'mobilidade.rio') {
+                baseURL = 'https://api.mobilidade.rio/feedback/brt/'
+            } else if (window.location.hostname === 'app.staging.mobilidade.rio') {
+                baseURL = 'https://api.staging.mobilidade.rio/feedback/brt/'
+            } else if(window.location.hostname === 'localhost') {
+                baseURL = 'https://api.dev.mobilidade.rio/feedback/brt/'
+            }
 
-            axios.post('https://api.dev.mobilidade.rio/feedback/brt/', formData)
+            axios.post(baseURL, formData)
                 .then(function () {
                     setMessage("Feedback enviado com sucesso!");
                 })
