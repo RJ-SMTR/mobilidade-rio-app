@@ -9,6 +9,7 @@ import { ShapeProvider } from './hooks/getShape'
 import { GPSProvider } from './hooks/getGPS'
 import { FormProvider } from './hooks/useForm'
 import { MovingMarkerProvider } from './hooks/getMovingMarkers'
+import { ServiceIdProvider } from './hooks/getServiceId'
 import { ToastContainer } from 'react-toastify'
 import { BrowserRouter as Router } from 'react-router-dom'
 
@@ -22,22 +23,24 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Router>
       <NameProvider>
         <CodeProvider>
-          <RoutesProvider>
-            <TripProvider>
-              <ShapeProvider>
-                <ThemeProvider>
-                  <GPSProvider>
-                    <MovingMarkerProvider>
-                      <FormProvider>
-                      <App />
-                      </FormProvider>
-                    </MovingMarkerProvider>
-                  </GPSProvider>
-                </ThemeProvider>
-                <ToastContainer />
-              </ShapeProvider>
-            </TripProvider>
-          </RoutesProvider>
+          <ServiceIdProvider>
+            <RoutesProvider>
+              <TripProvider>
+                <ShapeProvider>
+                  <ThemeProvider>
+                    <GPSProvider>
+                      <MovingMarkerProvider>
+                        <FormProvider>
+                          <App />
+                        </FormProvider>
+                      </MovingMarkerProvider>
+                    </GPSProvider>
+                  </ThemeProvider>
+                  <ToastContainer />
+                </ShapeProvider>
+              </TripProvider>
+            </RoutesProvider>
+          </ServiceIdProvider>
         </CodeProvider>
       </NameProvider>
     </Router>
