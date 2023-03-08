@@ -91,7 +91,7 @@ export function Header(props) {
                         }
                     </div>
                     <div className="flex-column items-center mb-5">
-                        <h1 className={`text-lg text-center + ${styles.headerText}`}>Saiba quais linhas de ônibus passam nos pontos da cidade</h1>
+                        <h1 className={`text-lg text-center + ${styles.headerText}`}>Saiba quais linhas passam nos pontos da cidade</h1>
                         <div className="flex flex-col w-full">
                             <div className='relative'>
                                 <button className='absolute right-[12px] top-0 bottom-0' onClick={() => clearInfo()}>
