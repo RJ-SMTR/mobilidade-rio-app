@@ -31,11 +31,32 @@ export function RoutesProvider({ children }) {
                 })
         }
     }, [code])
+ 
     function compareTripName(a, b) {
-        const aNumber = parseInt(a.trip_id.trip_short_name.replace(/\D/g, ''));
-        const bNumber = parseInt(b.trip_id.trip_short_name.replace(/\D/g, ''));
+        const aShortName = a.trip_id.trip_short_name;
+        const bShortName = b.trip_id.trip_short_name;
+
+        const aStartsWithLECD = aShortName.startsWith("LECD");
+        const bStartsWithLECD = bShortName.startsWith("LECD");
+
+        if (aStartsWithLECD && !bStartsWithLECD) {
+            return 1;
+        }
+        if (!aStartsWithLECD && bStartsWithLECD) {
+            return -1;
+        }
+
+        if (aStartsWithLECD && bStartsWithLECD) {
+            const aNumber = parseInt(aShortName.replace(/\D/g, ""));
+            const bNumber = parseInt(bShortName.replace(/\D/g, ""));
+            return aNumber - bNumber;
+        }
+
+        const aNumber = parseInt(aShortName.replace(/\D/g, ""));
+        const bNumber = parseInt(bShortName.replace(/\D/g, ""));
         return aNumber - bNumber;
     }
+
     function activateLoader(){
     setLoader(true)
     setPlataforms([])
