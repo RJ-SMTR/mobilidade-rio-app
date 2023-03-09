@@ -31,7 +31,7 @@ export function SearchMain() {
             <Header />
             <div className="px-4 mt-60 relative z-1">
                 <h1 className='text-xl text-center mb-3 text-white'>
-                    Saiba quais linhas de ônibus passam nos pontos da cidade
+                    Saiba quais linhas passam na cidade
                 </h1>
                 {/* Inputs */}
                 <div className="flex content-center mb-6">

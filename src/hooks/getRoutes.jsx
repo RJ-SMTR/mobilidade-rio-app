@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { CodeContext } from "./getCode";
 import { api } from "../services/api";
+import { ServiceIdContext } from "./getServiceId";
 export const RoutesContext = createContext()
 
 
@@ -8,6 +9,7 @@ export const RoutesContext = createContext()
 
 export function RoutesProvider({ children }) {
     const { code } = useContext(CodeContext)
+    const {serviceId} = useContext(ServiceIdContext)
     const [stopId, setStopId] = useState()
     const [routes, setRoutes] = useState()
     const [plataforms, setPlataforms] = useState([])
@@ -15,6 +17,7 @@ export function RoutesProvider({ children }) {
     const [stations, setStations] = useState()
     const [isParent, setIsParent] = useState()
     const [childName, setChildName] = useState()
+    const [loader, setLoader] = useState()
 
 
     useEffect(() => {
@@ -28,24 +31,60 @@ export function RoutesProvider({ children }) {
                 })
         }
     }, [code])
+ 
+    function compareTripName(a, b) {
+        const aShortName = a.trip_id.trip_short_name;
+        const bShortName = b.trip_id.trip_short_name;
 
-    const filteredTrips = [];
+        const aStartsWithLECD = aShortName.startsWith("LECD");
+        const bStartsWithLECD = bShortName.startsWith("LECD");
+
+        if (aStartsWithLECD && !bStartsWithLECD) {
+            return 1;
+        }
+        if (!aStartsWithLECD && bStartsWithLECD) {
+            return -1;
+        }
+
+        if (aStartsWithLECD && bStartsWithLECD) {
+            const aNumber = parseInt(aShortName.replace(/\D/g, ""));
+            const bNumber = parseInt(bShortName.replace(/\D/g, ""));
+            return aNumber - bNumber;
+        }
+
+        const aNumber = parseInt(aShortName.replace(/\D/g, ""));
+        const bNumber = parseInt(bShortName.replace(/\D/g, ""));
+        return aNumber - bNumber;
+    }
+
+    function activateLoader(){
+    setLoader(true)
+    setPlataforms([])
+    }
+
     async function getMultiplePages(url) {
+        const filteredTrips = [];
         await api
             .get(url)
             .then(({ data }) => {
                 data.results.forEach((item) => {
-                    const existingTrip = filteredTrips.find((trip) => trip.trip_id.trip_short_name === item.trip_id.trip_short_name);
-                    if (!existingTrip) {
+                    if (item.trip_id.service_id === serviceId) {
                         filteredTrips.push(item);
                     }
                 });
                 if (data.next) {
                     getMultiplePages(data.next);
+                    
                 } else {
+                    if(locationType === 1){
+                        setLoader(false)
+                        getStations("/stop_times/?stop_id=" + stopId)
+                    }
+                    filteredTrips.sort(compareTripName)
                     setRoutes([...filteredTrips]);
                 }
-            })
+
+            });
     }
 
     let allStations = []
@@ -86,9 +125,9 @@ export function RoutesProvider({ children }) {
             setPlataforms((prevResults) => [...prevResults, result]);
         }
     }, [stations]);
-    
+
     return (
-        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType, childName}}>
+        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType, childName, loader, activateLoader}}>
             {children}
         </RoutesContext.Provider>
     )
