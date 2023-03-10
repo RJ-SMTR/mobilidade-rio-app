@@ -68,7 +68,8 @@ export function RoutesProvider({ children }) {
             .get(url)
             .then(({ data }) => {
                 data.results.forEach((item) => {
-                    if (item.trip_id.service_id === serviceId) {
+                    const existingTrip = filteredTrips.find((trip) => trip.trip_id.trip_short_name === item.trip_id.trip_short_name);
+                    if (item.trip_id.service_id === serviceId && !existingTrip) {
                         filteredTrips.push(item);
                     }
                 });
