@@ -89,7 +89,7 @@ export function InfoCard() {
                                     </li>
                                 }))
 
-                            }</> : !arrivals  ?
+                            }</> : !arrivals || arrivals.length < 1  ?
                             // MOSTRA ROUTES QND NÃO TIVER NENHUM ARRIVAL (PLACEHOLDER)
                             routes.map((e) => {
                                 return (
