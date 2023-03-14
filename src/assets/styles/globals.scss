@@ -111,3 +111,7 @@ background-image: url(../imgs/movingMarker.svg);
     border-radius: 50em;
     
 }
+.leaflet-popup-content{
+    margin: 0 !important;
+    padding: 10px 22px;
+}

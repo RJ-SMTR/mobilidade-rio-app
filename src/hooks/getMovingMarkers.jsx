@@ -4,8 +4,9 @@ import { api } from "../services/api"
 import { NameContext } from "./getName"
 import * as turf from '@turf/turf'
 import { GPSContext } from "./getGPS"
-import { garage1, garage2} from "../components/garages";
+import { garage1, garage2 } from "../components/garages";
 import { RoutesContext } from "./getRoutes"
+import { TripContext } from "./getTrips"
 
 
 
@@ -15,14 +16,18 @@ export const MovingMarkerContext = createContext()
 export function MovingMarkerProvider({ children }) {
 
     const { code } = useContext(CodeContext)
-    const {realtime} = useContext(GPSContext)
+    const { stopId } = useContext(RoutesContext)
+    const { realtime } = useContext(GPSContext)
     const { setResults } = useContext(NameContext)
-    const {routes} = useContext(RoutesContext)
+    const { routes } = useContext(RoutesContext)
+    const {stopInfo} = useContext(TripContext)
+    const [tripsShortName, setTripShortName] = useState([])
     const [center, setCenter] = useState()
     const [radius, setRadius] = useState()
     const [tracked, setTracked] = useState([])
     const [innerCircle, setInnerCircle] = useState([])
-    
+    const [arrivals, setArrivals] = useState([])
+
 
 
 
@@ -36,24 +41,50 @@ export function MovingMarkerProvider({ children }) {
         setResults()
     }, [code])
 
+    //  NOVA CHAMADA EM STOP_TIMES PRA PODER TER O trip_short_name
+    //  e filtrar os onibus do gps
+    async function getTripNames(url) {
+        let tripNames = [];
+        await api
+            .get(url)
+            .then(({ data }) => {
+                data.results.forEach((item) => {
+                    tripNames.push(item);
+                });
+                if (data.next) {
+                    getTripNames(data.next);
+                }
+                setTripShortName([...tripNames]);
+            });
+    }
+
+    useEffect(() => {
+        if (stopId) {
+            getTripNames('/stop_times/?stop_id=' + stopId)
+
+        }
+    }, [stopId])
+
     useEffect(() => {
         if (realtime) {
             let trackedBuses = []
             realtime.map((i) => {
-                const currentTime = new Date().getTime();
-                const timeDifference = currentTime - i.dataHora
+                const currentTime = new Date();
+                const givenTime = new Date(i.dataHora);
+                const timeDifference = currentTime - givenTime
                 const seconds = Math.floor(timeDifference / 1000);
                 const minutes = Math.floor(seconds / 60);
                 const remainingSeconds = seconds % 60;
 
                 const result = {
                     code: i.codigo,
-                    linha: i.linha,
+                    linha: i.trip_short_name,
                     lat: i.latitude,
                     lng: i.longitude,
                     velocidade: i.velocidade,
-                    sentido: i.sentido,
-                    hora: [minutes, remainingSeconds]
+                    sentido: i.direction_id,
+                    hora: [minutes, remainingSeconds],
+                    chegada: i.estimated_time_arrival
                 };
 
                 const alreadyExists = trackedBuses.some(r => r.lat === result.lat && r.lng === result.lng);
@@ -65,44 +96,66 @@ export function MovingMarkerProvider({ children }) {
                 if (!alreadyExists && !turf.booleanPointInPolygon(pt, scaledMultiPolygon) && !turf.booleanPointInPolygon(pt, scaledMultiPolygon2)) {
                     trackedBuses.push(result);
                 }
-      
-
             });
-            if(routes){
+            if (routes) {
                 let filteredGPS = trackedBuses.filter(item => {
                     return routes.some(filterItem => {
-                        return item.linha === filterItem.trip_id.trip_short_name
+                        if(stopInfo){
+                         return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id
+                        } else {
+                            return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5)    
+                        }
                     });
                 });
-
-
                 setTracked(filteredGPS)
                 setInnerCircle([])
-           
+
             } else {
-                if(radius){
+                if (radius) {
                     let insideCircle = []
-                    trackedBuses.forEach((item) => {
+                    let filteredGPS = trackedBuses.filter(item => {
+                        return tripsShortName.some(filterItem => {
+                            return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5)
+                        });
+                    });
+                    filteredGPS.forEach((item) => {
+                     
                         var pt = turf.point([item.lng, item.lat])
-                        if (turf.booleanWithin(pt, turf.circle(radius, 3000, { units: 'meters' }))){
+                        if (turf.booleanWithin(pt, turf.circle(radius, 3000, { units: 'meters' }))) {
                             insideCircle.push(item)
-                            
-                        } 
-                        
+                        }
                     });
                     setInnerCircle(insideCircle)
-                    
                 }
-
-            
             }
-            
-           
         }
     }, [realtime, radius])
 
+
+
+
+    useEffect(() => {
+        if(routes && tracked){
+                const routesAndArrivals = [];
+                for (const obj1 of routes) {
+                    for (const obj2 of tracked) {
+                        if (obj1.trip_id.trip_short_name === obj2.linha && obj1.trip_id.direction_id === obj2.sentido ){
+                            const smallestEta = Math.min(obj2.chegada); 
+                            if (smallestEta >= 0) { 
+                                const combinedObj = { ...obj1, ...obj2, smallestEta };
+                                routesAndArrivals.push(combinedObj);
+                                break;
+                            }
+                        }
+                    }
+                }
+                setArrivals(routesAndArrivals)
+            }
+    }, [routes, tracked])
+
+
     return (
-        <MovingMarkerContext.Provider value={{ center, tracked, setTracked, innerCircle, setInnerCircle }}>
+        <MovingMarkerContext.Provider value={{ center, tracked, setTracked, innerCircle, setInnerCircle, arrivals, setArrivals }}>
             {children}
         </MovingMarkerContext.Provider>
     )

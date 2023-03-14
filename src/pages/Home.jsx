@@ -32,10 +32,10 @@ import { MovingMarkerContext } from "../hooks/getMovingMarkers";
 export function Home() {
 
     const { setCode } = useContext(CodeContext)
-    const {center, tracked, innerCircle} = useContext(MovingMarkerContext)
+    const {center, tracked, innerCircle, arrivals} = useContext(MovingMarkerContext)
     const {points} = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
-    const {activeForm, activateForm} = useContext(FormContext)
+    const {activeForm} = useContext(FormContext)
 
     // Usa código da URL para setar código para as pesquisas
     let params = useParams()
@@ -76,7 +76,6 @@ export function Home() {
     // Ícones do gps no mapa
     function markerOptions (e) {
         if(stopInfo && trip){
-
         const options = {
             className: 'marker-test',
             html: '<div></div>' +
@@ -85,6 +84,16 @@ export function Home() {
         if(e.linha != stopInfo.trip_short_name){
             options.className = ' marker-test shadowed' 
         }
+            return options
+        } else if (arrivals ){
+            const options = {
+                className: 'marker-test',
+                html: '<div></div>' +
+                    `<p>${e.linha}</p>`
+            }
+            if (e.chegada < 0) {
+                options.className = ' marker-test shadowed'
+            }
             return options
         } else{
             const options = {
@@ -138,13 +147,13 @@ export function Home() {
                         <LayerGroup>
                         {innerCircle && innerCircle.length > 0  ? innerCircle.map((e) => {
                                  return <div>
-                                    <BusMarker data={e} icon={L.divIcon(
+                                    <BusMarker id={e.code} data={e} icon={L.divIcon(
                                         markerOptions(e)
                                     )} />
                                 </div>
                             }) : tracked ? tracked.map((e) => {
                                 return <div>
-                                    <BusMarker data={e} icon={L.divIcon(
+                                    <BusMarker id={e.code} data={e} icon={L.divIcon(
                                         markerOptions(e)
                                     )} />
                                 </div>
