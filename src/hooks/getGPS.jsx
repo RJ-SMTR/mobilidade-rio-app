@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useContext } from "react";
 import { api } from "../services/api";
+import {gps} from "../services/gps"
 import axios from "axios"
 import { RoutesContext } from "./getRoutes";
 
@@ -44,7 +45,7 @@ export function GPSProvider({ children }) {
             const realtimeData = [];
 
             for (const stops of childStopId) {
-                const response = await axios.get(`https://api.dev.mobilidade.rio/predictor/?stop_id=${stops}`, {
+                const response = await gps.get(`?stop_id=${stops}`, {
                     method: 'GET',
                     mode: 'cors',
                 });
