@@ -137,7 +137,7 @@ export function Home() {
                         />
                         <div id="map"></div>
                         <ComponentResize />
-                        <FixCenter />
+                        {/* <FixCenter /> */}
                         <LayerGroup>
                             {sequenceInfo.map((e) => (
                                 <Marker key={e.id} position={[e.stop_id.stop_lat, e.stop_id.stop_lon]} icon={normalMarker} />
