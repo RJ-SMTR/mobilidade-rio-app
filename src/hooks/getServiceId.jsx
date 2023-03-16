@@ -12,6 +12,11 @@ export function ServiceIdProvider({ children }) {
     const [calendar, setCalendar] = useState([])
     const [serviceId, setServiceId] = useState('')
     const [weekDay, setWeekDay] = useState('')
+    const options = {
+        weekday: 'long',
+        timeZone: 'America/Sao_Paulo'
+    };
+
 
     async function getDates(url) {
         let allDates = []; 
@@ -58,7 +63,7 @@ export function ServiceIdProvider({ children }) {
         if (service) {
             setServiceId(service.service_id);
         } else if (weekDay) {
-            const dayOfWeek = new Date(todayDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
             const serviceWorks = weekDay.filter((service) => service[dayOfWeek] === 1);
             const currentDate = new Date(todayDate);
             if (serviceWorks.length > 0) {

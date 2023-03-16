@@ -1,5 +1,10 @@
 import { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import { useContext } from "react";
+import { api } from "../services/api";
+import { gps } from "../services/gps"
+import axios from "axios"
+import { RoutesContext } from "./getRoutes";
+import { CodeContext } from "./getCode";
 
 
 export const GPSContext = createContext()
@@ -9,23 +14,30 @@ export const GPSContext = createContext()
 
 export function GPSProvider({ children }) {
     const [realtime, setRealtime] = useState([])
-    
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            axios.get('https://dados.mobilidade.rio/gps/brt', {
-                method: 'GET',
-                mode: "cors",
-              
+    let allBuses = []
+    async function getGPS(url) {
+        await gps
+            .get(url)
+            .then(({ data }) => {
+                data.results.forEach((item) => {
+                    allBuses.push(item)
+                })
+
+                if (data.next) {
+                    getGPS(data.next)
+                } else {
+                    setRealtime([...allBuses])
+                    allBuses = [] // clear the allBuses array for the next iteration
+                }
             })
-                .then(response => setRealtime(response.data.veiculos))
-        }, 6000);
-        return () => clearInterval(interval);
-    }, []);
+    }
+
+
 
 
     return (
-        <GPSContext.Provider value={{ realtime }}>
+        <GPSContext.Provider value={{ realtime, getGPS }}>
             {children}
         </GPSContext.Provider>
     )

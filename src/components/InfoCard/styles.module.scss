@@ -16,8 +16,9 @@
         border-bottom: none !important;
     }
     .routeName {
-            display: flex;
+            // display: flex;
             align-items: center;
+            // justify-content: space-between;
     
             .shortName {
                 display: flex;
@@ -35,4 +36,7 @@
     text-align: center;
     padding: 8px;
     margin-bottom: 25px;
+}
+#wifi1,#wifi2, #wifi3{
+    opacity: 0;
 }
