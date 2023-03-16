@@ -8,7 +8,7 @@ import { FormContext } from "../hooks/useForm";
 
 //  MAP IMMORTS
 import L from "leaflet";
-import { MapContainer, TileLayer, Marker, LayerGroup, Polyline, Polygon,Circle } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, LayerGroup, Polyline, Polygon, Circle } from 'react-leaflet'
 import { Icon } from 'leaflet'
 import { useMap } from 'react-leaflet/hooks'
 import BusMarker from "../components/MovingMarkers";
@@ -32,10 +32,10 @@ import { MovingMarkerContext } from "../hooks/getMovingMarkers";
 export function Home() {
 
     const { setCode } = useContext(CodeContext)
-    const {center, tracked, innerCircle, arrivals} = useContext(MovingMarkerContext)
-    const {points} = useContext(ShapeContext)
+    const { center, tracked, innerCircle, arrivals } = useContext(MovingMarkerContext)
+    const { points } = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
-    const {activeForm} = useContext(FormContext)
+    const { activeForm } = useContext(FormContext)
 
     // Usa código da URL para setar código para as pesquisas
     let params = useParams()
@@ -59,9 +59,9 @@ export function Home() {
         iconUrl: marker,
         iconSize: [28, 28]
     })
-  
 
-   
+
+
     // Centraliza ponto pesquisado no mapa
     const FixCenter = () => {
         const map = useMap()
@@ -70,32 +70,32 @@ export function Home() {
         }, [center])
 
     }
-    
+
     const blackOptions = { color: 'black' }
 
     // Ícones do gps no mapa
-    function markerOptions (e) {
-        if(stopInfo && trip){
-        const options = {
-            className: 'marker-test',
-            html: '<div></div>' +
-                `<p>${e.linha}</p>`
-        }
-        if(e.linha != stopInfo.trip_short_name){
-            options.className = ' marker-test shadowed' 
-        }
-            return options
-        } else if (arrivals ){
+    function markerOptions(e) {
+        if (stopInfo && trip) {
             const options = {
                 className: 'marker-test',
                 html: '<div></div>' +
                     `<p>${e.linha}</p>`
             }
-            if (e.chegada < 0) {
+            if (e.linha != stopInfo.trip_short_name) {
                 options.className = ' marker-test shadowed'
             }
             return options
-        } else{
+        } else if (arrivals) {
+            const options = {
+                className: 'marker-test',
+                html: '<div></div>' +
+                    `<p>${e.linha}</p>`
+            }
+            if (e.distancia < -0.1) {
+                options.className = ' marker-test shadowed'
+            }
+            return options
+        } else {
             const options = {
                 className: 'marker-test',
                 html: '<div></div>' +
@@ -106,7 +106,7 @@ export function Home() {
         }
     }
 
-   
+
 
 
     return (
@@ -145,8 +145,9 @@ export function Home() {
                             {points ? <Polyline pathOptions={blackOptions} positions={points} /> : <></>}
                         </LayerGroup>
                         <LayerGroup>
-                        {innerCircle && innerCircle.length > 0  ? innerCircle.map((e) => {
-                                 return <div>
+                            {/* REMOVER INNERCIRCLE */}
+                            {innerCircle && innerCircle.length > 0 ? innerCircle.map((e) => {
+                                return <div>
                                     <BusMarker id={e.code} data={e} icon={L.divIcon(
                                         markerOptions(e)
                                     )} />
@@ -158,20 +159,20 @@ export function Home() {
                                     )} />
                                 </div>
                             }) : <></>}
-                           
+
                         </LayerGroup>
                         <Marker position={center} icon={yourPosition} />
                     </MapContainer>}
             </div>
-         
+
             {trip ?
-            // CARD COM TRIP ESCOLHIDA
-             <SequenceCard /> 
-             : 
-            //  CARD COM LISTA DE TRIPS
-             <InfoCard />}
-            {activeForm ? <Form /> : <></> }
-           
+                // CARD COM TRIP ESCOLHIDA
+                <SequenceCard />
+                :
+                //  CARD COM LISTA DE TRIPS
+                <InfoCard />}
+            {activeForm ? <Form /> : <></>}
+
         </>
     )
 }

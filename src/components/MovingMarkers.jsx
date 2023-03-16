@@ -30,15 +30,15 @@ export default function BusMarker({ id, data, icon }) {
                 key={id}
             >
                 <Popup>
-                    {/* {data.code ? <h1> Código: {data.code} </h1> : <></>} */}
+                    {data.code ? <h1> Código: {data.code} </h1> : <></>}
                     <div className="flex items-center">
                         {/* <FiClock className={data.hora[0] > 1 ? 'text-red-600 mr-1' : '' + "mr-1" }/> */}
                         {/* <p></p> */}
                         <h1 className={data.hora[0] > 1 ? 'text-red-600' : ''}> Atualizado a <span className="font-bold">{data.hora[0]} min</span> atrás</h1>
                     </div>
         
-                    {/* {data.velocidade} km/h<br/>
-                    Sentido de {data.sentido === 1 ? `ida` : 'volta'} */}
+                     {data.velocidade} km/h<br/>
+                    {/* Sentido de {data.sentido === 1 ? `ida` : 'volta'} */} 
                 </Popup>
             </LeafletTrackingMarker>
 

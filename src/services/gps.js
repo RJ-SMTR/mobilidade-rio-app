@@ -5,7 +5,7 @@ if (window.location.hostname === 'mobilidade.rio') {
 } else if (window.location.hostname === 'app.staging.mobilidade.rio') {
     baseURL = 'https://api.staging.mobilidade.rio/predictor/'
 } else if (window.location.hostname === 'localhost') {
-    baseURL = 'https://api.dev.mobilidade.rio/predictor/'
+    baseURL = 'https://api.staging.mobilidade.rio/predictor/'
 }
 
 

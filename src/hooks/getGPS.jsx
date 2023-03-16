@@ -1,9 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 import { useContext } from "react";
 import { api } from "../services/api";
-import {gps} from "../services/gps"
+import { gps } from "../services/gps"
 import axios from "axios"
 import { RoutesContext } from "./getRoutes";
+import { CodeContext } from "./getCode";
 
 
 export const GPSContext = createContext()
@@ -12,60 +13,31 @@ export const GPSContext = createContext()
 
 
 export function GPSProvider({ children }) {
-    const { stopId } = useContext(RoutesContext)
     const [realtime, setRealtime] = useState([])
-    const [childStopId, setChildStopId] = useState([])
 
-    let childStops = new Set();
-    async function getChildStops(url) {
-        await api
+    let allBuses = []
+    async function getGPS(url) {
+        await gps
             .get(url)
             .then(({ data }) => {
                 data.results.forEach((item) => {
-                    childStops.add(item.stop_id.stop_id);
+                    allBuses.push(item)
+                })
 
-                });
                 if (data.next) {
-                    getChildStops(data.next);
+                    getGPS(data.next)
+                } else {
+                    setRealtime([...allBuses])
+                    allBuses = [] // clear the allBuses array for the next iteration
                 }
-                setChildStopId([...childStops]);
-
-            });
+            })
     }
 
-    useEffect(() => {
-        if (stopId) {
-            getChildStops('/stop_times/?stop_id=' + stopId)
-        }
-    }, [stopId])
 
-
-    useEffect(() => {
-        const fetchRealtimeData = async () => {
-            const realtimeData = [];
-
-            for (const stops of childStopId) {
-                const response = await gps.get(`?stop_id=${stops}`, {
-                    method: 'GET',
-                    mode: 'cors',
-                });
-                realtimeData.push(...response.data.results);
-            }
-            setRealtime(realtimeData);
-
-        };
-        fetchRealtimeData();
-
-        const interval = setInterval(() => {
-            fetchRealtimeData();
-        }, 3000);
-
-        return () => clearInterval(interval);
-    }, [childStopId]);
 
 
     return (
-        <GPSContext.Provider value={{ realtime }}>
+        <GPSContext.Provider value={{ realtime, getGPS }}>
             {children}
         </GPSContext.Provider>
     )

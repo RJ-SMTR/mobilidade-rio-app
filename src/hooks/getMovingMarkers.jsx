@@ -15,12 +15,11 @@ export const MovingMarkerContext = createContext()
 
 export function MovingMarkerProvider({ children }) {
 
-    const { code } = useContext(CodeContext)
-    const { stopId } = useContext(RoutesContext)
+    const { code, stopId } = useContext(CodeContext)
     const { realtime } = useContext(GPSContext)
     const { setResults } = useContext(NameContext)
     const { routes } = useContext(RoutesContext)
-    const {stopInfo} = useContext(TripContext)
+    const { stopInfo } = useContext(TripContext)
     const [tripsShortName, setTripShortName] = useState([])
     const [center, setCenter] = useState()
     const [radius, setRadius] = useState()
@@ -66,7 +65,7 @@ export function MovingMarkerProvider({ children }) {
     }, [stopId])
 
     useEffect(() => {
-        if (realtime) {
+        if (realtime && routes) {
             let trackedBuses = []
             realtime.map((i) => {
                 const currentTime = new Date();
@@ -84,7 +83,8 @@ export function MovingMarkerProvider({ children }) {
                     velocidade: i.velocidade,
                     sentido: i.direction_id,
                     hora: [minutes, remainingSeconds],
-                    chegada: i.estimated_time_arrival
+                    chegada: i.estimated_time_arrival,
+                    distancia: i.d_px_to_stop,
                 };
 
                 const alreadyExists = trackedBuses.some(r => r.lat === result.lat && r.lng === result.lng);
@@ -97,60 +97,51 @@ export function MovingMarkerProvider({ children }) {
                     trackedBuses.push(result);
                 }
             });
-            if (routes) {
-                let filteredGPS = trackedBuses.filter(item => {
-                    return routes.some(filterItem => {
-                        if(stopInfo){
-                         return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id
-                        } else {
-                            return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5)    
-                        }
-                    });
+            // if (routes) {
+            let filteredGPS = trackedBuses.filter(item => {
+                return routes.some(filterItem => {
+                    if (stopInfo) {
+                        return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id && item.chegada > -1
+                    } else {
+                        return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.chegada > -1)
+                    }
                 });
-                setTracked(filteredGPS)
-                setInnerCircle([])
+            });
+            setTracked(filteredGPS)
+            setInnerCircle([])
 
-            } else {
-                if (radius) {
-                    let insideCircle = []
-                    let filteredGPS = trackedBuses.filter(item => {
-                        return tripsShortName.some(filterItem => {
-                            return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5)
-                        });
-                    });
-                    filteredGPS.forEach((item) => {
-                     
-                        var pt = turf.point([item.lng, item.lat])
-                        if (turf.booleanWithin(pt, turf.circle(radius, 3000, { units: 'meters' }))) {
-                            insideCircle.push(item)
-                        }
-                    });
-                    setInnerCircle(insideCircle)
-                }
-            }
+            // } 
         }
-    }, [realtime, radius])
+    }, [realtime, routes])
 
 
 
 
     useEffect(() => {
-        if(routes && tracked){
-                const routesAndArrivals = [];
-                for (const obj1 of routes) {
-                    for (const obj2 of tracked) {
-                        if (obj1.trip_id.trip_short_name === obj2.linha && obj1.trip_id.direction_id === obj2.sentido ){
-                            const smallestEta = Math.min(obj2.chegada); 
-                            if (smallestEta >= 0) { 
-                                const combinedObj = { ...obj1, ...obj2, smallestEta };
-                                routesAndArrivals.push(combinedObj);
-                                break;
-                            }
-                        }
-                    }
+        // Filtrar resultado pelo stop_id selecionado
+        // Mostrar só 3 primeiros (os 3 primeiros menores tempos maiores q 0)
+        // TENTAR RELACIONAR SEM O FOR 
+        //  usar reduce
+        if (routes && tracked) {
+            const arrivals = routes.reduce((acc, obj1) => {
+                const matched = tracked.filter(obj2 =>
+                    obj1.trip_id.trip_short_name === obj2.linha &&
+                    obj1.trip_id.direction_id === obj2.sentido
+                );
+
+                if (matched.length > 0) {
+                    const sortedMatched = matched.sort((a, b) => a.chegada - b.chegada);
+                    const smallestEtas = sortedMatched.slice(0, 3).map(obj2 => obj2.chegada);
+                    const combinedObj = { ...obj1, smallestEtas };
+                    acc.push(combinedObj);
                 }
-                setArrivals(routesAndArrivals)
-            }
+
+                return acc;
+            }, []);
+
+            setArrivals(arrivals);
+        }
+
     }, [routes, tracked])
 
 

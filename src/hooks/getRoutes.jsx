@@ -62,8 +62,8 @@ export function RoutesProvider({ children }) {
     setPlataforms([])
     }
 
+    const filteredTrips = [];
     async function getMultiplePages(url) {
-        const filteredTrips = [];
         await api
             .get(url)
             .then(({ data }) => {
