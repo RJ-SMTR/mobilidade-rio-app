@@ -118,9 +118,9 @@ export function Header(props) {
                 </div>
 
             </header>
-            <div className='warning absolute z-[402] bg-white px-5 py-2 right-0 rounded-md border-2 border-slate-200'>
-                    <p className='text-red-600'>Versão Beta para testes</p>
-            </div>
+            {/* <div className='warning absolute z-[402] bg-white px-5 py-2 right-0 rounded-md border-2 border-slate-200'>
+                <p className='text-red-600'>Versão Beta para testes</p>
+            </div> */}
         </>
     )
 }
