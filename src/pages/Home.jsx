@@ -19,6 +19,7 @@ import { InfoCard } from "../components/InfoCard/InfoCard"
 import { SequenceCard } from '../components/SequenceCard/SequenceCard'
 import { Oval } from 'react-loader-spinner'
 import { Form } from "../components/Form/Form";
+import CenterButton from "../components/CenterButton"
 
 
 // STYLING
@@ -62,14 +63,7 @@ export function Home() {
 
 
 
-    // Centraliza ponto pesquisado no mapa
-    const FixCenter = () => {
-        const map = useMap()
-        useEffect(() => {
-            map.setView(center);
-        }, [center])
 
-    }
 
     const blackOptions = { color: 'black' }
 
@@ -162,6 +156,7 @@ export function Home() {
 
                         </LayerGroup>
                         <Marker position={center} icon={yourPosition} />
+                        <CenterButton location={center}/>
                     </MapContainer>}
             </div>
 
