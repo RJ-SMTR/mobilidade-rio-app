@@ -22,6 +22,7 @@ export function NameProvider({ children }) {
     }
 
     let allSimilar = []
+    // COLOCAR CóDIGO JUNTO DO NOME
     async function similarNames(url) {
         await api
             .get(url)

@@ -23,7 +23,7 @@ export function Header(props) {
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
     const [codeIdentifier, setCodeIdentifier] = useState()
-    const { setRoutes, setPlataforms} = useContext(RoutesContext)
+    const { setRoutes, setPlataforms, setStopId} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
     const {setTracked, setInnerCircle} = useContext(MovingMarkerContext)
     function clearInfo() {
@@ -36,6 +36,7 @@ export function Header(props) {
         setResults()
         setTracked()
         setTheme("sppo")
+        setStopId()
         setSppo()
         setInnerCircle([])
 
