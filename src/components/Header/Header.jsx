@@ -13,6 +13,7 @@ import { RoutesContext } from '../../hooks/getRoutes'
 import { NameContext } from '../../hooks/getName'
 import { api } from '../../services/api'
 import { MovingMarkerContext } from '../../hooks/getMovingMarkers'
+import { GPSContext } from '../../hooks/getGPS'
 
 export function Header(props) {
     let navigate = useNavigate()
@@ -26,6 +27,7 @@ export function Header(props) {
     const { setRoutes, setPlataforms, setStopId} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
     const {setTracked, setInnerCircle} = useContext(MovingMarkerContext)
+    const {stopFetching} = useContext(GPSContext)
     function clearInfo() {
         setTrip('')
         setCode("")
@@ -39,6 +41,7 @@ export function Header(props) {
         setStopId()
         setSppo()
         setInnerCircle([])
+        stopFetching()
 
     }
 
@@ -48,6 +51,7 @@ export function Header(props) {
 
     const searchNewCode = event => {
         setNewCode(event.target.value)
+        stopFetching()
         setTrip('')
         setValue()
         setPlataforms([])

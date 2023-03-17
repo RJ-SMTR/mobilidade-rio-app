@@ -101,9 +101,9 @@ export function MovingMarkerProvider({ children }) {
             let filteredGPS = trackedBuses.filter(item => {
                 return routes.some(filterItem => {
                     if (stopInfo) {
-                        return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id && item.chegada > -1
+                        return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id && item.distancia > -0.100
                     } else {
-                        return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.chegada > -1)
+                        return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.distancia > -0.100)
                     }
                 });
             });
