@@ -26,11 +26,11 @@ export function InfoCard() {
     const [name, setName] = useState()
     const [linha, setLinha] = useState(false)
     const { theme } = useContext(ThemeContext)
-    const { code } = useContext(CodeContext)
+    const { code, setGpsUrl } = useContext(CodeContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, activateLoader } = useContext(RoutesContext)
     const { setTracked, arrivals, setArrivals } = useContext(MovingMarkerContext)
     const { setTrip } = useContext(TripContext);
-    const { getGPS, stopFetchingData } = useContext(GPSContext)
+    const { stopFetching } = useContext(GPSContext)
     const { activateForm, setSelectedPlatform } = useContext(FormContext)
     const [sortedPlatforms, setSortedPlatforms] = useState()
 
@@ -76,7 +76,7 @@ export function InfoCard() {
                         </svg>
                     </button>
                     {!routes ? <></> : <div className='flex justify-end'>
-                        <button onClick={() => (setRoutes(), setTracked(), infoLinha(), setArrivals(), stopFetchingData())}>
+                        <button onClick={() => (setRoutes(), setTracked(), infoLinha(), setArrivals(), stopFetching())}>
                             <GrClose />
                         </button>
                     </div>}
@@ -101,7 +101,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : sortedPlatforms.map((e) => Object.values(e).map((values) => {
-                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), getGPS('?stop_id=' + Object.keys(values)) }}>
+                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)) }}>
                                         <div className={styles.routeName}>
                                             {Object.values(values)[0].stop_desc ? <>
                                                 <div className={styles.shortName}>

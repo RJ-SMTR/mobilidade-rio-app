@@ -13,6 +13,7 @@ export function CodeProvider({ children }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const [codeExists, setCodeExists] = useState(false)
     const [active, setActive] = useState(false)
+    const [gpsUrl, setGpsUrl] =  useState()
 
 
     useEffect(() => {
@@ -45,7 +46,7 @@ export function CodeProvider({ children }) {
         checkCode()
     }, [code])
     return (
-        <CodeContext.Provider value={{ code, setCode,  setSearchParams, codeExists, active, setActive }}>
+        <CodeContext.Provider value={{ code, setCode,  setSearchParams, codeExists, active, setActive, gpsUrl, setGpsUrl }}>
             {children}
         </CodeContext.Provider>
     )
