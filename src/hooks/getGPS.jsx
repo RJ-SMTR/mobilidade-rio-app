@@ -28,7 +28,7 @@ export function GPSProvider({ children }) {
                     getGPS(data.next)
                 } else {
                     setRealtime([...allBuses])
-                    allBuses = [] // clear the allBuses array for the next iteration
+                   
                 }
             })
     }

@@ -128,7 +128,7 @@ export function RoutesProvider({ children }) {
     }, [stations]);
 
     return (
-        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType, childName, loader, activateLoader}}>
+        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType, childName, loader, activateLoader, setStopId}}>
             {children}
         </RoutesContext.Provider>
     )
