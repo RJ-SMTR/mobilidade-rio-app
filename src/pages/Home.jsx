@@ -33,7 +33,7 @@ import { MovingMarkerContext } from "../hooks/getMovingMarkers";
 export function Home() {
 
     const { setCode } = useContext(CodeContext)
-    const { center, tracked, innerCircle, arrivals } = useContext(MovingMarkerContext)
+    const { center, tracked, arrivals } = useContext(MovingMarkerContext)
     const { points } = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
     const { activeForm } = useContext(FormContext)
@@ -140,13 +140,7 @@ export function Home() {
                         </LayerGroup>
                         <LayerGroup>
                             {/* REMOVER INNERCIRCLE */}
-                            {innerCircle && innerCircle.length > 0 ? innerCircle.map((e) => {
-                                return <div>
-                                    <BusMarker id={e.code} data={e} icon={L.divIcon(
-                                        markerOptions(e)
-                                    )} />
-                                </div>
-                            }) : tracked ? tracked.map((e) => {
+                          {tracked ? tracked.map((e) => {
                                 return <div>
                                     <BusMarker id={e.code} data={e} icon={L.divIcon(
                                         markerOptions(e)

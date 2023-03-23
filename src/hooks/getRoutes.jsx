@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { CodeContext } from "./getCode";
+import { ThemeContext } from "./getTheme";
 import { api } from "../services/api";
 import { ServiceIdContext } from "./getServiceId";
 export const RoutesContext = createContext()
@@ -8,30 +9,16 @@ export const RoutesContext = createContext()
 
 
 export function RoutesProvider({ children }) {
-    const { code } = useContext(CodeContext)
+    const { code, stopId, locationType } = useContext(CodeContext)
     const {serviceId} = useContext(ServiceIdContext)
-    const [stopId, setStopId] = useState()
+    const { routeType } = useContext(ThemeContext)
     const [routes, setRoutes] = useState()
     const [plataforms, setPlataforms] = useState([])
-    const [locationType, setLocationType] = useState()
     const [stations, setStations] = useState()
     const [isParent, setIsParent] = useState()
-    const [childName, setChildName] = useState()
     const [loader, setLoader] = useState()
 
 
-    useEffect(() => {
-        if (code != undefined) {
-            api
-                .get("/stops/?stop_code=" + code.toUpperCase())
-                .then(response => {
-                    setStopId(response.data.results[0].stop_id)
-                    setChildName(response.data.results[0].stop_name)
-                    setLocationType(response.data.results[0].location_type)
-                })
-        }
-    }, [code])
- 
     function compareTripName(a, b) {
         const aShortName = a.trip_id.trip_short_name;
         const bShortName = b.trip_id.trip_short_name;
@@ -78,7 +65,6 @@ export function RoutesProvider({ children }) {
                     
                 } else {
                     if(locationType === 1){
-                        setLoader(false)
                         getStations("/stop_times/?stop_id=" + stopId)
                     }
                     filteredTrips.sort(compareTripName)
@@ -111,24 +97,35 @@ export function RoutesProvider({ children }) {
                 setIsParent(false)
             }
         }
-    }, [stopId, locationType])
+    }, [routeType])
 
 
 
     useEffect(() => {
-        if (locationType != null || locationType != undefined || stations != undefined) {
-            const iteratee =  stations.map((e) => e.stop_id)
-            const result = iteratee.reduce((acc, curr) => {
-                acc[curr.stop_desc] = acc[curr.stop_desc] || {};
-                acc[curr.stop_desc][curr.stop_id] = curr;
-                return acc;
-            }, {});
-            setPlataforms((prevResults) => [...prevResults, result]);
+        if (routeType) {
+            if (locationType != null || locationType != undefined || stations != undefined ) {
+                const iteratee = stations.map((e) => e.stop_id)
+                const result = iteratee.reduce((acc, curr) => {
+                    if (routeType.includes(3) && routeType.includes(702)) {
+                        acc[curr.platform_code] = acc[curr.platform_code] || {};
+                        acc[curr.platform_code][curr.stop_id] = curr;
+                        return acc;
+                    } else {
+                        acc[curr.stop_desc] = acc[curr.stop_desc] || {};
+                        acc[curr.stop_desc][curr.stop_id] = curr;
+                        return acc;
+                    }
+
+                }, {});
+                setPlataforms((prevResults) => [...prevResults, result]);
+            }
         }
     }, [stations]);
+    
+
 
     return (
-        <RoutesContext.Provider value={{ routes, stopId, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, locationType, childName, loader, activateLoader, setStopId}}>
+        <RoutesContext.Provider value={{ routes, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, setStations, loader, activateLoader}}>
             {children}
         </RoutesContext.Provider>
     )

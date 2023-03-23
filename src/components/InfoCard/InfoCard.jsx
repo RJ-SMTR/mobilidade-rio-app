@@ -9,7 +9,7 @@ import styles from './styles.module.scss'
 import bus from '../../assets/imgs/bus.svg'
 import busSppo from '../../assets/imgs/busSppo.svg'
 import pin from '../../assets/imgs/pin.svg'
-// import whitePin from '../../assets/imgs/whitePin.svg'
+import whitePin from '../../assets/imgs/whitePin.svg'
 
 import { MovingMarkerContext } from '../../hooks/getMovingMarkers'
 import { FormContext } from "../../hooks/useForm";
@@ -23,15 +23,15 @@ import { GPSContext } from "../../hooks/getGPS"
 
 
 export function InfoCard() {
-    const [name, setName] = useState()
-    const [linha, setLinha] = useState(false)
-    const { theme } = useContext(ThemeContext)
-    const { code, setGpsUrl } = useContext(CodeContext)
+    const { code, setGpsUrl, gpsUrl } = useContext(CodeContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, activateLoader } = useContext(RoutesContext)
     const { setTracked, arrivals, setArrivals } = useContext(MovingMarkerContext)
     const { setTrip } = useContext(TripContext);
     const { stopFetching } = useContext(GPSContext)
+    const { theme } = useContext(ThemeContext)
     const { activateForm, setSelectedPlatform } = useContext(FormContext)
+    const [name, setName] = useState()
+    const [linha, setLinha] = useState(false)
     const [sortedPlatforms, setSortedPlatforms] = useState()
 
 
@@ -50,17 +50,32 @@ export function InfoCard() {
     }
 
     useEffect(() => {
-        setSortedPlatforms(plataforms.map((e) => Object.values(e).sort((a, b) => {
-            const platformA = Object.values(a)[0];
-            const platformB = Object.values(b)[0];
-            if (platformA.platform_code < platformB.platform_code) {
-                return -1;
-            }
-            if (platformA.platform_code > platformB.platform_code) {
-                return 1;
-            }
-            return 0;
-        })))
+        setSortedPlatforms(
+            plataforms.map((e) =>
+                Object.values(e)
+                    .sort((a, b) => {
+                        const platformA = Object.values(a)[0];
+                        const platformB = Object.values(b)[0];
+                        if (platformA.platform_code < platformB.platform_code) {
+                            return -1;
+                        }
+                        if (platformA.platform_code > platformB.platform_code) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    .map((p) => {
+                        const platform = Object.values(p)[0];
+                        const isConvencionais = platform.stop_desc.includes("Convencionais");
+                        const modifiedPlatform = {
+                            ...platform,
+                            isConvencionais: isConvencionais
+                        };
+                        return { ...p, ...{ [Object.keys(p)[0]]: modifiedPlatform } };
+                    })
+            )
+        );
+            
     }, [plataforms])
   
     return (
@@ -76,7 +91,7 @@ export function InfoCard() {
                         </svg>
                     </button>
                     {!routes ? <></> : <div className='flex justify-end'>
-                        <button onClick={() => (setRoutes(), setTracked(), infoLinha(), setArrivals(), stopFetching())}>
+                        <button onClick={() => (setRoutes(), setTracked(), infoLinha(), setArrivals(), stopFetching(), setGpsUrl())}>
                             <GrClose />
                         </button>
                     </div>}
@@ -101,18 +116,18 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : sortedPlatforms.map((e) => Object.values(e).map((values) => {
-                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)) }}>
+                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)[0]), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]) }}>
                                         <div className={styles.routeName}>
-                                            {Object.values(values)[0].stop_desc ? <>
-                                                <div className={styles.shortName}>
+                                            {!Object.values(values)[0].isConvencionais ? <>
+                                                <div className={` ${styles.shortName} + bg-[#F8AC04]`}>
                                                     <img src={pin} alt="" />
                                                     <p className="text-sm ml-2.5">{Object.values(values)[0].stop_desc}</p>
                                                 </div>
                                             </>
                                                 : <>
-                                                    <div className={styles.shortName}>
-                                                        <img src={pin} alt="" />
-                                                        <p className="text-sm ml-2.5 text-white">{'Ônibus: Plataforma ' + Object.values(values)[0].platform_code}</p>
+                                                    <div className={` ${styles.shortName} + bg-[#004a80]`}>
+                                                        <img src={whitePin} alt="" />
+                                                        <p className="text-sm ml-2.5 text-white">{Object.values(values)[0].stop_desc}</p>
                                                     </div>
                                                 </>}
 
@@ -135,48 +150,36 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 />
-                            // routes.map((e) => {
-                            //     return (
-                            //         <li key={e.id} onClick={() => setTrip(e.trip_id.trip_id)} className="flex justify-between border-b py-2.5">
-                            //             <div className={styles.routeName}>
-                            //                 <div className="flex">
-                            //                     <div className={styles.shortName}>
-                            //                         {theme ? <img src={busSppo} alt="" /> : <img src={bus} alt="" />}
-                            //                         <p className='ml-2 font-semibold leading-none'>{e.trip_id.trip_short_name}</p>
-                            //                     </div>
-                            //                     <p className="text-sm ml-2.5">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
 
-                            //                 </div>
-                            //             </div>
-
-                            //         </li>
-                            //     );
-                            // })
                             : arrivals.map((e) => {
                                 return <li key={e.id} onClick={() => setTrip(e.trip_id.trip_id)} className="flex justify-between border-b py-2.5">
                                     <div className={styles.routeName}>
                                         <div className="flex">
-                                            <div className={styles.shortName}>
-                                                {theme ? <img src={busSppo} alt="" /> :
-                                                    <img src={bus} alt="" />
-                                                }
+                                            <div className={` ${styles.shortName}  ${e.trip_id.route_id.route_type === 702 ? 'bg-[#F8AC04]' :'bg-[#004a80]' }`}>
+                                                {e.trip_id.route_id.route_type === 702 ?<><img src={bus} alt="" />
                                                 <p className='ml-2 font-semibold leading-none'>{e.trip_id.trip_short_name}</p>
+                                                </> 
+                                                 : <>
+                                                    <img src={busSppo} alt="" />
+                                                        <p className='ml-2 font-semibold leading-none text-white'>{e.trip_id.trip_short_name}</p>
+                                                    </>
+                                                }
                                             </div>
                                             <p className="text-sm ml-2.5">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
                                         </div>
+
                                     </div>
-                                    <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex">
-                                        {Math.ceil(parseInt(e.smallestEtas)) > 1 && Math.ceil(parseInt(e.smallestEtas) > -1)
-                                            ? `${Math.ceil((e.smallestEtas[0]))} min` : "Agora"}
-                                        <svg width="14" height="19" viewBox="0 0 14 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path id="wifi1" d="M6.28882 9.03169C6.28884 8.05757 5.97519 7.1214 5.41382 6.42003C5.29862 6.27631 5.14072 6.19359 4.97487 6.19006C4.80902 6.18653 4.6488 6.26249 4.52945 6.40122C4.4101 6.53995 4.34141 6.73009 4.33848 6.92981C4.33555 7.12953 4.39862 7.32248 4.51382 7.4662C4.83883 7.89362 5.0191 8.45215 5.0191 9.03169C5.0191 9.61123 4.83883 10.1698 4.51382 10.5972C4.39862 10.7409 4.33555 10.9338 4.33848 11.1336C4.34141 11.3333 4.4101 11.5234 4.52945 11.6622C4.6488 11.8009 4.80902 11.8768 4.97487 11.8733C5.14072 11.8698 5.29862 11.7871 5.41382 11.6433C5.97519 10.942 6.28884 10.0058 6.28882 9.03169Z" fill="black" />
-                                            <path id="wifi2" d="M9.65389 9.03158C9.65344 8.12255 9.51273 7.22294 9.24016 6.38634C8.9676 5.54974 8.56874 4.79328 8.06736 4.16201C8.01168 4.09331 7.94616 4.0396 7.87457 4.00394C7.80297 3.96828 7.72669 3.95136 7.65008 3.95416C7.57347 3.95695 7.49804 3.9794 7.42808 4.02023C7.35813 4.06106 7.29502 4.11947 7.24236 4.19211C7.13602 4.33883 7.07871 4.53464 7.08304 4.73648C7.08518 4.83642 7.10239 4.93484 7.13369 5.0261C7.16499 5.11736 7.20975 5.19969 7.26544 5.26838C7.65629 5.75985 7.96718 6.34906 8.17952 7.00082C8.39187 7.65258 8.50131 8.3535 8.50131 9.06168C8.50131 9.76987 8.39187 10.4708 8.17952 11.1225C7.96718 11.7743 7.65629 12.3635 7.26544 12.855C7.21093 12.9247 7.16756 13.0078 7.13785 13.0995C7.10814 13.1913 7.09268 13.2898 7.09236 13.3894C7.09279 13.5364 7.12625 13.6801 7.18859 13.8027C7.25093 13.9252 7.33944 14.0213 7.44316 14.0789C7.54688 14.1366 7.66128 14.1533 7.77221 14.1271C7.88315 14.1008 7.98576 14.0327 8.06736 13.9313C8.57154 13.2965 8.97202 12.5351 9.24468 11.6931C9.51734 10.851 9.65654 9.94567 9.65389 9.03158Z" fill="black" />
-                                            <path id="wifi3" d="M10.2712 16.3473C11.7236 14.3832 12.5352 11.7606 12.5352 9.03161C12.5352 6.3026 11.7236 3.68003 10.2712 1.71597C10.1629 1.58895 10.0219 1.52003 9.87628 1.52304C9.7307 1.52605 9.59137 1.60076 9.48624 1.73219C9.38112 1.86362 9.31798 2.04204 9.30948 2.23167C9.30098 2.42129 9.34776 2.6081 9.44043 2.75461C10.6882 4.43871 11.3857 6.68936 11.3857 9.03161C11.3857 11.3739 10.6882 13.6245 9.44043 15.3086C9.33735 15.4481 9.27949 15.6342 9.27889 15.8279C9.27919 15.9293 9.29519 16.0296 9.32592 16.1227C9.35665 16.2158 9.40149 16.2999 9.45774 16.3698C9.5681 16.5071 9.71561 16.5817 9.86804 16.5775C10.0205 16.5732 10.1654 16.4905 10.2712 16.3473Z" fill="black" />
-                                        </svg>
-
-                                    </p>
-
-
+                                    {e.smallestEtas != undefined ? 
+                                        <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex">
+                                            {Math.ceil(parseInt(e.smallestEtas)) > 1 && Math.ceil(parseInt(e.smallestEtas) > -1)
+                                                ? `${Math.ceil((e.smallestEtas[0]))} min` : "Agora"}
+                                            <svg width="14" height="19" viewBox="0 0 14 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path id="wifi1" d="M6.28882 9.03169C6.28884 8.05757 5.97519 7.1214 5.41382 6.42003C5.29862 6.27631 5.14072 6.19359 4.97487 6.19006C4.80902 6.18653 4.6488 6.26249 4.52945 6.40122C4.4101 6.53995 4.34141 6.73009 4.33848 6.92981C4.33555 7.12953 4.39862 7.32248 4.51382 7.4662C4.83883 7.89362 5.0191 8.45215 5.0191 9.03169C5.0191 9.61123 4.83883 10.1698 4.51382 10.5972C4.39862 10.7409 4.33555 10.9338 4.33848 11.1336C4.34141 11.3333 4.4101 11.5234 4.52945 11.6622C4.6488 11.8009 4.80902 11.8768 4.97487 11.8733C5.14072 11.8698 5.29862 11.7871 5.41382 11.6433C5.97519 10.942 6.28884 10.0058 6.28882 9.03169Z" fill="black" />
+                                                <path id="wifi2" d="M9.65389 9.03158C9.65344 8.12255 9.51273 7.22294 9.24016 6.38634C8.9676 5.54974 8.56874 4.79328 8.06736 4.16201C8.01168 4.09331 7.94616 4.0396 7.87457 4.00394C7.80297 3.96828 7.72669 3.95136 7.65008 3.95416C7.57347 3.95695 7.49804 3.9794 7.42808 4.02023C7.35813 4.06106 7.29502 4.11947 7.24236 4.19211C7.13602 4.33883 7.07871 4.53464 7.08304 4.73648C7.08518 4.83642 7.10239 4.93484 7.13369 5.0261C7.16499 5.11736 7.20975 5.19969 7.26544 5.26838C7.65629 5.75985 7.96718 6.34906 8.17952 7.00082C8.39187 7.65258 8.50131 8.3535 8.50131 9.06168C8.50131 9.76987 8.39187 10.4708 8.17952 11.1225C7.96718 11.7743 7.65629 12.3635 7.26544 12.855C7.21093 12.9247 7.16756 13.0078 7.13785 13.0995C7.10814 13.1913 7.09268 13.2898 7.09236 13.3894C7.09279 13.5364 7.12625 13.6801 7.18859 13.8027C7.25093 13.9252 7.33944 14.0213 7.44316 14.0789C7.54688 14.1366 7.66128 14.1533 7.77221 14.1271C7.88315 14.1008 7.98576 14.0327 8.06736 13.9313C8.57154 13.2965 8.97202 12.5351 9.24468 11.6931C9.51734 10.851 9.65654 9.94567 9.65389 9.03158Z" fill="black" />
+                                                <path id="wifi3" d="M10.2712 16.3473C11.7236 14.3832 12.5352 11.7606 12.5352 9.03161C12.5352 6.3026 11.7236 3.68003 10.2712 1.71597C10.1629 1.58895 10.0219 1.52003 9.87628 1.52304C9.7307 1.52605 9.59137 1.60076 9.48624 1.73219C9.38112 1.86362 9.31798 2.04204 9.30948 2.23167C9.30098 2.42129 9.34776 2.6081 9.44043 2.75461C10.6882 4.43871 11.3857 6.68936 11.3857 9.03161C11.3857 11.3739 10.6882 13.6245 9.44043 15.3086C9.33735 15.4481 9.27949 15.6342 9.27889 15.8279C9.27919 15.9293 9.29519 16.0296 9.32592 16.1227C9.35665 16.2158 9.40149 16.2999 9.45774 16.3698C9.5681 16.5071 9.71561 16.5817 9.86804 16.5775C10.0205 16.5732 10.1654 16.4905 10.2712 16.3473Z" fill="black" />
+                                            </svg>
+                                        </p>
+                                    : <></>}
                                 </li>
                             })
                         }
@@ -212,7 +215,7 @@ export function InfoCard() {
                                 /></> : routes.map((e) => {
                                     return <li key={e.id} onClick={() => setTrip(e.trip_id.trip_id)} className="flex justify-between border-b py-2.5">
                                         <div className={`${styles.routeName} + flex`}>
-                                            <div className={styles.shortName}>
+                                            <div className={` ${styles.shortName} + bg-[#004a80]`}>
                                                 <img src={busSppo} alt="" />
                                                 <p className='ml-2 font-semibold leading-none text-white '>{e.trip_id.trip_short_name}</p>
                                             </div>

@@ -24,10 +24,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <NameProvider>
         <CodeProvider>
           <ServiceIdProvider>
-            <RoutesProvider>
-              <TripProvider>
-                <ShapeProvider>
-                  <ThemeProvider>
+            <ThemeProvider>
+              <RoutesProvider>
+                <TripProvider>
+                  <ShapeProvider>
                     <GPSProvider>
                       <MovingMarkerProvider>
                         <FormProvider>
@@ -35,11 +35,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                         </FormProvider>
                       </MovingMarkerProvider>
                     </GPSProvider>
-                  </ThemeProvider>
-                  <ToastContainer />
-                </ShapeProvider>
-              </TripProvider>
-            </RoutesProvider>
+                    <ToastContainer />
+                  </ShapeProvider>
+                </TripProvider>
+              </RoutesProvider>
+            </ThemeProvider>
           </ServiceIdProvider>
         </CodeProvider>
       </NameProvider>

@@ -26,22 +26,21 @@ export function GPSProvider({ children }) {
             data.results.forEach((item) => {
                 allBuses.push(item);
             });
-
-            if (data.next) {
-                getGPS(data.next);
-            } else {
                 setRealtime([...allBuses]);
                 allBuses = [];
-            }
         });
     }
 
     function startFetching() {
-        const id = setInterval(() => {
-            getGPS(gpsUrl); 
+        getGPS(gpsUrl);
+        
+        const intervalId = setInterval(() => {
+            getGPS(gpsUrl);
         }, 6000);
-        setIntervalId(id);
+        setIntervalId(intervalId);
+        console.log("rodou");
     }
+
 
     function stopFetching() {
         clearInterval(intervalId);

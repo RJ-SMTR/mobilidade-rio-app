@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import { toast } from 'react-toastify'
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
 

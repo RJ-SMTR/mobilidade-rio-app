@@ -17,14 +17,14 @@ import { GPSContext } from '../../hooks/getGPS'
 
 export function Header(props) {
     let navigate = useNavigate()
-    const { code, setCode } = useContext(CodeContext)
+    const { code, setCode, setStopId } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
     const {setPoints} = useContext(ShapeContext)
-    const {theme, setTheme, setSppo} = useContext(ThemeContext)
+    const {theme, setTheme, setSppo, setRouteType} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
     const [codeIdentifier, setCodeIdentifier] = useState()
-    const { setRoutes, setPlataforms, setStopId} = useContext(RoutesContext)
+    const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
     const {setTracked, setInnerCircle} = useContext(MovingMarkerContext)
     const {stopFetching} = useContext(GPSContext)
@@ -42,7 +42,7 @@ export function Header(props) {
         setSppo()
         setInnerCircle([])
         stopFetching()
-
+        setRouteType()
     }
 
     useEffect(() => {
