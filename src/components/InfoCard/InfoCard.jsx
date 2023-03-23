@@ -50,6 +50,7 @@ export function InfoCard() {
     }
 
     useEffect(() => {
+        if(plataforms){
         setSortedPlatforms(
             plataforms.map((e) =>
                 Object.values(e)
@@ -75,7 +76,7 @@ export function InfoCard() {
                     })
             )
         );
-            
+                }
     }, [plataforms])
   
     return (
