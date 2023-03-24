@@ -31,6 +31,18 @@ body {
 }
 body.homepage{
     background-color: #004a80 !important;
+    .busBg{
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        opacity: .2;
+background-image: url(../imgs/transcarioca.jpg);
+    background-size: 100vh;
+    background-position: center center;
+    background-repeat: no-repeat;
+    }
+ 
+
 }
 
 body,

@@ -28,6 +28,7 @@ export function SearchMain() {
 
     return (
         <>
+        <div className="busBg"></div>
             <Header />
             <div className="px-4 mt-60 relative z-1">
                 <h1 className='text-xl text-center mb-3 text-white'>
