@@ -12,7 +12,6 @@ export default function CenterButton({ location }) {
     const map = useMap()
     function fixCenter() {
         map.setView(location);
-        map.setZoom(13)
 
     }
     useEffect(() => {
