@@ -38,7 +38,6 @@ export function GPSProvider({ children }) {
             getGPS(gpsUrl);
         }, 6000);
         setIntervalId(intervalId);
-        console.log("rodou");
     }
 
 
