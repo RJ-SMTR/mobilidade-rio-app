@@ -11,7 +11,6 @@ export default function CenterButton({ location }) {
     const { stopId } = useContext(CodeContext)
     const map = useMap()
     function fixCenter() {
-        console.log(location)
         map.setView(location);
 
     }

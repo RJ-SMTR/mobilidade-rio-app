@@ -11,15 +11,9 @@ export const ThemeContext = createContext()
 
 
 export function ThemeProvider({ children }) {
-    const { code } = useContext(CodeContext)
     const [theme, setTheme] = useState("")
-    const [routeType, setRouteType] = useState("")
-    const {stopId} = useContext(RoutesContext)
-
-    useEffect(() => {
-        api.get('/stop_times/?stop_id=' + stopId)
-            .then(response => setRouteType(response.data.results[0].trip_id.route_id.route_type))
-    }, [stopId])
+    const [routeType, setRouteType] = useState([])
+    const { stopId } = useContext(CodeContext)
 
     const setBrt = () => {
         document.documentElement.setAttribute("data-theme", "brt");
@@ -29,18 +23,37 @@ export function ThemeProvider({ children }) {
         document.documentElement.setAttribute("data-theme", "sppo");
     };
 
+    async function findTheme(url) {
+        let routeTypes = [];
+        await api
+            .get(url)
+            .then(({ data }) => {
+                data.results.forEach((item) => {
+                    routeTypes.push(item.trip_id.route_id.route_type);
+                });
+                const brtRoute = (e) => e === 702
+                if (routeTypes.some(brtRoute)) {
+                    setBrt();
+                    setTheme("")
+                } else if (routeTypes === 3 || 700) {
+                    setSppo();
+                    setTheme("sppo")
+                }
+                setRouteType([...routeTypes]);
+
+            });
+    }
+
     useEffect(() => {
-        if (routeType === 700 || routeType === 3) {
-            setSppo();
-            setTheme("sppo")
-        } else if (routeType === 702) {
-            setBrt();
-            setTheme("")
+        if (stopId) {
+          findTheme('/stop_times/?stop_id=' + stopId)
         }
-    }, [routeType, stopId])
+    }, [stopId])
+
+   
 
     return (
-        <ThemeContext.Provider value={{ theme, setTheme, setSppo }}>
+        <ThemeContext.Provider value={{ theme, setTheme, setSppo, setRouteType, routeType }}>
             {children}
         </ThemeContext.Provider>
     )

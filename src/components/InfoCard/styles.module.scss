@@ -10,33 +10,38 @@
 
 }
 
-.routeList{
+.routeList {
 
-    li:last-child{
+    li:last-child {
         border-bottom: none !important;
     }
+
     .routeName {
-            // display: flex;
-            align-items: center;
-            // justify-content: space-between;
-    
-            .shortName {
-                display: flex;
-                background-color: var(--items-bg);
-                border-radius: 3px;
-                padding: 4px 3px;
-                p{
-                    color: var(--text-color);
-                }
-            }
+        align-items: center;
+
+        .shortName {
+            display: flex;
+            border-radius: 3px;
+            padding: 4px 3px;
+
+
         }
+    }
 }
-.directionBanner{
+
+.directionBanner {
     background-color: var(--gray-100);
     text-align: center;
     padding: 8px;
     margin-bottom: 25px;
 }
-#wifi1,#wifi2, #wifi3{
+
+#wifi1,
+#wifi2,
+#wifi3 {
     opacity: 0;
+}
+
+.bg-SPPO {
+    background-color: #004a80 !important;
 }

@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import {toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { api } from "../services/api";
 
 export const CodeContext = createContext()
@@ -13,11 +13,14 @@ export function CodeProvider({ children }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const [codeExists, setCodeExists] = useState(false)
     const [active, setActive] = useState(false)
+    const [stopId, setStopId] = useState()
+    const [locationType, setLocationType] = useState()
+    const [gpsUrl, setGpsUrl] = useState()
 
 
     useEffect(() => {
         const urlCode = searchParams.get('code');
-        if(urlCode !== null){
+        if (urlCode !== null) {
             setCode(urlCode.toUpperCase())
         }
     }, [])
@@ -41,11 +44,21 @@ export function CodeProvider({ children }) {
             })
 
     }
+
     useEffect(() => {
+        if (code != undefined) {
+            api
+                .get("/stops/?stop_code=" + code.toUpperCase())
+                .then(response => {
+                    setStopId(response.data.results[0].stop_id)
+                    setLocationType(response.data.results[0].location_type)
+                })
+        }
         checkCode()
+        
     }, [code])
     return (
-        <CodeContext.Provider value={{ code, setCode,  setSearchParams, codeExists, active, setActive }}>
+        <CodeContext.Provider value={{ code, setCode, setSearchParams, codeExists, active, setActive, stopId, locationType, setStopId, gpsUrl, setGpsUrl }}>
             {children}
         </CodeContext.Provider>
     )

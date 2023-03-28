@@ -13,19 +13,21 @@ import { RoutesContext } from '../../hooks/getRoutes'
 import { NameContext } from '../../hooks/getName'
 import { api } from '../../services/api'
 import { MovingMarkerContext } from '../../hooks/getMovingMarkers'
+import { GPSContext } from '../../hooks/getGPS'
 
 export function Header(props) {
     let navigate = useNavigate()
-    const { code, setCode } = useContext(CodeContext)
+    const { code, setCode, setStopId } = useContext(CodeContext)
     const { setTrip } = useContext(TripContext)
     const {setPoints} = useContext(ShapeContext)
-    const {theme, setTheme, setSppo} = useContext(ThemeContext)
+    const {theme, setTheme, setSppo, setRouteType} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
     const [codeIdentifier, setCodeIdentifier] = useState()
-    const { setRoutes, setPlataforms, setStopId} = useContext(RoutesContext)
+    const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
     const {setTracked, setInnerCircle} = useContext(MovingMarkerContext)
+    const {stopFetching} = useContext(GPSContext)
     function clearInfo() {
         setTrip('')
         setCode("")
@@ -39,7 +41,8 @@ export function Header(props) {
         setStopId()
         setSppo()
         setInnerCircle([])
-
+        stopFetching()
+        setRouteType()
     }
 
     useEffect(() => {
@@ -48,6 +51,7 @@ export function Header(props) {
 
     const searchNewCode = event => {
         setNewCode(event.target.value)
+        stopFetching()
         setTrip('')
         setValue()
         setPlataforms([])

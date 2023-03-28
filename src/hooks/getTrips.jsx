@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState, useContext } from "react";
-import { RoutesContext } from "./getRoutes";
 import { api } from "../services/api";
+import { CodeContext } from "./getCode";
 
 
 export const TripContext = createContext()
@@ -8,7 +8,7 @@ export const TripContext = createContext()
 
 
 export function TripProvider({ children }) {
-    const { stopId, locationType, childName } = useContext(RoutesContext)
+    const { stopId, locationType, childName } = useContext(CodeContext)
     const [trip, setTrip] = useState('')
     const [stopInfo, setStopInfo] = useState()
     const [sequenceInfo, setSequenceInfo] = useState()

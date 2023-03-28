@@ -20,7 +20,6 @@ export function MovingMarkerProvider({ children }) {
     const { setResults } = useContext(NameContext)
     const { routes } = useContext(RoutesContext)
     const { stopInfo } = useContext(TripContext)
-    const [tripsShortName, setTripShortName] = useState([])
     const [center, setCenter] = useState()
     const [radius, setRadius] = useState()
     const [tracked, setTracked] = useState([])
@@ -40,30 +39,7 @@ export function MovingMarkerProvider({ children }) {
         setResults()
     }, [code])
 
-    //  NOVA CHAMADA EM STOP_TIMES PRA PODER TER O trip_short_name
-    //  e filtrar os onibus do gps
-    async function getTripNames(url) {
-        let tripNames = [];
-        await api
-            .get(url)
-            .then(({ data }) => {
-                data.results.forEach((item) => {
-                    tripNames.push(item);
-                });
-                if (data.next) {
-                    getTripNames(data.next);
-                }
-                setTripShortName([...tripNames]);
-            });
-    }
-
-    useEffect(() => {
-        if (stopId) {
-            getTripNames('/stop_times/?stop_id=' + stopId)
-
-        }
-    }, [stopId])
-
+   
     useEffect(() => {
         if (realtime && routes) {
             let trackedBuses = []
@@ -97,52 +73,46 @@ export function MovingMarkerProvider({ children }) {
                     trackedBuses.push(result);
                 }
             });
-            // if (routes) {
             let filteredGPS = trackedBuses.filter(item => {
                 return routes.some(filterItem => {
                     if (stopInfo) {
-                        return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id && item.chegada > -1
+                        return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id && item.distancia > -0.100
                     } else {
-                        return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.chegada > -1)
+                        return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.distancia > -0.100)
                     }
                 });
             });
             setTracked(filteredGPS)
             setInnerCircle([])
-
-            // } 
         }
-    }, [realtime, routes])
+    }, [realtime])
 
 
 
 
     useEffect(() => {
-        // Filtrar resultado pelo stop_id selecionado
-        // Mostrar só 3 primeiros (os 3 primeiros menores tempos maiores q 0)
-        // TENTAR RELACIONAR SEM O FOR 
-        //  usar reduce
+   
         if (routes && tracked) {
-            const arrivals = routes.reduce((acc, obj1) => {
-                const matched = tracked.filter(obj2 =>
-                    obj1.trip_id.trip_short_name === obj2.linha &&
-                    obj1.trip_id.direction_id === obj2.sentido
-                );
-
-                if (matched.length > 0) {
-                    const sortedMatched = matched.sort((a, b) => a.chegada - b.chegada);
-                    const smallestEtas = sortedMatched.slice(0, 3).map(obj2 => obj2.chegada);
-                    const combinedObj = { ...obj1, smallestEtas };
-                    acc.push(combinedObj);
+                const arrivals = routes.reduce((acc, obj1) => {
+                    const matched = tracked.filter(obj2 =>
+                        obj1.trip_id.trip_short_name === obj2.linha &&
+                         obj1.trip_id.direction_id === obj2.sentido);
+                    
+                    if (matched.length > 0) {
+                        const sortedMatched = matched.sort((a, b) => a.chegada - b.chegada);
+                        const smallestEtas = sortedMatched.slice(0, 3).map(obj2 => obj2.chegada);
+                        const combinedObj = { ...obj1, smallestEtas };
+                        acc.push(combinedObj);
+                    }
+                    return acc;
+                }, []);
+                if(arrivals.length === 0){
+                    setArrivals(routes)
+                } else {
+                    setArrivals(arrivals)
                 }
-
-                return acc;
-            }, []);
-
-            setArrivals(arrivals);
         }
-
-    }, [routes, tracked])
+    }, [tracked])
 
 
     return (
