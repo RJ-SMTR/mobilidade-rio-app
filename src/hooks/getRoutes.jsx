@@ -10,7 +10,7 @@ export const RoutesContext = createContext()
 
 export function RoutesProvider({ children }) {
     const { code, stopId, locationType } = useContext(CodeContext)
-    const {serviceId} = useContext(ServiceIdContext)
+    const { serviceId } = useContext(ServiceIdContext)
     const { routeType } = useContext(ThemeContext)
     const [routes, setRoutes] = useState()
     const [plataforms, setPlataforms] = useState([])
@@ -56,7 +56,7 @@ export function RoutesProvider({ children }) {
             .then(({ data }) => {
                 data.results.forEach((item) => {
                     const existingTrip = filteredTrips.find((trip) => trip.trip_id.trip_short_name === item.trip_id.trip_short_name);
-                    if (item.trip_id.service_id === serviceId && !existingTrip) {
+                    if (!existingTrip) {
                         filteredTrips.push(item);
                     }
                 });
@@ -93,7 +93,7 @@ export function RoutesProvider({ children }) {
                 getStations("/stop_times/?stop_id=" + stopId)
                 setIsParent(true)
             } else if (locationType === 0) {
-                getMultiplePages("/stop_times/?stop_id=" + stopId)
+                getMultiplePages(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`)
                 setIsParent(false)
             }
         }
@@ -104,15 +104,15 @@ export function RoutesProvider({ children }) {
     useEffect(() => {
         if (routeType) {
             if (locationType != null || locationType != undefined || stations != undefined ) {
-                const iteratee = stations.map((e) => e.stop_id)
+                const iteratee = stations.map((e) => e)
                 const result = iteratee.reduce((acc, curr) => {
                     if (routeType.includes(3) && routeType.includes(702)) {
-                        acc[curr.platform_code] = acc[curr.platform_code] || {};
-                        acc[curr.platform_code][curr.stop_id] = curr;
+                        acc[curr.stop_id.platform_code] = acc[curr.stop_id.platform_code] || {};
+                        acc[curr.stop_id.platform_code][curr.stop_id.stop_id] = curr;
                         return acc;
                     } else {
-                        acc[curr.stop_desc] = acc[curr.stop_desc] || {};
-                        acc[curr.stop_desc][curr.stop_id] = curr;
+                        acc[curr.stop_id.stop_desc] = acc[curr.stop_id.stop_desc] || {};
+                        acc[curr.stop_id.stop_desc][curr.stop_id.stop_id] = curr;
                         return acc;
                     }
 

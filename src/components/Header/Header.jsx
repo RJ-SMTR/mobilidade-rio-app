@@ -18,8 +18,7 @@ import { GPSContext } from '../../hooks/getGPS'
 export function Header(props) {
     let navigate = useNavigate()
     const { code, setCode, setStopId } = useContext(CodeContext)
-    const { setTrip } = useContext(TripContext)
-    const {setPoints} = useContext(ShapeContext)
+    const { setTrip, setSequenceInfo } = useContext(TripContext)
     const {theme, setTheme, setSppo, setRouteType} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
     const [value, setValue] = useState('')
@@ -32,7 +31,7 @@ export function Header(props) {
         setTrip('')
         setCode("")
         navigate('/')
-        setPoints("")
+        setSequenceInfo()
         setPlataforms([])
         setRoutes()
         setResults()
@@ -56,7 +55,7 @@ export function Header(props) {
         setValue()
         setPlataforms([])
         setRoutes()
-        setPoints("")
+        setSequenceInfo()
         setTracked()
         setInnerCircle([])
         if (event.target.value.length == 0) {
@@ -65,6 +64,7 @@ export function Header(props) {
 
     }
     useEffect(() => {
+        if(newCode){
         api.get("/stops/?stop_code=" + newCode.toUpperCase())
             .then(response => {
                 if (response.data.count == 0) {
@@ -75,6 +75,7 @@ export function Header(props) {
                     setResults()
                 }
             })
+        }
     }, [newCode])
 
     useEffect(() => {
