@@ -167,7 +167,7 @@ export function InfoCard() {
 
                                     </div>
                                     {e.smallestEtas != undefined ? 
-                                        <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex">
+                                        <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex eta">
                                             {Math.ceil(parseInt(e.smallestEtas)) > 1 && Math.ceil(parseInt(e.smallestEtas) > -1)
                                                 ? `${Math.ceil((e.smallestEtas[0]))} min` : "Agora"}
                                             <svg width="14" height="19" viewBox="0 0 14 19" fill="none" xmlns="http://www.w3.org/2000/svg">
