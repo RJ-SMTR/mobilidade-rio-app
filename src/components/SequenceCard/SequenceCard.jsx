@@ -13,17 +13,15 @@ import { FormContext } from "../../hooks/useForm";
 
 export function SequenceCard() {
 
-    const { setTrip, sequenceInfo, stopInfo } = useContext(TripContext)
+    const { setTrip, sequenceInfo, stopInfo, setSequenceInfo } = useContext(TripContext)
     const {stopId} = useContext(RoutesContext)
     const {theme} = useContext(ThemeContext)
-    const { setPoints } = useContext(ShapeContext)
     const { activateForm } = useContext(FormContext)
     function clearMapInfo() {
-        setTrip('')
-        setPoints('')
+        setTrip()
+        setSequenceInfo()
     }
   
-
     return (
         <>
             <div className="fixed bottom-0 translate-x-1/2 right-1/2 w-11/12 z-[401]">
@@ -64,11 +62,25 @@ export function SequenceCard() {
                             </h1>
 
                             <ul className={styles.timeline}>
-                                {sequenceInfo.map((e) => {
-                                    return <li key={e.id} className={`${styles.event} ${e.stop_id.stop_id == stopId ? styles.active : ''}`} >
-                                        {e.stop_id.stop_name}
-                                    </li>
-                                })}
+                                {sequenceInfo ? 
+                                    sequenceInfo.map((e) => {
+                                        return <li key={e.id} className={`${styles.event} ${e.stop_id.stop_id == stopId ? styles.active : ''}`} >
+                                            {e.stop_id.stop_name}
+                                        </li>
+                                    }) 
+                                    : <>
+                                        <Oval
+                                            height={40}
+                                            width={40}
+                                            color="#707070"
+                                            wrapperStyle={{}}
+                                            visible={true}
+                                            ariaLabel='oval-loading'
+                                            secondaryColor="#707070"
+                                            strokeWidth={4}
+                                            strokeWidthSecondary={4} /></>
+                                }
+                          
 
                             </ul>
                         </>

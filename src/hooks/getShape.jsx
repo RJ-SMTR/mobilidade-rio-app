@@ -9,24 +9,16 @@ export const ShapeContext = createContext()
 
 
 export function ShapeProvider({ children }) {
-    const { code } = useContext(CodeContext)
-    const { trip } = useContext(TripContext)
+    const { stopCoords } = useContext(CodeContext)
+    const { shape } = useContext(TripContext)
     const [points, setPoints] = useState([])
-    const [shape, setShape] = useState([])
-    const [stopCoords, setStopCoords] = useState()
+    
+
+
 
 
     useEffect(() => {
-        api.get('/stops/?stop_code=' + code.toUpperCase())
-            .then(response => setStopCoords([response.data.results[0].stop_lon, response.data.results[0].stop_lat]))
-    }, [code])
-
-    useEffect(() => {
-        api.get('/trips/?trip_id=' + trip)
-            .then(reponse => setShape(reponse.data.results[0].shape_id))
-    }, [trip])
-
-    useEffect(() => {
+        if(shape){
 
         async function exec() {
             let points = []
@@ -55,15 +47,16 @@ export function ShapeProvider({ children }) {
                 console.error(error)
             }
         }
-
         exec()
+        }
+
     }, [shape])
 
 
 
 
     return (
-        <ShapeContext.Provider value={{ shape, setShape, points, setPoints }}>
+        <ShapeContext.Provider value={{ points, setPoints }}>
             {children}
         </ShapeContext.Provider>
     )

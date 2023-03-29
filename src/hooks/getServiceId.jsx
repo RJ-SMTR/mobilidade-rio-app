@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { createContext, useEffect, useState } from "react";
 import { api } from "../services/api";
+import { CodeContext } from "./getCode";
 
 
 export const ServiceIdContext = createContext()
@@ -8,6 +10,7 @@ export const ServiceIdContext = createContext()
 
 
 export function ServiceIdProvider({ children }) {
+    const {code} = useContext(CodeContext)
     const [today, setToday] = useState('')
     const [calendar, setCalendar] = useState([])
     const [serviceId, setServiceId] = useState('')
@@ -47,6 +50,7 @@ export function ServiceIdProvider({ children }) {
 
 
     useEffect(() => {
+        if(code){
         getDates('calendar_dates/')
         getDayOfWeek('calendar/')
         const date = new Date();
@@ -55,7 +59,8 @@ export function ServiceIdProvider({ children }) {
         const day = String(date.getDate()).padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
         setToday(formattedDate)
-    }, [])
+        }
+    }, [code])
 
    
     function findService(todayDate) {

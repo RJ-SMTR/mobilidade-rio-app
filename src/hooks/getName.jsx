@@ -6,10 +6,9 @@ export const NameContext = createContext()
 
 export function NameProvider({ children }) {
     const navigate = useNavigate()
-    const [firstCode, setFirstCode] = useState("")
+    const [firstCode, setFirstCode] = useState()
     const [results, setResults] = useState()
-    const [codeR, setCodeR] = useState()
-
+    const [codeR, setCodeR] = useState(false)
 
 
 
@@ -42,6 +41,7 @@ export function NameProvider({ children }) {
 
 
     useEffect(() => {
+        if(firstCode != undefined){
         api.get("/stops/?stop_code=" + firstCode.toUpperCase())
             .then(response => {
                 if (response.data.count == 0 ) {
@@ -52,13 +52,16 @@ export function NameProvider({ children }) {
                     setResults()
                 }
             })
+        }
     }, [firstCode])
 
     useEffect(() => {
+        if(firstCode){
         if (firstCode.length == 4 && codeR && !/^[a-zA-Z]+$/.test(firstCode)) {
             navigate(`/${firstCode}`)
         } else if (firstCode.length == 5 && codeR) {
             navigate(`/${firstCode}`)
+        }
         }
     }, [codeR])
 

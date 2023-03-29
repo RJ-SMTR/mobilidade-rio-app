@@ -15,13 +15,11 @@ export const MovingMarkerContext = createContext()
 
 export function MovingMarkerProvider({ children }) {
 
-    const { code, stopId } = useContext(CodeContext)
+    const { code } = useContext(CodeContext)
     const { realtime } = useContext(GPSContext)
     const { setResults } = useContext(NameContext)
     const { routes } = useContext(RoutesContext)
     const { stopInfo } = useContext(TripContext)
-    const [center, setCenter] = useState()
-    const [radius, setRadius] = useState()
     const [tracked, setTracked] = useState([])
     const [innerCircle, setInnerCircle] = useState([])
     const [arrivals, setArrivals] = useState([])
@@ -31,12 +29,9 @@ export function MovingMarkerProvider({ children }) {
 
 
     useEffect(() => {
-        api.get('/stops/?stop_code=' + code.toUpperCase())
-            .then(response => {
-                setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)])
-                setRadius([parseFloat(response.data.results[0].stop_lon), parseFloat(response.data.results[0].stop_lat)])
-            })
-        setResults()
+        if(code){
+            setResults()
+        }
     }, [code])
 
    
@@ -116,7 +111,7 @@ export function MovingMarkerProvider({ children }) {
 
 
     return (
-        <MovingMarkerContext.Provider value={{ center, tracked, setTracked, innerCircle, setInnerCircle, arrivals, setArrivals }}>
+        <MovingMarkerContext.Provider value={{tracked, setTracked, innerCircle, setInnerCircle, arrivals, setArrivals }}>
             {children}
         </MovingMarkerContext.Provider>
     )

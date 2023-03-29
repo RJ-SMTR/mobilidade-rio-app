@@ -18,28 +18,24 @@ import { CodeContext } from '../../hooks/getCode'
 import { TripContext } from '../../hooks/getTrips'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { GPSContext } from "../../hooks/getGPS"
+import { ServiceIdContext } from "../../hooks/getServiceId"
 
 
 
 
 export function InfoCard() {
-    const { code, setGpsUrl, gpsUrl } = useContext(CodeContext)
+    const { setGpsUrl, name } = useContext(CodeContext)
+    const {serviceId} = useContext(ServiceIdContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, activateLoader } = useContext(RoutesContext)
     const { setTracked, arrivals, setArrivals } = useContext(MovingMarkerContext)
     const { setTrip } = useContext(TripContext);
     const { stopFetching } = useContext(GPSContext)
-    const { theme } = useContext(ThemeContext)
     const { activateForm, setSelectedPlatform } = useContext(FormContext)
-    const [name, setName] = useState()
     const [linha, setLinha] = useState(false)
     const [sortedPlatforms, setSortedPlatforms] = useState()
 
 
 
-    useEffect(() => {
-        api.get('/stops/?stop_code=' + code.toUpperCase())
-            .then(response => setName(response.data.results[0].stop_name))
-    }, [code])
 
     function infoLinha() {
         if (!linha) {
@@ -57,17 +53,17 @@ export function InfoCard() {
                     .sort((a, b) => {
                         const platformA = Object.values(a)[0];
                         const platformB = Object.values(b)[0];
-                        if (platformA.platform_code < platformB.platform_code) {
+                        if (platformA.stop_id.platform_code < platformB.stop_id.platform_code) {
                             return -1;
                         }
-                        if (platformA.platform_code > platformB.platform_code) {
+                        if (platformA.stop_id.platform_code > platformB.stop_id.platform_code) {
                             return 1;
                         }
                         return 0;
                     })
                     .map((p) => {
                         const platform = Object.values(p)[0];
-                        const isConvencionais = platform.stop_desc.includes("Convencionais");
+                        const isConvencionais = platform.stop_id.stop_desc.includes("Convencionais");
                         const modifiedPlatform = {
                             ...platform,
                             isConvencionais: isConvencionais
@@ -117,18 +113,18 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : sortedPlatforms.map((e) => Object.values(e).map((values) => {
-                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages("/stop_times/?stop_id=" + Object.keys(values)[0]), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]) }}>
+                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages(`/stop_times/?stop_id=${Object.keys(values)[0]}&service_id=${serviceId}`), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]) }}>
                                         <div className={styles.routeName}>
                                             {!Object.values(values)[0].isConvencionais ? <>
                                                 <div className={` ${styles.shortName} + bg-[#F8AC04]`}>
                                                     <img src={pin} alt="" />
-                                                    <p className="text-sm ml-2.5">{Object.values(values)[0].stop_desc}</p>
+                                                    <p className="text-sm ml-2.5">{Object.values(values)[0].stop_id.stop_desc}</p>
                                                 </div>
                                             </>
                                                 : <>
                                                     <div className={` ${styles.shortName} + bg-[#004a80]`}>
                                                         <img src={whitePin} alt="" />
-                                                        <p className="text-sm ml-2.5 text-white">{Object.values(values)[0].stop_desc}</p>
+                                                        <p className="text-sm ml-2.5 text-white">{Object.values(values)[0].stop_id.stop_desc}</p>
                                                     </div>
                                                 </>}
 
@@ -153,7 +149,7 @@ export function InfoCard() {
                                 />
 
                             : arrivals.map((e) => {
-                                return <li key={e.id} onClick={() => setTrip(e.trip_id.trip_id)} className="flex justify-between border-b py-2.5">
+                                return <li key={e.id} onClick={() => setTrip(e.trip_id)} className="flex justify-between border-b py-2.5">
                                     <div className={styles.routeName}>
                                         <div className="flex">
                                             <div className={` ${styles.shortName}  ${e.trip_id.route_id.route_type === 702 ? 'bg-[#F8AC04]' :'bg-[#004a80]' }`}>
@@ -171,7 +167,7 @@ export function InfoCard() {
 
                                     </div>
                                     {e.smallestEtas != undefined ? 
-                                        <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex">
+                                        <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex eta">
                                             {Math.ceil(parseInt(e.smallestEtas)) > 1 && Math.ceil(parseInt(e.smallestEtas) > -1)
                                                 ? `${Math.ceil((e.smallestEtas[0]))} min` : "Agora"}
                                             <svg width="14" height="19" viewBox="0 0 14 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -214,7 +210,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /></> : routes.map((e) => {
-                                    return <li key={e.id} onClick={() => setTrip(e.trip_id.trip_id)} className="flex justify-between border-b py-2.5">
+                                    return <li key={e.id} onClick={() => setTrip(e.trip_id)} className="flex justify-between border-b py-2.5">
                                         <div className={`${styles.routeName} + flex`}>
                                             <div className={` ${styles.shortName} + bg-[#004a80]`}>
                                                 <img src={busSppo} alt="" />

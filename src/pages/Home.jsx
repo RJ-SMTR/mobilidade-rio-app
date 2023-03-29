@@ -32,8 +32,8 @@ import { MovingMarkerContext } from "../hooks/getMovingMarkers";
 
 export function Home() {
 
-    const { setCode } = useContext(CodeContext)
-    const { center, tracked, arrivals } = useContext(MovingMarkerContext)
+    const { center, setCode } = useContext(CodeContext)
+    const {tracked, arrivals } = useContext(MovingMarkerContext)
     const { points } = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
     const { activeForm } = useContext(FormContext)
@@ -131,15 +131,15 @@ export function Home() {
                         />
                         <div id="map"></div>
                         <ComponentResize />
-                        {/* <FixCenter /> */}
+                        {sequenceInfo ? 
                         <LayerGroup>
                             {sequenceInfo.map((e) => (
                                 <Marker key={e.id} position={[e.stop_id.stop_lat, e.stop_id.stop_lon]} icon={normalMarker} />
                             ))}
                             {points ? <Polyline pathOptions={blackOptions} positions={points} /> : <></>}
                         </LayerGroup>
+                        : <></>}
                         <LayerGroup>
-                            {/* REMOVER INNERCIRCLE */}
                           {tracked ? tracked.map((e) => {
                                 return <div>
                                     <BusMarker id={e.code} data={e} icon={L.divIcon(
