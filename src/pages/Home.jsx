@@ -142,7 +142,7 @@ export function Home() {
                         <LayerGroup>
                           {tracked ? tracked.map((e) => {
                                 return <div>
-                                    <BusMarker id={e.code} data={e} icon={L.divIcon(
+                                    <BusMarker key={e.code} id={e.code} data={e} icon={L.divIcon(
                                         markerOptions(e)
                                     )} />
                                 </div>

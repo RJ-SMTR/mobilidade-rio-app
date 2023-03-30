@@ -84,30 +84,31 @@ export function MovingMarkerProvider({ children }) {
 
 
 
-
     useEffect(() => {
-   
         if (routes && tracked) {
-                const arrivals = routes.reduce((acc, obj1) => {
-                    const matched = tracked.filter(obj2 =>
+            const arrivals = routes.map((obj1) => {
+                const matched = tracked.find((obj2) => {
+                    return (
                         obj1.trip_id.trip_short_name === obj2.linha &&
-                         obj1.trip_id.direction_id === obj2.sentido);
-                    
-                    if (matched.length > 0) {
-                        const sortedMatched = matched.sort((a, b) => a.chegada - b.chegada);
-                        const smallestEtas = sortedMatched.slice(0, 3).map(obj2 => obj2.chegada);
-                        const combinedObj = { ...obj1, smallestEtas };
-                        acc.push(combinedObj);
-                    }
-                    return acc;
-                }, []);
-                if(arrivals.length === 0){
-                    setArrivals(routes)
-                } else {
-                    setArrivals(arrivals)
+                        obj1.trip_id.direction_id === obj2.sentido
+                    );
+                });
+
+                if (matched) {
+                    const combinedObj = {
+                        ...obj1,
+                        smallestEtas: [matched.chegada],
+                    };
+                    return combinedObj;
                 }
+
+                return obj1;
+            });
+
+                setArrivals(arrivals);
         }
-    }, [tracked])
+    }, [tracked]);
+
 
 
     return (
