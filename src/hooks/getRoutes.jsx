@@ -44,9 +44,9 @@ export function RoutesProvider({ children }) {
         return aNumber - bNumber;
     }
 
-    function activateLoader(){
-    setLoader(true)
-    setPlataforms([])
+    function activateLoader() {
+        setLoader(true)
+        setPlataforms([])
     }
 
     const filteredTrips = [];
@@ -62,9 +62,9 @@ export function RoutesProvider({ children }) {
                 });
                 if (data.next) {
                     getMultiplePages(data.next);
-                    
+
                 } else {
-                    if(locationType === 1){
+                    if (locationType === 1) {
                         getStations("/stop_times/?stop_id=" + stopId)
                     }
                     filteredTrips.sort(compareTripName)
@@ -79,18 +79,27 @@ export function RoutesProvider({ children }) {
         await api
             .get(url)
             .then(({ data }) => {
-                data.results.forEach((item) => { allStations.push(item) })
-              
-                    setStations(allStations)
+                data.results.forEach((item) => {
+                    const existingStation = allStations.find((e) => e.stop_id.stop_id === item.stop_id.stop_id);
+                    if (!existingStation) {
+                        allStations.push(item)
+                    }
+                })
+                if (data.next) {
+                    getStations(data.next)
+                } else {
+                    setStations([...allStations])
+                }
+
             })
-   
+
     }
 
 
     useEffect(() => {
         if (code && locationType != undefined) {
             if (locationType === 1) {
-                getStations("/stop_times/?stop_id=" + stopId)
+                getStations(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`)
                 setIsParent(true)
             } else if (locationType === 0) {
                 getMultiplePages(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`)
@@ -103,7 +112,7 @@ export function RoutesProvider({ children }) {
 
     useEffect(() => {
         if (routeType) {
-            if (locationType != null || locationType != undefined || stations != undefined ) {
+            if (locationType != null || locationType != undefined || stations != undefined) {
                 const iteratee = stations.map((e) => e)
                 const result = iteratee.reduce((acc, curr) => {
                     if (routeType.includes(3) && routeType.includes(702)) {
@@ -121,11 +130,11 @@ export function RoutesProvider({ children }) {
             }
         }
     }, [stations]);
-    
+
 
 
     return (
-        <RoutesContext.Provider value={{ routes, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, setStations, loader, activateLoader}}>
+        <RoutesContext.Provider value={{ routes, setRoutes, getMultiplePages, isParent, plataforms, setPlataforms, stations, setStations, loader, activateLoader }}>
             {children}
         </RoutesContext.Provider>
     )
