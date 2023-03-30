@@ -33,7 +33,7 @@ import { MovingMarkerContext } from "../hooks/getMovingMarkers";
 export function Home() {
 
     const { center, setCode } = useContext(CodeContext)
-    const {tracked, arrivals } = useContext(MovingMarkerContext)
+    const { tracked, arrivals } = useContext(MovingMarkerContext)
     const { points } = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
     const { activeForm } = useContext(FormContext)
@@ -100,9 +100,6 @@ export function Home() {
         }
     }
 
-
-
-
     return (
         <>
             <Header />
@@ -131,18 +128,18 @@ export function Home() {
                         />
                         <div id="map"></div>
                         <ComponentResize />
-                        {sequenceInfo ? 
+                        {sequenceInfo && points ?
+                            <LayerGroup>
+                                {sequenceInfo.map((e) => (
+                                    <Marker key={e.id} position={[e.stop_id.stop_lat, e.stop_id.stop_lon]} icon={normalMarker} />
+                                ))}
+                                <Polyline pathOptions={blackOptions} positions={points} /> : <></>
+                            </LayerGroup>
+                            : <></>}
                         <LayerGroup>
-                            {sequenceInfo.map((e) => (
-                                <Marker key={e.id} position={[e.stop_id.stop_lat, e.stop_id.stop_lon]} icon={normalMarker} />
-                            ))}
-                            {points ? <Polyline pathOptions={blackOptions} positions={points} /> : <></>}
-                        </LayerGroup>
-                        : <></>}
-                        <LayerGroup>
-                          {tracked ? tracked.map((e) => {
+                            {tracked ? tracked.map((e) => {
                                 return <div>
-                                    <BusMarker id={e.code} data={e} icon={L.divIcon(
+                                    <BusMarker key={e.code} id={e.code} data={e} icon={L.divIcon(
                                         markerOptions(e)
                                     )} />
                                 </div>
@@ -150,7 +147,7 @@ export function Home() {
 
                         </LayerGroup>
                         <Marker position={center} icon={yourPosition} />
-                        <CenterButton location={center}/>
+                        <CenterButton location={center} />
                     </MapContainer>}
             </div>
 

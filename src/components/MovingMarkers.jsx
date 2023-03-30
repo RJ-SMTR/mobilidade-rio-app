@@ -36,8 +36,6 @@ export default function BusMarker({ id, data, icon }) {
                         {/* <p></p> */}
                         <h1 className={data.hora[0] > 1 ? 'text-red-600' : ''}> Atualizado a <span className="font-bold">{data.hora[0]} min</span> atrás</h1>
                     </div>
-        
-                     {data.velocidade} km/h<br/>
                     {/* Sentido de {data.sentido === 1 ? `ida` : 'volta'} */} 
                 </Popup>
             </LeafletTrackingMarker>

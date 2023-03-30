@@ -25,7 +25,7 @@ export function Header(props) {
     const [codeIdentifier, setCodeIdentifier] = useState()
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
-    const {setTracked, setInnerCircle} = useContext(MovingMarkerContext)
+    const {setTracked, setArrivals} = useContext(MovingMarkerContext)
     const {stopFetching} = useContext(GPSContext)
     function clearInfo() {
         setTrip('')
@@ -42,6 +42,7 @@ export function Header(props) {
         setInnerCircle([])
         stopFetching()
         setRouteType()
+        setArrivals()
     }
 
     useEffect(() => {
@@ -58,6 +59,7 @@ export function Header(props) {
         setSequenceInfo()
         setTracked()
         setInnerCircle([])
+        setArrivals()
         if (event.target.value.length == 0) {
             setResults()
         }
@@ -103,7 +105,7 @@ export function Header(props) {
                                 <button className='absolute right-[12px] top-0 bottom-0' onClick={() => clearInfo()}>
                                     <GrFormClose />
                                 </button>
-                                <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" onKeyUp={searchNewCode} onPaste={searchNewCode} value={value} />
+                                <input type="text" placeholder='Selecione a estação de origem' className="rounded-lg py-3.5 px-3 w-full inputShadow" onKeyUp={searchNewCode} onPaste={searchNewCode} defaultValue={value} />
                                 {code.length === 0 || !results ? <></> :
                                     <ul className='bg-white border-[1px] rounded-lg absolute max-h-[120px] z-[1001] py-3.5 px-3 overflow-scroll'>
                                         {results.length == 0 ? <li>

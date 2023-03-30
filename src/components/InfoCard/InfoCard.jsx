@@ -113,7 +113,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : sortedPlatforms.map((e) => Object.values(e).map((values) => {
-                                    return <li className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages(`/stop_times/?stop_id=${Object.keys(values)[0]}&service_id=${serviceId}`), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]) }}>
+                                    return <li key={Object.keys(values)[0]} className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages(`/stop_times/?stop_id=${Object.keys(values)[0]}&service_id=${serviceId}`), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]) }}>
                                         <div className={styles.routeName}>
                                             {!Object.values(values)[0].isConvencionais ? <>
                                                 <div className={` ${styles.shortName} + bg-[#F8AC04]`}>
