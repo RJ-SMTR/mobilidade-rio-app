@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import { api } from "../services/api";
 import { CodeContext } from "./getCode";
+import { ServiceIdContext } from "./getServiceId";
 
 
 export const TripContext = createContext()
@@ -15,6 +16,7 @@ export function TripProvider({ children }) {
     const [allSequenceStops, setAllSequenceStops] = useState([])
     const [shape, setShape] = useState()
     const [isLoading, setIsLoading] = useState(true)
+    const {serviceId} = useContext(ServiceIdContext)
 
     const tripSelector = (selectedTrip) => {
         setTrip(selectedTrip);
@@ -42,7 +44,7 @@ export function TripProvider({ children }) {
         if (trip) {
             setStopInfo(trip)
             setShape(trip.shape_id)
-            getAllStops(`/stop_times/?trip_id=${trip.trip_id}&direction_id=${trip.direction_id}`)
+            getAllStops(`/stop_times/?trip_id=${trip.trip_id}&direction_id=${trip.direction_id}&service_id=${serviceId}`)
         }
     }, [trip])
 
