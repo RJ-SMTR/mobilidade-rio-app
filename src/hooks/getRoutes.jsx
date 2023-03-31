@@ -97,7 +97,7 @@ export function RoutesProvider({ children }) {
 
 
     useEffect(() => {
-        if (code && locationType != undefined) {
+        if (code && locationType != undefined && serviceId) {
             if (locationType === 1) {
                 getStations(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`)
                 setIsParent(true)
