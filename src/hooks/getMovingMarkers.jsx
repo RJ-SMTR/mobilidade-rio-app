@@ -70,40 +70,37 @@ export function MovingMarkerProvider({ children }) {
             });
             let filteredGPS = trackedBuses.filter(item => {
                 return routes.some(filterItem => {
-                    if (stopInfo) {
-                        return item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.sentido === stopInfo.direction_id && item.distancia > -0.100
-                    } else {
-                        return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.distancia > -0.100)
-                    }
+              
+                        return (item.linha === filterItem.trip_id.trip_short_name && item.hora[0] < 5 && item.distancia > -0.100 && item.chegada <= 15)
                 });
             });
             setTracked(filteredGPS)
-            setInnerCircle([])
         }
     }, [realtime])
-
 
 
     useEffect(() => {
         if (routes && tracked) {
             const arrivals = routes.map((obj1) => {
-                const matched = tracked.find((obj2) => {
+                const matched = tracked.filter((obj2) => {
                     return (
                         obj1.trip_id.trip_short_name === obj2.linha &&
                         obj1.trip_id.direction_id === obj2.sentido
                     );
                 });
 
-                if (matched) {
-                    if (matched.chegada <= 15) {
-                        const combinedObj = {
-                            ...obj1,
-                            smallestEtas: [matched.chegada],
-                        };
-                        return combinedObj;
-                    }
-
+                if (matched.length > 0) {
+                    const smallestEtas = matched
+                        .map((obj) => obj.chegada) 
+                        .sort((a, b) => a - b)
+                        .slice(0, 3); 
+                    const combinedObj = {
+                        ...obj1,
+                        smallestEtas: smallestEtas,
+                    };
+                    return combinedObj;
                 }
+
                 return obj1;
             });
 
