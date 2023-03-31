@@ -55,7 +55,7 @@ export function RoutesProvider({ children }) {
             .get(url)
             .then(({ data }) => {
                 data.results.forEach((item) => {
-                    const existingTrip = filteredTrips.find((trip) => trip.trip_id.trip_short_name === item.trip_id.trip_short_name);
+                    const existingTrip = filteredTrips.find((trip) => trip.trip_id.trip_short_name === item.trip_id.trip_short_name && trip.trip_id.direction_id === item.trip_id.direction_id);
                     if (!existingTrip) {
                         filteredTrips.push(item);
                     }
@@ -65,7 +65,7 @@ export function RoutesProvider({ children }) {
 
                 } else {
                     if (locationType === 1) {
-                        getStations("/stop_times/?stop_id=" + stopId)
+                        getStations(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`)
                     }
                     filteredTrips.sort(compareTripName)
                     setRoutes([...filteredTrips]);

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { CodeContext } from "./getCode";
 import { RoutesContext } from "./getRoutes";
 import { api } from "../services/api";
+import { ServiceIdContext } from "./getServiceId";
 
 
 
@@ -14,6 +15,7 @@ export function ThemeProvider({ children }) {
     const [theme, setTheme] = useState("")
     const [routeType, setRouteType] = useState([])
     const { stopId } = useContext(CodeContext)
+    const {serviceId} = useContext(ServiceIdContext)
 
     const setBrt = () => {
         document.documentElement.setAttribute("data-theme", "brt");
@@ -45,10 +47,10 @@ export function ThemeProvider({ children }) {
     }
 
     useEffect(() => {
-        if (stopId) {
-          findTheme('/stop_times/?stop_id=' + stopId)
+        if (stopId && serviceId) {
+          findTheme(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`)
         }
-    }, [stopId])
+    }, [stopId, serviceId])
 
    
 
