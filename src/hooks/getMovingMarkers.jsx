@@ -95,24 +95,26 @@ export function MovingMarkerProvider({ children }) {
                 });
 
                 if (matched) {
-                    const combinedObj = {
-                        ...obj1,
-                        smallestEtas: [matched.chegada],
-                    };
-                    return combinedObj;
-                }
+                    if (matched.chegada <= 15) {
+                        const combinedObj = {
+                            ...obj1,
+                            smallestEtas: [matched.chegada],
+                        };
+                        return combinedObj;
+                    }
 
+                }
                 return obj1;
             });
 
-                setArrivals(arrivals);
+            setArrivals(arrivals);
         }
     }, [tracked]);
 
 
 
     return (
-        <MovingMarkerContext.Provider value={{tracked, setTracked, innerCircle, setInnerCircle, arrivals, setArrivals }}>
+        <MovingMarkerContext.Provider value={{ tracked, setTracked, innerCircle, setInnerCircle, arrivals, setArrivals }}>
             {children}
         </MovingMarkerContext.Provider>
     )
