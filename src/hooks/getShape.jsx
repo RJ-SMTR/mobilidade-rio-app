@@ -12,46 +12,54 @@ export function ShapeProvider({ children }) {
     const { stopCoords } = useContext(CodeContext)
     const { shape, sequenceInfo } = useContext(TripContext)
     const [points, setPoints] = useState([])
+    const [rawPoints, setRawPoints] = useState()
 
 
 
 
+    let allPoints = []
+    async function getAllPoints(url) {
+        await api
+            .get(url)
+            .then(({ data }) => {
+                data.results.forEach((item) => { allPoints.push(item) })
+                if (data.next) {
+                    getAllPoints(data.next)
+                } else {
+                    allPoints.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
+                    setRawPoints([...allPoints])
+                    console.log(allPoints)
+                }
+
+
+            })
+    }
     useEffect(() => {
         if (sequenceInfo) {
-            async function exec() {
-                let points = []
-                try {
-                    let i = 0
-                    let response = { data: {} }
+            getAllPoints("/shapes/?shape_id=" + shape)
+        }
+    }, [sequenceInfo])
 
-                    do {
-                        response = await api.get(response.data.next || "/shapes/?shape_id=" + shape)
-                        points.push(...response.data.results)
-                        i += 20
-                    } while (response.data.next);
+    useEffect(() => {
+        if (rawPoints) {
 
+            let longLat = rawPoints.map(p => [p.shape_pt_lon * 1, p.shape_pt_lat * 1])
+            var line = turf.lineString(longLat);
+            var pt = turf.point(stopCoords)
+            var splitter = turf.nearestPointOnLine(line, pt)
+            var split = turf.lineSplit(line, splitter)
 
-                    let longLat = points.map(p => [p.shape_pt_lon * 1, p.shape_pt_lat * 1])
-
-                    var line = turf.lineString(longLat);
-                    var pt = turf.point(stopCoords)
-                    var splitter = turf.nearestPointOnLine(line, pt)
-                    var split = turf.lineSplit(line, splitter);
-
-                    if (split.features.length === 1) {
-                        setPoints(split.features[0].geometry.coordinates.map(c => [c[1], c[0]]))
-                    } else {
-                        setPoints(split.features[1].geometry.coordinates.map(c => [c[1], c[0]]))
-
-                    }
-                } catch (error) {
-                    console.error(error)
-                }
+            if (split.features.length == 2) {
+                setPoints(split.features[1].geometry.coordinates.map(c => [c[1], c[0]]))
+            } else {
+                setPoints(line.geometry.coordinates.map(c => [c[1], c[0]]))
             }
-            exec()
+
+
+
         }
 
-    }, [sequenceInfo])
+    }, [rawPoints])
 
 
 
