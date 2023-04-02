@@ -26,6 +26,7 @@ export function Header(props) {
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
     const {setTracked, setArrivals} = useContext(MovingMarkerContext)
+    const {setPoints} = useContext(ShapeContext)
     const {stopFetching} = useContext(GPSContext)
     function clearInfo() {
         setTrip('')
@@ -39,7 +40,7 @@ export function Header(props) {
         setTheme("sppo")
         setStopId()
         setSppo()
-        setInnerCircle([])
+        setPoints()
         stopFetching()
         setRouteType()
         setArrivals()
