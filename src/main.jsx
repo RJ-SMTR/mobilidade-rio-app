@@ -16,8 +16,10 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import 'leaflet/dist/leaflet.css'
 import 'react-toastify/dist/ReactToastify.css';
 import { NameProvider } from './hooks/getName'
+import Modal from 'react-modal';
+import { ModalProvider } from './hooks/useModal'
 
-
+Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
@@ -31,7 +33,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <GPSProvider>
                       <MovingMarkerProvider>
                         <FormProvider>
+                        <ModalProvider>
                           <App />
+                        </ModalProvider>
                         </FormProvider>
                       </MovingMarkerProvider>
                     </GPSProvider>

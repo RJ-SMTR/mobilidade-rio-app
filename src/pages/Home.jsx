@@ -20,6 +20,7 @@ import { SequenceCard } from '../components/SequenceCard/SequenceCard'
 import { Oval } from 'react-loader-spinner'
 import { Form } from "../components/Form/Form";
 import CenterButton from "../components/CenterButton"
+import Modal from "../components/Modal/Modal"
 
 
 // STYLING
@@ -102,6 +103,7 @@ export function Home() {
 
     return (
         <>
+
             <Header />
             <div className="overflow-hidden mapWrapper">
                 {!center ?
@@ -158,6 +160,8 @@ export function Home() {
                 //  CARD COM LISTA DE TRIPS
                 <InfoCard />}
             {activeForm ? <Form /> : <></>}
+            <Modal />
+
 
         </>
     )

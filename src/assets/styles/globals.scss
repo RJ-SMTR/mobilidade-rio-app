@@ -147,3 +147,21 @@ background-image: url(../imgs/movingMarker.svg);
      max-height: 32px;
      margin-left: -1.2rem;
  }
+ .ReactModal__Overlay {
+     z-index: 4000 !important;
+     background-color: rgba(0, 0, 0, .6) !important;
+ }
+ .modalButton{
+    z-index: 1001;
+        position: absolute;
+        top: -100px ;
+        right: 0;
+        padding: 8px;
+        border-radius: 50em;
+        background-color: var(--items-bg);
+        svg {
+                width: 22.5px;
+                height: 22.5px;
+                color: #F0EFEF;
+            }
+ }
