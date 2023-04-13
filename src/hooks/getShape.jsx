@@ -28,7 +28,6 @@ export function ShapeProvider({ children }) {
                 } else {
                     allPoints.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
                     setRawPoints([...allPoints])
-                    console.log(allPoints)
                 }
 
 
