@@ -26,7 +26,7 @@ export function Header(props) {
     const { setRoutes, setPlataforms} = useContext(RoutesContext)
     const { setResults, results, similarNames } = useContext(NameContext)
     const {setTracked, setArrivals} = useContext(MovingMarkerContext)
-    const {setPoints} = useContext(ShapeContext)
+    const {setPoints, setPrevShapes} = useContext(ShapeContext)
     const {stopFetching} = useContext(GPSContext)
     function clearInfo() {
         setTrip('')
@@ -34,6 +34,7 @@ export function Header(props) {
         navigate('/')
         setSequenceInfo()
         setPlataforms([])
+        setPrevShapes()
         setRoutes()
         setResults()
         setTracked()
@@ -53,13 +54,13 @@ export function Header(props) {
     const searchNewCode = event => {
         setNewCode(event.target.value)
         stopFetching()
+        setPrevShapes()
         setTrip('')
         setValue()
         setPlataforms([])
         setRoutes()
         setSequenceInfo()
         setTracked()
-        setInnerCircle([])
         setArrivals()
         if (event.target.value.length == 0) {
             setResults()

@@ -37,6 +37,7 @@ export function Home() {
     const { points } = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
     const { activeForm } = useContext(FormContext)
+    const {prevShapes} = useContext(ShapeContext)
 
     // Usa código da URL para setar código para as pesquisas
     let params = useParams()
@@ -66,6 +67,12 @@ export function Home() {
 
 
     const blackOptions = { color: 'black' }
+    const prevOptions = {
+        color: 'black',
+        opacity: .5,
+        weight: 3
+    }
+    
 
     // Ícones do gps no mapa
     function markerOptions(e) {
@@ -128,6 +135,7 @@ export function Home() {
                         />
                         <div id="map"></div>
                         <ComponentResize />
+                        {prevShapes ? <Polyline pathOptions={prevOptions} positions={prevShapes} /> : <></>}
                         {sequenceInfo && points ?
                             <LayerGroup>
                                 {sequenceInfo.map((e) => (

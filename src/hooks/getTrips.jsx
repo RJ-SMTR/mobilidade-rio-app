@@ -50,8 +50,6 @@ export function TripProvider({ children }) {
 
     useEffect(() => {
         if (!isLoading) {
-            console.log(stopInfo)
-
             const sortedSequence = allSequenceStops.sort((a, b) => { a.stop_sequence - b.stop_sequence })
             if (locationType === 1) {
                 const mapSequence = sortedSequence?.map(e => e.stop_id.stop_name).indexOf(name)

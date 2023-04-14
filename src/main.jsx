@@ -27,16 +27,16 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <ThemeProvider>
               <RoutesProvider>
                 <TripProvider>
-                  <ShapeProvider>
                     <GPSProvider>
                       <MovingMarkerProvider>
+                  <ShapeProvider>
                         <FormProvider>
                           <App />
                         </FormProvider>
+                  </ShapeProvider>
                       </MovingMarkerProvider>
                     </GPSProvider>
                     <ToastContainer />
-                  </ShapeProvider>
                 </TripProvider>
               </RoutesProvider>
             </ThemeProvider>
