@@ -68,8 +68,7 @@ export function Home() {
 
     const blackOptions = { color: 'black' }
     const prevOptions = {
-        color: 'black',
-        opacity: .5,
+        color: '#c8c5c2',
         weight: 3
     }
     
@@ -82,7 +81,7 @@ export function Home() {
                 html: '<div></div>' +
                     `<p>${e.linha}</p>`
             }
-            if (e.linha != stopInfo.trip_short_name) {
+            if (e.linha != stopInfo.trip_id.trip_short_name) {
                 options.className = ' marker-test shadowed'
             }
             return options

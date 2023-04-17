@@ -17,11 +17,13 @@ export function SequenceCard() {
     const { stopId } = useContext(RoutesContext)
     const { theme } = useContext(ThemeContext)
     const { activateForm } = useContext(FormContext)
-    const { setPoints } = useContext(ShapeContext)
+    const { setPoints, returnAll, setStoppedFetching } = useContext(ShapeContext)
     function clearMapInfo() {
         setTrip()
         setSequenceInfo()
         setPoints()
+        returnAll()
+        setStoppedFetching(false)
     }
 
     return (

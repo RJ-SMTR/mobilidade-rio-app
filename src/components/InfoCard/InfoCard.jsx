@@ -33,7 +33,7 @@ export function InfoCard() {
     const { setTrip } = useContext(TripContext);
     const { stopFetching } = useContext(GPSContext)
     const { activateForm, setSelectedPlatform } = useContext(FormContext)
-    const{ setPrevShapes} = useContext(ShapeContext)
+    const { setPrevShapes, setStoppedFetching } = useContext(ShapeContext)
     const [linha, setLinha] = useState(false)
     const [sortedPlatforms, setSortedPlatforms] = useState()
 
@@ -91,7 +91,7 @@ export function InfoCard() {
                         </svg>
                     </button>
                     {!routes ? <></> : <div className='flex justify-end'>
-                        <button onClick={() => (setRoutes(), setTracked(), infoLinha(), setArrivals(), stopFetching(), setGpsUrl(), setPrevShapes())}>
+                        <button onClick={() => (setRoutes(), setTracked(), infoLinha(), setArrivals(), stopFetching(), setGpsUrl(), setPrevShapes(), setStoppedFetching(false))}>
                             <GrClose />
                         </button>
                     </div>}

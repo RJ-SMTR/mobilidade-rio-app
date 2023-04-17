@@ -20,9 +20,10 @@ export function ShapeProvider({ children }) {
     const [shapeIds, setShapeIds] = useState([])
     const [shapesResponses, setShapesResponses] = useState([])
     const [prevShapes, setPrevShapes] = useState([])
+    const [stoppedFetching, setStoppedFetching] = useState(false);
 
     let arrivalsShapes = []
-    useEffect(() => {
+    function initPrevShapes(){
         if (arrivals != undefined) {
             if (!prevArrivals || !arrivals.some((arrival, index) => arrival.stop_id === prevArrivals[index]?.stop_id)) {
                 arrivals.forEach((e) => {
@@ -33,7 +34,12 @@ export function ShapeProvider({ children }) {
                 setShapeIds(arrivalsShapes)
             }
         }
+    }
+
+    useEffect(() => {
+        initPrevShapes()
     }, [arrivals, prevArrivals]);
+ 
 
       async function fetchShapes(url) {
         const response = await api.get(url)
@@ -46,34 +52,39 @@ export function ShapeProvider({ children }) {
         return results
     }
 
-    useEffect(() => {
+    function returnAll(){
         Promise.all(
             shapeIds.map(url => fetchShapes("/shapes/?shape_id=" + url))
         )
             .then(results => {
-                results.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
-                setShapesResponses(results);
+               const sortedResults =  results.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
+                setShapesResponses(sortedResults);
+                setStoppedFetching(true)
             })
             .catch(error => {
                 console.error(error);
             });
-    }, [shapeIds])
+    }
+
 
     useEffect(() => {
-        if (shapesResponses.length > 0) {
+      returnAll()
+    }, [shapeIds])
+
+    function setPrevShapesFunction() {
+        if (stoppedFetching) {
             let points = []
             shapesResponses.forEach((item) => {
-                let longLat = item.map(p => [p.shape_pt_lon * 1, p.shape_pt_lat * 1])
-                var line = turf.lineString(longLat);
-                var pt = turf.point(stopCoords)
-                var splitter = turf.nearestPointOnLine(line, pt)
-                var split = turf.lineSplit(line, splitter);
-                if (split.features.length !== 1) {
-                    points.push(split.features[0].geometry.coordinates.map(c => [c[1], c[0]]))
-                }
+                const sortedPoints = item.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
+                let longLat = sortedPoints.map(p => [p.shape_pt_lat * 1, p.shape_pt_lon * 1])
+                points.push(longLat)
             })
             setPrevShapes([...points])
-        }
+        } 
+    }
+
+    useEffect(() => {
+     setPrevShapesFunction()
     }, [shapesResponses])
 
 
@@ -90,6 +101,7 @@ export function ShapeProvider({ children }) {
                 } else {
                     allPoints.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
                     setRawPoints([...allPoints])
+                    setStoppedFetching(false)
                 }
 
 
@@ -103,7 +115,6 @@ export function ShapeProvider({ children }) {
 
     useEffect(() => {
         if (rawPoints) {
-
             let longLat = rawPoints.map(p => [p.shape_pt_lon * 1, p.shape_pt_lat * 1])
             var line = turf.lineString(longLat);
             var pt = turf.point(stopCoords)
@@ -112,13 +123,13 @@ export function ShapeProvider({ children }) {
 
             if (split.features.length == 2) {
                 setPoints(split.features[1].geometry.coordinates.map(c => [c[1], c[0]]))
+                setPrevShapes(split.features[0].geometry.coordinates.map(c => [c[1], c[0]]))
             } else {
                 setPoints(line.geometry.coordinates.map(c => [c[1], c[0]]))
+                setPrevShapes()
             }
-
-
-
         }
+
 
     }, [rawPoints])
 
@@ -126,7 +137,7 @@ export function ShapeProvider({ children }) {
 
 
     return (
-        <ShapeContext.Provider value={{ points, setPoints, prevShapes, setPrevShapes }}>
+        <ShapeContext.Provider value={{ points, setPoints, prevShapes, setPrevShapes, initPrevShapes, returnAll, setStoppedFetching }}>
             {children}
         </ShapeContext.Provider>
     )
