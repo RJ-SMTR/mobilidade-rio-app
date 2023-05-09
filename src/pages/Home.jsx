@@ -26,13 +26,14 @@ import CenterButton from "../components/CenterButton"
 import centerMarker from '../assets/imgs/centerMarker.svg'
 import marker from '../assets/imgs/marker.svg'
 import { MovingMarkerContext } from "../hooks/getMovingMarkers";
+import { NotFound } from "../components/notFound/notFound";
 
 
 
 
 export function Home() {
 
-    const { center, setCode } = useContext(CodeContext)
+    const { center, setCode, notPresent } = useContext(CodeContext)
     const { tracked, arrivals } = useContext(MovingMarkerContext)
     const { points } = useContext(ShapeContext)
     const { trip, sequenceInfo, stopInfo } = useContext(TripContext)
@@ -150,13 +151,17 @@ export function Home() {
                         <CenterButton location={center} />
                     </MapContainer>}
             </div>
+            {notPresent ? 
+            <NotFound />
+             :
+                trip ?
+                    // CARD COM TRIP ESCOLHIDA
+                    <SequenceCard />
+                    :
+                    //  CARD COM LISTA DE TRIPS
+                    <InfoCard />
+            }
 
-            {trip ?
-                // CARD COM TRIP ESCOLHIDA
-                <SequenceCard />
-                :
-                //  CARD COM LISTA DE TRIPS
-                <InfoCard />}
             {activeForm ? <Form /> : <></>}
 
         </>

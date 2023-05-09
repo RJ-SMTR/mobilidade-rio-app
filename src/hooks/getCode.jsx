@@ -27,6 +27,8 @@ export function CodeProvider({ children }) {
     // COORDENADAS PRA USAR NO SHAPE
     const [stopCoords, setStopCoords] = useState()
 
+    const [notPresent, setNotPresent] = useState(false)
+
 
 
 
@@ -42,18 +44,27 @@ export function CodeProvider({ children }) {
             api
                 .get("/stops/?stop_code=" + code.toUpperCase())
                 .then(response => {
-                    setStopId(response.data.results[0].stop_id)
-                    setLocationType(response.data.results[0].location_type)
-                    setName(response.data.results[0].stop_name)
-                    setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)])
-                    setStopCoords([response.data.results[0].stop_lon, response.data.results[0].stop_lat])
+                    if (response.data.count === 0){
+                        setNotPresent(true)
+                    } else {
+                        setStopId(response.data.results[0].stop_id)
+                        setLocationType(response.data.results[0].location_type)
+                        setName(response.data.results[0].stop_name)
+                        setCenter([parseFloat(response.data.results[0].stop_lat), parseFloat(response.data.results[0].stop_lon)])
+                        setStopCoords([response.data.results[0].stop_lon, response.data.results[0].stop_lat])
+                    }
+                   
                 })
+        }
+        if(notPresent){
+            setNotPresent(false)
         }
         
     }, [code])
 
+
     return (
-        <CodeContext.Provider value={{ code, setCode, setSearchParams, active, setActive, stopId, locationType, setStopId, gpsUrl, setGpsUrl, name, center, stopCoords }}>
+        <CodeContext.Provider value={{ code, setCode, setSearchParams, active, setActive, stopId, locationType, setStopId, gpsUrl, setGpsUrl, name, center, stopCoords, notPresent }}>
             {children}
         </CodeContext.Provider>
     )

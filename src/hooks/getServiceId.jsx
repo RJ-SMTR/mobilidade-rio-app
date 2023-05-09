@@ -89,7 +89,7 @@ export function ServiceIdProvider({ children }) {
 
 
     useEffect(() => {
-        if (calendar.length > 0) {
+        if (calendar.length > 0 && today) {
             findService(today)
         }
     }, [calendar])
