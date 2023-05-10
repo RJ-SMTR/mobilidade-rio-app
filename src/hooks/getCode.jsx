@@ -39,6 +39,7 @@ export function CodeProvider({ children }) {
 
     useEffect(() => {
         if (code) {
+            
             api
                 .get("/stops/?stop_code=" + code.toUpperCase())
                 .then(response => {
