@@ -10,6 +10,7 @@ import bus from '../../assets/imgs/bus.svg'
 import busSppo from '../../assets/imgs/busSppo.svg'
 import pin from '../../assets/imgs/pin.svg'
 import whitePin from '../../assets/imgs/whitePin.svg'
+import { IoMdInformationCircleOutline } from 'react-icons/io'
 
 import { MovingMarkerContext } from '../../hooks/getMovingMarkers'
 import { FormContext } from "../../hooks/useForm";
@@ -149,7 +150,7 @@ export function InfoCard() {
                                 />
 
                             : arrivals.map((e) => {
-                                return <li key={e.id} onClick={() => setTrip(e.trip_id)} className="flex justify-between border-b py-2.5">
+                                return <li key={e.id} onClick={() => setTrip({ trip_id: e.trip_id, smallestEtas: e.smallestEtas, stop_sequence: e.stop_sequence })} className="flex justify-between border-b py-2.5">
                                     <div className={styles.routeName}>
                                         <div className="flex">
                                             <div className={` ${styles.shortName}  ${e.trip_id.route_id.route_type === 702 ? 'bg-[#F8AC04]' :'bg-[#004a80]' }`}>
@@ -176,7 +177,14 @@ export function InfoCard() {
                                                 <path id="wifi3" d="M10.2712 16.3473C11.7236 14.3832 12.5352 11.7606 12.5352 9.03161C12.5352 6.3026 11.7236 3.68003 10.2712 1.71597C10.1629 1.58895 10.0219 1.52003 9.87628 1.52304C9.7307 1.52605 9.59137 1.60076 9.48624 1.73219C9.38112 1.86362 9.31798 2.04204 9.30948 2.23167C9.30098 2.42129 9.34776 2.6081 9.44043 2.75461C10.6882 4.43871 11.3857 6.68936 11.3857 9.03161C11.3857 11.3739 10.6882 13.6245 9.44043 15.3086C9.33735 15.4481 9.27949 15.6342 9.27889 15.8279C9.27919 15.9293 9.29519 16.0296 9.32592 16.1227C9.35665 16.2158 9.40149 16.2999 9.45774 16.3698C9.5681 16.5071 9.71561 16.5817 9.86804 16.5775C10.0205 16.5732 10.1654 16.4905 10.2712 16.3473Z" fill="black" />
                                             </svg>
                                         </p>
-                                    : <></>}
+                                        : <>
+                                            <p className="bg-[#F0EFEF] py-1  font-bold rounded-sm ml-4 px-4 flex no-eta">
+                                                <IoMdInformationCircleOutline />
+                                            </p>
+
+
+
+                                        </>}
                                 </li>
                             })
                         }
