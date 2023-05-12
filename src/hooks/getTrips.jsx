@@ -43,8 +43,8 @@ export function TripProvider({ children }) {
     useEffect(() => {
         if (trip) {
             setStopInfo(trip)
-            setShape(trip.shape_id)
-            getAllStops(`/stop_times/?trip_id=${trip.trip_id}&direction_id=${trip.direction_id}&service_id=${serviceId}`)
+            setShape(trip.trip_id.shape_id)
+            getAllStops(`/stop_times/?trip_id=${trip.trip_id.trip_id}&direction_id=${trip.trip_id.direction_id}&service_id=${serviceId}`)
         }
     }, [trip])
 

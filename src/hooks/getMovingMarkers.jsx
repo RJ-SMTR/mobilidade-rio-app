@@ -127,8 +127,8 @@ export function MovingMarkerProvider({ children }) {
                 const matched = frequencies.filter((obj2) => {
                     return (
                         obj1.trip_id.trip_short_name === obj2.trip_id.trip_short_name &&
-                        obj1.trip_id.direction_id === obj2.trip_id.direction_id &&
-                        serviceId === obj2.trip_id.service_id
+                        obj1.stop_sequence === 0 &&
+                        serviceId === obj2.trip_id.service_id 
                     );
                 });
 

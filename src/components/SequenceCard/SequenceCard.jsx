@@ -57,11 +57,19 @@ export function SequenceCard() {
                                 <div className={styles.routeHeader}>
                                     {theme ? <img src={busSppo} alt="" /> : <img src={bus} alt="" />}
                                     <p className='ml-2 font-semibold leading-none'>
-                                        {stopInfo.trip_short_name}
+                                        {stopInfo.trip_id.trip_short_name}
                                     </p>
                                 </div>
-                                {stopInfo.trip_headsign}
+                                {stopInfo.trip_id.trip_headsign}
                             </h1>
+                            {stopInfo.smallestEtas || stopInfo.frequencies  ? <></> :
+                                <div className='rounded-md p-1 bg-gray-100 my-4'>
+                                    <p className='text-sm'><strong>Não obtemos previsão para este serviço.</strong></p>
+                                        <p className='text-sm'>
+                                            Confirme o horário de saída do próximo ônibus na estação.
+                                        </p>
+                                </div>
+                            }
 
                             <ul className={styles.timeline}>
                                 {sequenceInfo ? 
