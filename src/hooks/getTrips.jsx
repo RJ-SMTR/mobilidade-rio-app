@@ -53,8 +53,14 @@ export function TripProvider({ children }) {
             const sortedSequence = allSequenceStops.sort((a, b) => { a.stop_sequence - b.stop_sequence })
             if (locationType === 1) {
                 const mapSequence = sortedSequence?.map(e => e.stop_id.stop_name).indexOf(name)
-                const filteredSequence = sortedSequence?.splice(mapSequence)
-                setSequenceInfo(filteredSequence)
+                const mapSequenceIncludes = sortedSequence?.findIndex(e => e.stop_id.stop_name.includes(name))
+                if (mapSequence === -1) {
+                    const filteredSequenceIncludes = sortedSequence?.splice(mapSequenceIncludes)
+                    setSequenceInfo(filteredSequenceIncludes)
+                } else {
+                    const filteredSequence = sortedSequence?.splice(mapSequence)
+                    setSequenceInfo(filteredSequence)
+                }
             } else {
                 const mapSequence = sortedSequence?.map(e => e.stop_id.stop_id).indexOf(stopId)
                 const filteredSequence = sortedSequence?.splice(mapSequence)
