@@ -113,10 +113,10 @@ export function MovingMarkerProvider({ children }) {
 
     useEffect(() => {
         if (routes) {
-            const teste = routes
+            const tripsList = routes
                 .filter((i) => i.stop_sequence === 0)
                 .map((i) => i.trip_id.trip_short_name);
-            getallFrequencies("/frequencies/?trip_short_name=" + teste)
+            getallFrequencies("/frequencies/?trip_short_name=" + tripsList)
 
         }
     }, [routes])
