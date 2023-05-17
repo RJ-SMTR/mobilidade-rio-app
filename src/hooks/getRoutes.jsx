@@ -127,8 +127,7 @@ export function RoutesProvider({ children }) {
             let allLastStopsMatch = true; 
 
             for (let i = 0; i < tripResponses.length; i++) {
-                console.log(response);
-                console.log("item", tripResponses[i]);
+              
                 const tripResponse = tripResponses[i];
                 const tripStopTimes = tripResponse.data.results;
                 console.log(tripStopTimes);
