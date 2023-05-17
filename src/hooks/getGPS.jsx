@@ -36,7 +36,7 @@ export function GPSProvider({ children }) {
         
         const intervalId = setInterval(() => {
             getGPS(gpsUrl);
-        }, 6000);
+        }, 3000);
         setIntervalId(intervalId);
     }
 
