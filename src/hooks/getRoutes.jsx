@@ -65,8 +65,8 @@ export function RoutesProvider({ children }) {
                 if (locationType === 1) {
                     const stopTimePromise = api.get(`/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}`);
                     tripPromises.push(stopTimePromise);
-                    filteredTrips.push(item);
                 }
+                filteredTrips.push(item);
             }
         }
 
