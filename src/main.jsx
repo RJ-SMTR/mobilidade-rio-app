@@ -25,20 +25,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <CodeProvider>
           <ServiceIdProvider>
             <ThemeProvider>
+                        <FormProvider>
               <RoutesProvider>
                 <TripProvider>
                   <ShapeProvider>
                     <GPSProvider>
                       <MovingMarkerProvider>
-                        <FormProvider>
                           <App />
-                        </FormProvider>
                       </MovingMarkerProvider>
                     </GPSProvider>
                     <ToastContainer />
                   </ShapeProvider>
                 </TripProvider>
               </RoutesProvider>
+                        </FormProvider>
             </ThemeProvider>
           </ServiceIdProvider>
         </CodeProvider>
