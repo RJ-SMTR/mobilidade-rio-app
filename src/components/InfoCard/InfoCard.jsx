@@ -226,7 +226,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /></> : routes.map((e) => {
-                                    return <li key={e.id} onClick={() => setTrip(e.trip_id)} className="flex justify-between border-b py-2.5">
+                                    return <li key={e.id} onClick={() => setTrip({trip_id: e.trip_id})} className="flex justify-between border-b py-2.5">
                                         <div className={`${styles.routeName} + flex`}>
                                             <div className={` ${styles.shortName} + bg-[#004a80]`}>
                                                 <img src={busSppo} alt="" />
