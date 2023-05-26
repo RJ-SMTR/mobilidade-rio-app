@@ -35,7 +35,7 @@ export function Header(props) {
         setSequenceInfo()
         setPlataforms([])
         setRoutes()
-        setRoutesAndFrequencies()
+        setRoutesAndFrequencies([])
         setResults()
         setTracked()
         setTheme("sppo")
@@ -58,7 +58,7 @@ export function Header(props) {
         setValue()
         setPlataforms([])
         setRoutes()
-        setRoutesAndFrequencies()
+        setRoutesAndFrequencies([])
         setSequenceInfo()
         setTracked()
         setInnerCircle([])
@@ -84,7 +84,7 @@ export function Header(props) {
     }, [newCode])
 
     useEffect(() => {
-        if (newCode.length == 4 && codeIdentifier === true && !/^[a-zA-Z]+$/.test(newCode)) {
+        if (newCode.length == 4 && codeIdentifier === true /*&& !/^[a-zA-Z]+$/.test(newCode)*/) {
             navigate(`/${newCode}`)
         } else if (newCode.length == 5 && codeIdentifier) {
             navigate(`/${newCode}`)

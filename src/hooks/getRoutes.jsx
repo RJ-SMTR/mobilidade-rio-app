@@ -116,7 +116,6 @@ export function RoutesProvider({ children }) {
         for (let index = 0; index < stopIdsResponses.length; index++) {
             const response = stopIdsResponses[index];
             const stopTimes = response.data.results;
-            console.log(stopTimes);
 
             const tripPromises = stopTimes.map((stopTime) =>
                 api.get(`/stop_times/?trip_id=${stopTime.trip_id.trip_id}`)
@@ -130,7 +129,6 @@ export function RoutesProvider({ children }) {
               
                 const tripResponse = tripResponses[i];
                 const tripStopTimes = tripResponse.data.results;
-                console.log(tripStopTimes);
 
                 const lastStop = tripStopTimes[tripStopTimes.length - 1].stop_id.stop_id;
 
@@ -145,7 +143,6 @@ export function RoutesProvider({ children }) {
             }
         }
 
-        console.log(filteredStations);
 
         if (data.next) {
             await getStations(data.next);
@@ -179,7 +176,6 @@ export function RoutesProvider({ children }) {
 
     useEffect(() => {
         if (routeType) {
-            console.log(stations)
             if (locationType != null || locationType != undefined || stations != undefined) {
                 const iteratee = stations.map((e) => e)
                 const result = iteratee.reduce((acc, curr) => {

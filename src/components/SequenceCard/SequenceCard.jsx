@@ -53,17 +53,12 @@ export function SequenceCard() {
                         </div>
                         :
                         <>
-                        {console.log(stopInfo)}
                             <h1 className="text-xl font-semibold flex items-start">
-                                <div className={` ${styles.routeHeader}  ${stopInfo.trip_id.route_id.route_type === 702 ? 'bg-[#F8AC04]' : 'bg-[#004a80]'}`}>
-                                    {stopInfo.trip_id.route_id.route_type === 702 ? <><img src={bus} alt="" />
-                                        <p className='ml-2 font-semibold leading-none'>{stopInfo.trip_id.trip_short_name}</p>
-                                    </>
-                                        : <>
-                                            <img src={busSppo} alt="" />
-                                            <p className='ml-2 font-semibold leading-none text-white'>{stopInfo.trip_id.trip_short_name}</p>
-                                        </>
-                                    }
+                                <div className={styles.routeHeader}>
+                                    {theme ? <img src={busSppo} alt="" /> : <img src={bus} alt="" />}
+                                    <p className='ml-2 font-semibold leading-none'>
+                                        {stopInfo.trip_id.trip_short_name}
+                                    </p>
                                 </div>
                                 {stopInfo.trip_id.trip_headsign}
                             </h1>

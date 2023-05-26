@@ -29,7 +29,7 @@ export function InfoCard() {
     const { setGpsUrl, name } = useContext(CodeContext)
     const {serviceId} = useContext(ServiceIdContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, activateLoader } = useContext(RoutesContext)
-    const { setTracked, arrivals, setArrivals, setRoutesAndFrequencies } = useContext(MovingMarkerContext)
+    const { setTracked, arrivals, setArrivals, setRoutesAndFrequencies, routesAndFrequencies } = useContext(MovingMarkerContext)
     const { setTrip } = useContext(TripContext);
     const { stopFetching } = useContext(GPSContext)
     const { activateForm, setSelectedPlatform } = useContext(FormContext)
@@ -213,7 +213,7 @@ export function InfoCard() {
                         <p className='text-[#707070] text-sm'>Você está em</p>
                         <h1 className="text-xl font-semibold mb-3">{name}</h1>
                         <ul className={styles.routeList}>
-                            {!routes ? <>
+                            {!routesAndFrequencies.length > 0  ? <>
                                 <Oval
                                     height={40}
                                     width={40}
@@ -225,8 +225,8 @@ export function InfoCard() {
                                     strokeWidth={4}
                                     strokeWidthSecondary={4}
 
-                                /></> : routes.map((e) => {
-                                    return <li key={e.id} onClick={() => setTrip(e.trip_id)} className="flex justify-between border-b py-2.5">
+                                /></> : routesAndFrequencies.map((e) => {
+                                    return <li key={e.id} onClick={() => setTrip({trip_id: e.trip_id})} className="flex justify-between border-b py-2.5">
                                         <div className={`${styles.routeName} + flex`}>
                                             <div className={` ${styles.shortName} + bg-[#004a80]`}>
                                                 <img src={busSppo} alt="" />

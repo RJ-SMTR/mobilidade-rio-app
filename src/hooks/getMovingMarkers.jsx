@@ -17,13 +17,12 @@ export const MovingMarkerContext = createContext()
 
 export function MovingMarkerProvider({ children }) {
 
-    const { code } = useContext(CodeContext)
+    const { code, locationType, stopId } = useContext(CodeContext)
     const { realtime } = useContext(GPSContext)
     const { setResults } = useContext(NameContext)
     const { routes } = useContext(RoutesContext)
-    const { stopInfo } = useContext(TripContext)
     const { serviceId } = useContext(ServiceIdContext)
-    const {selectedPlatform} = useContext(FormContext)
+    const { selectedPlatform } = useContext(FormContext)
     const [tracked, setTracked] = useState([])
     const [innerCircle, setInnerCircle] = useState([])
     const [arrivals, setArrivals] = useState([])
@@ -40,7 +39,7 @@ export function MovingMarkerProvider({ children }) {
     }, [code])
 
 
-   
+
     useEffect(() => {
         if (realtime && routes) {
             const currentTime = new Date().getTime();
@@ -96,68 +95,118 @@ export function MovingMarkerProvider({ children }) {
     }, [realtime]);
 
 
-
     let frequenciesList = [];
+
     function getallFrequencies(url) {
         const fetchTime = new Date();
 
         api.get(url).then(({ data }) => {
             data.results.forEach((item) => {
+                const startTime = item.start_time.split(":").map(Number);
                 const endTime = item.end_time.split(":").map(Number);
                 const fetchHour = fetchTime.getHours();
                 const fetchMinute = fetchTime.getMinutes();
                 const fetchSecond = fetchTime.getSeconds();
+                if(locationType === 1 ){
+                    if (
+                        endTime[0] > fetchHour ||
+                        (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
+                        (endTime[0] === fetchHour && endTime[1] === fetchMinute && endTime[2] > fetchSecond)
+                    ) {
+                        frequenciesList.push(item);
+                    }
+                } else {
+                    if (
+                        (startTime[0] < fetchHour ||
+                            (startTime[0] === fetchHour && startTime[1] < fetchMinute) ||
+                            (startTime[0] === fetchHour &&
+                                startTime[1] === fetchMinute &&
+                                startTime[2] < fetchSecond)) &&
+                        (endTime[0] > fetchHour ||
+                            (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
+                            (endTime[0] === fetchHour &&
+                                endTime[1] === fetchMinute &&
+                                endTime[2] > fetchSecond))
+                    ) {
+                        const stopTimePromise = api.get(`/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}`);
+                        stopTimePromise.then(({ data }) => {
+                            if (data.results && data.results.length > 0) {
 
-                if (
-                    endTime[0] > fetchHour ||
-                    (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
-                    (endTime[0] === fetchHour && endTime[1] === fetchMinute && endTime[2] > fetchSecond)
-                ) {
-                    frequenciesList.push(item);
+                                const stopIdExists = data.results.filter((stopTime) => stopTime.stop_id.stop_id === stopId);
+                                if (stopIdExists.length > 0) {
+                                    frequenciesList.push(item);
+                                }
+                            }
+                        });
+                    }
                 }
+               
             });
 
             if (data.next) {
                 getallFrequencies(data.next);
             } else {
+                console.log("frequenciesList", [...frequenciesList])
                 setFrequencies([...frequenciesList]);
             }
         });
     }
 
 
+
+
     useEffect(() => {
         if (routes) {
-            const tripsList = routes
-                .filter((i) => i.stop_sequence === 0)
-                .map((i) => i.trip_id.trip_short_name);
-            getallFrequencies("/frequencies/?trip_short_name=" + tripsList)
-
+            if(locationType === 1 ){
+                const tripsList = routes
+                    .filter((i) => i.stop_sequence === 0)
+                    .map((i) => i.trip_id.trip_short_name)
+                getallFrequencies("/frequencies/?trip_short_name=" + tripsList)
+            } else {
+                const tripsList = routes
+                    .map((i) => i.trip_id.trip_short_name);
+                getallFrequencies("/frequencies/?trip_short_name=" + tripsList)
+            }
         }
     }, [routes])
+
     useEffect(() => {
         if (routes && frequencies) {
-            
             const filteredFrequenciesList = routes.reduce((acc, obj1) => {
                 const matched = frequencies.filter((obj2) => {
                     return (
                         obj1.trip_id.trip_short_name === obj2.trip_id.trip_short_name &&
-                        obj1.stop_sequence === 0 &&
                         serviceId === obj2.trip_id.service_id
                     );
                 });
-
                 const combinedHeadways = matched.reduce((headwaysAcc, freq) => {
-                    const headways = calculateHeadwayUntilEndTime(freq.start_time, freq.end_time, freq.headway_secs);
+                    // Função que passa os dados para calcular próximo horário de chegada e novo shape, trip_id e dericetion_id
+                    const headways = calculateHeadwayUntilEndTime(freq.start_time, freq.end_time, freq.headway_secs, freq.trip_id.shape_id, freq.trip_id.trip_id, freq.trip_id.direction_id);
                     return headwaysAcc.concat(headways);
                 }, []).sort((a, b) => a.start_time.localeCompare(b.start_time));
 
                 const currentTime = new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                const closestStartTime = combinedHeadways.find((headway) => headway.start_time > currentTime)?.start_time || null;
 
-                const filteredObj = { ...obj1, closestStartTime: closestStartTime ? closestStartTime.slice(0, -3) : null };
+                const filteredObj = { ...obj1, closestStartTime: null };
 
-                if (filteredObj.lastStop.stop_id.stop_id !== selectedPlatform[0]) {
+                if (combinedHeadways.length > 0) {
+                    const closestStartTime = combinedHeadways.find((headway) => {
+                        return headway.start_time > currentTime; 
+                    });
+
+                    if (closestStartTime) {
+                        filteredObj.closestStartTime = closestStartTime.start_time.slice(0, -3);
+                        filteredObj.trip_id.shape_id = closestStartTime.shape_id;
+                        filteredObj.trip_id.trip_id = closestStartTime.trip_id;
+                        filteredObj.trip_id.direction_id = closestStartTime.direction_id;
+                    }
+                }
+
+                if (locationType === 1) {
+                    if (filteredObj.lastStop.stop_id.stop_id !== selectedPlatform[0]) {
+                        acc.push(filteredObj);
+                    }
+                } else {
                     acc.push(filteredObj);
                 }
 
@@ -166,14 +215,15 @@ export function MovingMarkerProvider({ children }) {
 
             setRoutesAndFrequencies(filteredFrequenciesList);
         }
-    }, [tracked]);
+    }, [tracked, frequencies]);
 
 
 
 
 
 
-    function calculateHeadwayUntilEndTime(start_time, end_time, headway_secs) {
+
+    function calculateHeadwayUntilEndTime(start_time, end_time, headway_secs, shape_id, trip_id, direction_id) {
         const startTime = new Date(`1970-01-01T${start_time}Z`);
         const endTime = new Date(`1970-01-01T${end_time}Z`);
 
@@ -186,6 +236,9 @@ export function MovingMarkerProvider({ children }) {
             }
             const headway = {
                 start_time: currentStartTime.toISOString().substr(11, 8),
+                shape_id: shape_id,
+                trip_id: trip_id,
+                direction_id: direction_id
             };
             headways.push(headway);
 
@@ -234,7 +287,7 @@ export function MovingMarkerProvider({ children }) {
 
 
     return (
-        <MovingMarkerContext.Provider value={{ tracked, setTracked, innerCircle, setInnerCircle, arrivals, setArrivals, setRoutesAndFrequencies }}>
+        <MovingMarkerContext.Provider value={{ tracked, setTracked, innerCircle, setInnerCircle, arrivals, setArrivals, setRoutesAndFrequencies, routesAndFrequencies }}>
             {children}
         </MovingMarkerContext.Provider>
     )

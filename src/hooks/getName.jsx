@@ -57,7 +57,7 @@ export function NameProvider({ children }) {
 
     useEffect(() => {
         if(firstCode){
-        if (firstCode.length == 4 && codeR && !/^[a-zA-Z]+$/.test(firstCode)) {
+        if (firstCode.length == 4 && codeR /*&& !/^[a-zA-Z]+$/.test(firstCode)*/) {
             navigate(`/${firstCode}`)
         } else if (firstCode.length == 5 && codeR) {
             navigate(`/${firstCode}`)
