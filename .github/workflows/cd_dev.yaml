@@ -5,6 +5,7 @@ on:
     branches:
       - "devops-workflow"
 
+
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_DEV_CLUSTER_NAME }}
