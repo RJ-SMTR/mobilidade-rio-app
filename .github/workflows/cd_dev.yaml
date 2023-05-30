@@ -9,8 +9,8 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_DEV_CLUSTER_NAME }}
   GKE_ZONE: us-central1-c
-  IMAGE: mobilidade-rio-app-stag
-  MY_ENV: staging
+  IMAGE: mobilidade-rio-app-dev
+  MY_ENV: develop
 
 jobs:
   build:
@@ -60,4 +60,4 @@ jobs:
         run: |-
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_APP:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
           ./kustomize build . | kubectl apply -n mobilidade-v2-develop -f -
-          kubectl get services -n mobilidade-v2-staging -o wide
+          kubectl get services -n mobilidade-v2-develop -o wide
