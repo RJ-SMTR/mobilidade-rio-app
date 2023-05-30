@@ -161,11 +161,11 @@ export function MovingMarkerProvider({ children }) {
                 const tripsList = routes
                     .filter((i) => i.stop_sequence === 0)
                     .map((i) => i.trip_id.trip_short_name)
-                getallFrequencies("/frequencies/?trip_short_name=" + tripsList)
+                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}`)
             } else {
                 const tripsList = routes
                     .map((i) => i.trip_id.trip_short_name);
-                getallFrequencies("/frequencies/?trip_short_name=" + tripsList)
+                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}`)
             }
         }
     }, [routes])
@@ -180,7 +180,6 @@ export function MovingMarkerProvider({ children }) {
                     );
                 });
                 const combinedHeadways = matched.reduce((headwaysAcc, freq) => {
-                    // Função que passa os dados para calcular próximo horário de chegada e novo shape, trip_id e dericetion_id
                     const headways = calculateHeadwayUntilEndTime(freq.start_time, freq.end_time, freq.headway_secs, freq.trip_id.shape_id, freq.trip_id.trip_id, freq.trip_id.direction_id);
                     return headwaysAcc.concat(headways);
                 }, []).sort((a, b) => a.start_time.localeCompare(b.start_time));
