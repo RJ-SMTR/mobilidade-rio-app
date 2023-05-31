@@ -96,61 +96,65 @@ export function MovingMarkerProvider({ children }) {
 
 
     let frequenciesList = [];
-
-    function getallFrequencies(url) {
+    async function getallFrequencies(url) {
         const fetchTime = new Date();
+        const fetchHour = fetchTime.getHours();
+        const fetchMinute = fetchTime.getMinutes();
+        const fetchSecond = fetchTime.getSeconds();
 
-        api.get(url).then(({ data }) => {
-            data.results.forEach((item) => {
+        try {
+            const { data } = await api.get(url);
+            const stopTimePromises = [];
+            const frequenciesList = [];
+
+            for (const item of data.results) {
                 const startTime = item.start_time.split(":").map(Number);
                 const endTime = item.end_time.split(":").map(Number);
-                const fetchHour = fetchTime.getHours();
-                const fetchMinute = fetchTime.getMinutes();
-                const fetchSecond = fetchTime.getSeconds();
-                if(locationType === 1 ){
-                    if (
-                        endTime[0] > fetchHour ||
+
+                const isWithinTimeRange = locationType === 1
+                    ? (endTime[0] > fetchHour ||
                         (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
-                        (endTime[0] === fetchHour && endTime[1] === fetchMinute && endTime[2] > fetchSecond)
-                    ) {
-                        frequenciesList.push(item);
-                    }
-                } else {
-                    if (
-                        (startTime[0] < fetchHour ||
-                            (startTime[0] === fetchHour && startTime[1] < fetchMinute) ||
-                            (startTime[0] === fetchHour &&
-                                startTime[1] === fetchMinute &&
-                                startTime[2] < fetchSecond)) &&
+                        (endTime[0] === fetchHour && endTime[1] === fetchMinute && endTime[2] > fetchSecond))
+                    : ((startTime[0] < fetchHour ||
+                        (startTime[0] === fetchHour && startTime[1] < fetchMinute) ||
+                        (startTime[0] === fetchHour && startTime[1] === fetchMinute && startTime[2] < fetchSecond)) &&
                         (endTime[0] > fetchHour ||
                             (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
-                            (endTime[0] === fetchHour &&
-                                endTime[1] === fetchMinute &&
-                                endTime[2] > fetchSecond))
-                    ) {
-                        const stopTimePromise = api.get(`/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}`);
-                        stopTimePromise.then(({ data }) => {
-                            if (data.results && data.results.length > 0) {
+                            (endTime[0] === fetchHour && endTime[1] === fetchMinute && endTime[2] > fetchSecond)));
 
-                                const stopIdExists = data.results.filter((stopTime) => stopTime.stop_id.stop_id === stopId);
-                                if (stopIdExists.length > 0) {
-                                    frequenciesList.push(item);
-                                }
-                            }
-                        });
+                if (isWithinTimeRange) {
+                    const stopTimePromise = api.get(`/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}&show_all=true`);
+                    stopTimePromises.push(stopTimePromise);
+                }
+            }
+
+            const stopTimeResponses = await Promise.all(stopTimePromises);
+            for (let i = 0; i < stopTimeResponses.length; i++) {
+                const stopTimeData = stopTimeResponses[i].data;
+                const item = data.results[i];
+
+                if (stopTimeData.results && stopTimeData.results.length > 0) {
+                    const stopIdExists = stopTimeData.results.some((stopTime) => stopTime.stop_id.stop_id === stopId);
+
+                    if (stopIdExists) {
+                        frequenciesList.push(item);
                     }
                 }
-               
-            });
+            }
+
+            
 
             if (data.next) {
-                getallFrequencies(data.next);
+                await getallFrequencies(data.next);
             } else {
-                console.log("frequenciesList", [...frequenciesList])
                 setFrequencies([...frequenciesList]);
             }
-        });
+        } catch (error) {
+            console.error(error);
+        }
     }
+
+
 
 
 
@@ -165,11 +169,10 @@ export function MovingMarkerProvider({ children }) {
             } else {
                 const tripsList = routes
                     .map((i) => i.trip_id.trip_short_name);
-                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}`)
+                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}&show_all=true`)
             }
         }
     }, [routes])
-
     useEffect(() => {
         if (routes && frequencies) {
             const filteredFrequenciesList = routes.reduce((acc, obj1) => {
@@ -185,19 +188,25 @@ export function MovingMarkerProvider({ children }) {
                 }, []).sort((a, b) => a.start_time.localeCompare(b.start_time));
 
                 const currentTime = new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
                 const filteredObj = { ...obj1, closestStartTime: null };
-
-                if (combinedHeadways.length > 0) {
+                if (combinedHeadways.length > 0) {  
                     const closestStartTime = combinedHeadways.find((headway) => {
-                        return headway.start_time > currentTime; 
+                        if(locationType === 1){
+
+                            return headway.start_time > currentTime; 
+                        } else {
+                            return headway.end_time > currentTime; 
+                        }
                     });
 
                     if (closestStartTime) {
                         filteredObj.closestStartTime = closestStartTime.start_time.slice(0, -3);
-                        filteredObj.trip_id.shape_id = closestStartTime.shape_id;
-                        filteredObj.trip_id.trip_id = closestStartTime.trip_id;
-                        filteredObj.trip_id.direction_id = closestStartTime.direction_id;
+                        if(locationType === 0){
+                            filteredObj.trip_id.shape_id = closestStartTime.shape_id;
+                            filteredObj.trip_id.trip_id = closestStartTime.trip_id;
+                            filteredObj.trip_id.direction_id = closestStartTime.direction_id;
+                        }
+                        
                     }
                 }
 
@@ -235,6 +244,7 @@ export function MovingMarkerProvider({ children }) {
             }
             const headway = {
                 start_time: currentStartTime.toISOString().substr(11, 8),
+                end_time: currentEndTime.toISOString().substr(11, 8),
                 shape_id: shape_id,
                 trip_id: trip_id,
                 direction_id: direction_id
@@ -257,7 +267,6 @@ export function MovingMarkerProvider({ children }) {
 
     useEffect(() => {
         if (routesAndFrequencies && tracked) {
-            console.log(routesAndFrequencies)
             const arrivals = routesAndFrequencies.map((obj1) => {
                 const matched = tracked.filter((obj2) => {
                     return (

@@ -32,6 +32,7 @@ export function TripProvider({ children }) {
                     getAllStops(data.next)
                 } else {
                     setIsLoading(false)
+                    allStops.sort((a, b) => a.stop_sequence - b.stop_sequence);
                     setAllSequenceStops([...allStops])
                 }
 
@@ -44,13 +45,18 @@ export function TripProvider({ children }) {
         if (trip) {
             setStopInfo(trip)
             setShape(trip.trip_id.shape_id)
-            getAllStops(`/stop_times/?trip_id=${trip.trip_id.trip_id}&direction_id=${trip.trip_id.direction_id}&service_id=${serviceId}`)
+            if(locationType === 1){
+                getAllStops(`/stop_times/?trip_id=${trip.trip_id.trip_id}&direction_id=${trip.trip_id.direction_id}&service_id=${serviceId}`)
+            } else {
+                getAllStops(`/stop_times/?trip_id=${trip.trip_id.trip_id}&direction_id=${trip.trip_id.direction_id}&service_id=${serviceId}&show_all=true`)
+            }
+          
         }
     }, [trip])
 
     useEffect(() => {
         if (!isLoading) {
-            const sortedSequence = allSequenceStops.sort((a, b) => { a.stop_sequence - b.stop_sequence })
+            const sortedSequence = allSequenceStops.sort((a, b) =>  a.stop_sequence - b.stop_sequence )
             if (locationType === 1) {
                 const mapSequence = sortedSequence?.map(e => e.stop_id.stop_name).indexOf(name)
                 const mapSequenceIncludes = sortedSequence?.findIndex(e => e.stop_id.stop_name.includes(name))
