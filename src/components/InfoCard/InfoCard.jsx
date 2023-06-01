@@ -179,7 +179,7 @@ export function InfoCard() {
                                             </svg>
                                         </p>
                                     : <>
-                                            {e.closestStartTime ?
+                                            {e.closestStartTime && e.trip_id.route_id.route_type === 702 ?
                                                 <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex eta">
                                                     {e.closestStartTime ?? ''}
                                                     <FiClock className="my-1 ml-1" />
