@@ -26,26 +26,18 @@ import { ServiceIdContext } from "../../hooks/getServiceId"
 
 
 export function InfoCard() {
-    const { setGpsUrl, name } = useContext(CodeContext)
+    const { setGpsUrl, name, infoLinha, linha } = useContext(CodeContext)
     const {serviceId} = useContext(ServiceIdContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, activateLoader } = useContext(RoutesContext)
     const { setTracked, arrivals, setArrivals, setRoutesAndFrequencies, routesAndFrequencies } = useContext(MovingMarkerContext)
     const { setTrip } = useContext(TripContext);
     const { stopFetching } = useContext(GPSContext)
     const { activateForm, setSelectedPlatform } = useContext(FormContext)
-    const [linha, setLinha] = useState(false)
     const [sortedPlatforms, setSortedPlatforms] = useState()
 
 
 
 
-    function infoLinha() {
-        if (!linha) {
-            setLinha(true)
-        } else {
-            setLinha(false)
-        }
-    }
 
     useEffect(() => {
         if(plataforms){

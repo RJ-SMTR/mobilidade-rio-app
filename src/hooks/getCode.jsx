@@ -26,6 +26,8 @@ export function CodeProvider({ children }) {
     const [center, setCenter] = useState()
     // COORDENADAS PRA USAR NO SHAPE
     const [stopCoords, setStopCoords] = useState()
+    const [linha, setLinha] = useState(false)
+
 
 
 
@@ -52,8 +54,16 @@ export function CodeProvider({ children }) {
         
     }, [code])
 
+    function infoLinha() {
+        if (!linha) {
+            setLinha(true)
+        } else {
+            setLinha(false)
+        }
+    }
+
     return (
-        <CodeContext.Provider value={{ code, setCode, setSearchParams, active, setActive, stopId, locationType, setStopId, gpsUrl, setGpsUrl, name, center, stopCoords }}>
+        <CodeContext.Provider value={{ code, setCode, setSearchParams, active, setActive, stopId, locationType, setStopId, gpsUrl, setGpsUrl, name, center, stopCoords, infoLinha, linha, setLinha }}>
             {children}
         </CodeContext.Provider>
     )

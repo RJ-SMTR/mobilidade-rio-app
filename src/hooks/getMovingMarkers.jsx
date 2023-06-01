@@ -96,55 +96,53 @@ export function MovingMarkerProvider({ children }) {
 
 
     let frequenciesList = [];
-
     async function getallFrequencies(url) {
-        const fetchTime = new Date();  
-        const fetchHour =  fetchTime.getHours()
-        const fetchMinute =  fetchTime.getMinutes()
-        const fetchSecond =  fetchTime.getSeconds()
+        const fetchTime = new Date();
+        const fetchHour = fetchTime.getHours();
+        const fetchMinute = fetchTime.getMinutes();
+        const fetchSecond = fetchTime.getSeconds();
 
         try {
             const { data } = await api.get(url);
 
-            for (const item of data.results) {
-                const startTime = item.start_time.split(":").map(Number);
-                const endTime = item.end_time.split(":").map(Number);
+            const filteredData = await Promise.all(
+                data.results.map(async (item) => {
+                    const startTime = item.start_time.split(":").map(Number);
+                    const endTime = item.end_time.split(":").map(Number);
 
-                if (locationType === 1) {
-                    if (
-                        endTime[0] > fetchHour ||
-                        (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
-                        (endTime[0] === fetchHour && endTime[1] === fetchMinute && endTime[2] > fetchSecond)
-                    ) {
-                        frequenciesList.push(item);
-                    }
-                } else {
-                    if (
-                        (startTime[0] < fetchHour ||
-                            (startTime[0] === fetchHour && startTime[1] < fetchMinute) ||
-                            (startTime[0] === fetchHour &&
-                                startTime[1] === fetchMinute &&
-                                startTime[2] < fetchSecond)) &&
-                        (endTime[0] > fetchHour ||
+                    if (locationType === 1) {
+                        if (
+                            endTime[0] > fetchHour ||
                             (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
                             (endTime[0] === fetchHour &&
                                 endTime[1] === fetchMinute &&
-                                endTime[2] > fetchSecond))
-                    ) {
-                        const { data: stopTimeData } = await api.get(`/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}&show_all=true`);
-                        if (stopTimeData.results && stopTimeData.results.length > 0) {
-                            const stopIdExists = stopTimeData.results.filter((stopTime) => stopTime.stop_id.stop_id === stopId);
-                            if (stopIdExists.length > 0) {
-                                frequenciesList.push(item);
-                            }
+                                endTime[2] > fetchSecond)
+                        ) {
+                            return item;
+                        }
+                    } else {
+                        if (
+                            (startTime[0] < fetchHour ||
+                                (startTime[0] === fetchHour && startTime[1] < fetchMinute) ||
+                                (startTime[0] === fetchHour &&
+                                    startTime[1] === fetchMinute &&
+                                    startTime[2] < fetchSecond)) &&
+                            (endTime[0] > fetchHour ||
+                                (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
+                                (endTime[0] === fetchHour &&
+                                    endTime[1] === fetchMinute &&
+                                    endTime[2] > fetchSecond))
+                        ) {
+                            return item
                         }
                     }
-                }
-            }
+                })
+            );
 
             if (data.next) {
                 await getallFrequencies(data.next);
-            } else {
+            } else{
+                const frequenciesList = filteredData.filter(Boolean);
                 setFrequencies([...frequenciesList]);
             }
         } catch (error) {
@@ -155,18 +153,15 @@ export function MovingMarkerProvider({ children }) {
 
 
 
-
     useEffect(() => {
         if (routes) {
             if(locationType === 1 ){
                 const tripsList = routes
                     .filter((i) => i.stop_sequence === 0)
                     .map((i) => i.trip_id.trip_short_name)
-                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}`)
+                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}&stop_id=${stopId}`)
             } else {
-                const tripsList = routes
-                    .map((i) => i.trip_id.trip_short_name);
-                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}&show_all=true`)
+                getallFrequencies(`/frequencies/?&stop_id=${stopId}&service_id=${serviceId}&show_all=true`)
             }
         }
     }, [routes])
