@@ -21,8 +21,8 @@ export function ServiceIdProvider({ children }) {
     };
 
 
+    let allDates = [];
     async function getDates(url) {
-        let allDates = [];
         await api
             .get(url)
             .then(({ data }) => {
@@ -31,8 +31,9 @@ export function ServiceIdProvider({ children }) {
                 });
                 if (data.next) {
                     getDates(data.next);
+                } else{
+                    setCalendar((prevCalendar) => [...prevCalendar, ...allDates]);
                 }
-                setCalendar((prevCalendar) => [...prevCalendar, ...allDates]);
             });
     }
     async function getDayOfWeek(url) {
@@ -43,7 +44,6 @@ export function ServiceIdProvider({ children }) {
                 data.results.forEach((item) => {
                     allDay.push(item);
                 });
-
                 setWeekDay(allDay);
             });
     }
@@ -67,20 +67,21 @@ export function ServiceIdProvider({ children }) {
 
     function findService(todayDate) {
         const service = calendar.find((item) => item.date === todayDate);
-        if (service) {
+        if (!service.service_id.includes('DESAT')) {
+            console.log(service)
             setServiceId(service.service_id);
-        } else if (weekDay) {
+        } else {
             const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
             const serviceWorks = weekDay.filter((service) => service[dayOfWeek] === 1);
             const currentDate = new Date(todayDate);
             if (serviceWorks.length > 0) {
-                const todayService = serviceWorks.find((service) => {
+                const todayService = serviceWorks.filter((service) => {
                     const startDate = new Date(service.start_date);
                     const endDate = new Date(service.end_date);
-                    return currentDate >= startDate && currentDate <= endDate;
+                    return currentDate >= startDate && currentDate <= endDate && !service.service_id.includes('DESAT') && !service.service_id.includes('OBRA');
                 });
                 if (todayService) {
-                    setServiceId(todayService.service_id);
+                    setServiceId(todayService[0].service_id);
                 }
             }
         }

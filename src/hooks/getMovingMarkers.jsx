@@ -133,11 +133,23 @@ export function MovingMarkerProvider({ children }) {
                                     endTime[1] === fetchMinute &&
                                     endTime[2] > fetchSecond))
                         ) {
-                            return item
+                            const { data: stopTimeData } = await api.get(
+                                `/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}&show_all=true`
+                            );
+                            if (stopTimeData.results && stopTimeData.results.length > 0) {
+                                const stopIdExists = stopTimeData.results.filter(
+                                    (stopTime) => stopTime.stop_id.stop_id === stopId
+                                );
+                                if (stopIdExists.length > 0) {
+                                    return item;
+                                }
+                            }
                         }
                     }
                 })
             );
+
+           
 
             if (data.next) {
                 await getallFrequencies(data.next);
@@ -159,9 +171,11 @@ export function MovingMarkerProvider({ children }) {
                 const tripsList = routes
                     .filter((i) => i.stop_sequence === 0)
                     .map((i) => i.trip_id.trip_short_name)
-                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}&stop_id=${stopId}`)
+                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}`)
             } else {
-                getallFrequencies(`/frequencies/?&stop_id=${stopId}&service_id=${serviceId}&show_all=true`)
+                const tripsList = routes
+                    .map((i) => i.trip_id.trip_short_name);
+                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}&show_all=true`)
             }
         }
     }, [routes])
