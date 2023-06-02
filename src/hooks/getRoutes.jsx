@@ -49,24 +49,22 @@ export function RoutesProvider({ children }) {
         setLoader(true)
         setPlataforms([])
     }
-    const filteredTrips = [];
+    const rawTrips = [];
     const tripPromises = [];
 
     async function getMultiplePages(url) {
         const { data } = await api.get(url);
 
         for (const item of data.results) {
-            const existingTrip = filteredTrips.find(
+            const existingTrip = rawTrips.find(
                 (trip) =>
                     trip.trip_id.trip_short_name === item.trip_id.trip_short_name &&
                     trip.trip_id.direction_id === item.trip_id.direction_id
             );
             if (!existingTrip) {
-                if (locationType === 1) {
                     const stopTimePromise = api.get(`/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}`);
                     tripPromises.push(stopTimePromise);
-                }
-                filteredTrips.push(item);
+                rawTrips.push(item);
             }
         }
 
@@ -78,12 +76,22 @@ export function RoutesProvider({ children }) {
                 stopTimeResponses.forEach((response, index) => {
                     const specificData = response.data.results;
                     if (Array.isArray(specificData) && specificData.length > 0) {
-                        filteredTrips[index].lastStop = specificData[specificData.length - 1];
+                        rawTrips[index].lastStop = specificData[specificData.length - 1];
                     }
                 });
                 getStations(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`);
+            } else {
+                const stopTimeResponses = await Promise.all(tripPromises);
+                stopTimeResponses.forEach((response, index) => {
+                    const specificData = response.data.results;
+                    if (Array.isArray(specificData) && specificData.length > 0) {
+                        rawTrips[index].lastStop = specificData[specificData.length - 1];
+                    }
+                });
             }
-
+           const filteredTrips = rawTrips.filter((item) => {
+            return item.lastStop.stop_id.stop_id != stopId
+           }) 
             filteredTrips.sort(compareTripName);
             setRoutes([...filteredTrips]);
         }
