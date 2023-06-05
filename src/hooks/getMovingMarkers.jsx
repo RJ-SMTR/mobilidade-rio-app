@@ -118,7 +118,7 @@ export function MovingMarkerProvider({ children }) {
                                 endTime[1] === fetchMinute &&
                                 endTime[2] > fetchSecond)
                         ) {
-                            return item;
+                            frequenciesList.push(item)
                         }
                     } else {
                         if (
@@ -133,7 +133,8 @@ export function MovingMarkerProvider({ children }) {
                                     endTime[1] === fetchMinute &&
                                     endTime[2] > fetchSecond))
                         ) {
-                            return item
+                          
+                            frequenciesList.push(item)
                         }
                     }
                 })
@@ -142,7 +143,6 @@ export function MovingMarkerProvider({ children }) {
             if (data.next) {
                 await getallFrequencies(data.next);
             } else {
-                const frequenciesList = filteredData.filter(Boolean);
                 setFrequencies([...frequenciesList]);
             }
         } catch (error) {
