@@ -68,7 +68,6 @@ export function ServiceIdProvider({ children }) {
     function findService(todayDate) {
         const service = calendar.find((item) => item.date === todayDate);
         if (!service.service_id.includes('DESAT')) {
-            console.log(service)
             setServiceId(service.service_id);
         } else {
             const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
@@ -78,10 +77,11 @@ export function ServiceIdProvider({ children }) {
                 const todayService = serviceWorks.filter((service) => {
                     const startDate = new Date(service.start_date);
                     const endDate = new Date(service.end_date);
-                    return currentDate >= startDate && currentDate <= endDate && !service.service_id.includes('DESAT') && !service.service_id.includes('OBRA');
+                    return currentDate >= startDate && currentDate <= endDate 
                 });
                 if (todayService) {
-                    setServiceId(todayService[0].service_id);
+                    const allServices = todayService.map(e => e.service_id)
+                    setServiceId(allServices);
                 }
             }
         }
