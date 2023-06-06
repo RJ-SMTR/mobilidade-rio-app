@@ -167,7 +167,6 @@ export function MovingMarkerProvider({ children }) {
     }, [routes])
     useEffect(() => {
         if (routes && frequencies) {
-            console.log(frequencies)
             const filteredFrequenciesList = routes.reduce((acc, obj1) => {
                 const matched = frequencies.filter((obj2) => {
                     return (
