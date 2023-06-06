@@ -31,7 +31,7 @@ export function ServiceIdProvider({ children }) {
                 });
                 if (data.next) {
                     getDates(data.next);
-                } else{
+                } else {
                     setCalendar((prevCalendar) => [...prevCalendar, ...allDates]);
                 }
             });
@@ -58,18 +58,16 @@ export function ServiceIdProvider({ children }) {
 
 
     useEffect(() => {
-        if (code.length > 0) {
             getDayOfWeek('calendar/')
             getDates('calendar_dates/')
-        }
-    }, [code])
+    }, [])
     let exceptionService = []
     let baseService = []
+    
     function findService(todayDate) {
         const services = calendar.filter((item) => item.date === todayDate);
         if (services) {
             const hasExceptionType1 = services.filter(item => item.exception_type === '1');
-            const exceptionType2 = services.filter(item => item.exception_type === '2');
 
             const filteredServices = hasExceptionType1.filter(item => {
                 const matchingExceptionType1 = services.find(
@@ -79,25 +77,26 @@ export function ServiceIdProvider({ children }) {
             });
 
             filteredServices.map((i) => {
-                    exceptionService.push(i.service_id)
+                exceptionService.push(i.service_id)
             })
-        } 
-            const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
-            const serviceWorks = weekDay.filter((service) => service[dayOfWeek] === 1);
-            const currentDate = new Date(todayDate);
-            if (serviceWorks.length > 0) {
-                const todayService = serviceWorks.filter((service) => {
-                    const startDate = new Date(service.start_date);
-                    const endDate = new Date(service.end_date);
-                    return currentDate >= startDate && currentDate <= endDate && !service.service_id.includes("DESAT") && !service.service_id.includes("OBRA")
-                });
-                baseService.push(todayService)
+        }
+        const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
+        const serviceWorks = weekDay.filter((service) => service[dayOfWeek] === 1);
+        const currentDate = new Date(todayDate);
+        if (serviceWorks.length > 0) {
+            const todayService = serviceWorks.filter((service) => {
+                const startDate = new Date(service.start_date);
+                const endDate = new Date(service.end_date);
+                return currentDate >= startDate && currentDate <= endDate && !service.service_id.includes("DESAT") && !service.service_id.includes("OBRA")
+            });
+            baseService.push(todayService)
 
-                if (todayService && exceptionService) {
+            if (todayService && exceptionService) {
                 const baseService = todayService[0].service_id
-                  const allServices = exceptionService.concat(baseService)
-                    setServiceId(allServices);
-                }
+                const allServices = exceptionService.concat(baseService)
+                console.log("rodou")
+                setServiceId(allServices);
+            }
         }
     }
 
