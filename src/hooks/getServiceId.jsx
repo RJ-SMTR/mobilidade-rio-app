@@ -10,7 +10,6 @@ export const ServiceIdContext = createContext()
 
 
 export function ServiceIdProvider({ children }) {
-    const { code } = useContext(CodeContext)
     const [today, setToday] = useState('')
     const [calendar, setCalendar] = useState([])
     const [serviceId, setServiceId] = useState('')
@@ -56,30 +55,35 @@ export function ServiceIdProvider({ children }) {
         setToday(formattedDate)
     }, [])
 
-
     useEffect(() => {
-            getDayOfWeek('calendar/')
-            getDates('calendar_dates/')
+        const fetchCalendars = async () => {
+            await Promise.all([getDayOfWeek('calendar/'), getDates('calendar_dates/')])
+        }
+        fetchCalendars()
     }, [])
+
+  
     let exceptionService = []
     let baseService = []
-    
     function findService(todayDate) {
-        const services = calendar.filter((item) => item.date === todayDate);
+        const services = calendar.filter((item) => item.date === todayDate)
         if (services) {
-            const hasExceptionType1 = services.filter(item => item.exception_type === '1');
+            const hasExceptionType1 = services.filter(item => item.exception_type === '1')
 
-            const filteredServices = hasExceptionType1.filter(item => {
-                const matchingExceptionType1 = services.find(
-                    service => service.service_id.includes(item.service_id)
-                );
-                return matchingExceptionType1 && hasExceptionType1;
-            });
+            const filteredServices = []
 
-            filteredServices.map((i) => {
+            hasExceptionType1.forEach(item => {
+                const matchingExceptionType1 = filteredServices.find(service => service.service_id.includes(item.service_id))
+                if (!matchingExceptionType1) {
+                    filteredServices.push(item)
+                }
+            })
+
+            filteredServices.forEach(i => {
                 exceptionService.push(i.service_id)
             })
         }
+
         const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
         const serviceWorks = weekDay.filter((service) => service[dayOfWeek] === 1);
         const currentDate = new Date(todayDate);
@@ -94,8 +98,8 @@ export function ServiceIdProvider({ children }) {
             if (todayService && exceptionService) {
                 const baseService = todayService[0].service_id
                 const allServices = exceptionService.concat(baseService)
-                console.log("rodou")
                 setServiceId(allServices);
+
             }
         }
     }
