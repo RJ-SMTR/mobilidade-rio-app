@@ -39,7 +39,6 @@ export function MovingMarkerProvider({ children }) {
     }, [code])
 
 
-
     useEffect(() => {
         if (realtime && routes) {
             const currentTime = new Date().getTime();
@@ -159,7 +158,7 @@ export function MovingMarkerProvider({ children }) {
                 const tripsList = routes
                     .filter((i) => i.stop_sequence === 0)
                     .map((i) => i.trip_id.trip_short_name)
-                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}&stop_id=${stopId}`)
+                getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}`)
             } else {
                 getallFrequencies(`/frequencies/?&stop_id=${stopId}&service_id=${serviceId}&show_all=true`)
             }
@@ -171,7 +170,7 @@ export function MovingMarkerProvider({ children }) {
                 const matched = frequencies.filter((obj2) => {
                     return (
                         obj1.trip_id.trip_short_name === obj2.trip_id.trip_short_name &&
-                        serviceId === obj2.trip_id.service_id
+                        serviceId.includes(obj2.trip_id.service_id)
                     );
                 });
                 const combinedHeadways = matched.reduce((headwaysAcc, freq) => {
@@ -184,7 +183,6 @@ export function MovingMarkerProvider({ children }) {
                 if (combinedHeadways.length > 0) {
                     const closestStartTime = combinedHeadways.find((headway) => {
                         if (locationType === 1) {
-
                             return headway.start_time > currentTime;
                         } else {
                             return headway.end_time > currentTime;
@@ -251,7 +249,6 @@ export function MovingMarkerProvider({ children }) {
             if (a.start_time > b.start_time) return 1;
             return 0;
         });
-
         return headways;
     }
 
