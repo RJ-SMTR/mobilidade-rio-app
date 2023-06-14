@@ -49,24 +49,22 @@ export function RoutesProvider({ children }) {
         setLoader(true)
         setPlataforms([])
     }
-    const filteredTrips = [];
+    const rawTrips = [];
     const tripPromises = [];
 
     async function getMultiplePages(url) {
         const { data } = await api.get(url);
 
         for (const item of data.results) {
-            const existingTrip = filteredTrips.find(
+            const existingTrip = rawTrips.find(
                 (trip) =>
                     trip.trip_id.trip_short_name === item.trip_id.trip_short_name &&
                     trip.trip_id.direction_id === item.trip_id.direction_id
             );
             if (!existingTrip) {
-                if (locationType === 1) {
                     const stopTimePromise = api.get(`/stop_times/?trip_id=${item.trip_id.trip_id}&service_id=${serviceId}`);
                     tripPromises.push(stopTimePromise);
-                }
-                filteredTrips.push(item);
+                rawTrips.push(item);
             }
         }
 
@@ -78,12 +76,22 @@ export function RoutesProvider({ children }) {
                 stopTimeResponses.forEach((response, index) => {
                     const specificData = response.data.results;
                     if (Array.isArray(specificData) && specificData.length > 0) {
-                        filteredTrips[index].lastStop = specificData[specificData.length - 1];
+                        rawTrips[index].lastStop = specificData[specificData.length - 1];
                     }
                 });
                 getStations(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`);
+            } else {
+                const stopTimeResponses = await Promise.all(tripPromises);
+                stopTimeResponses.forEach((response, index) => {
+                    const specificData = response.data.results;
+                    if (Array.isArray(specificData) && specificData.length > 0) {
+                        rawTrips[index].lastStop = specificData[specificData.length - 1];
+                    }
+                });
             }
-
+           const filteredTrips = rawTrips.filter((item) => {
+            return item.lastStop.stop_id.stop_id != stopId
+           }) 
             filteredTrips.sort(compareTripName);
             setRoutes([...filteredTrips]);
         }
@@ -116,7 +124,6 @@ export function RoutesProvider({ children }) {
         for (let index = 0; index < stopIdsResponses.length; index++) {
             const response = stopIdsResponses[index];
             const stopTimes = response.data.results;
-            console.log(stopTimes);
 
             const tripPromises = stopTimes.map((stopTime) =>
                 api.get(`/stop_times/?trip_id=${stopTime.trip_id.trip_id}`)
@@ -130,7 +137,6 @@ export function RoutesProvider({ children }) {
               
                 const tripResponse = tripResponses[i];
                 const tripStopTimes = tripResponse.data.results;
-                console.log(tripStopTimes);
 
                 const lastStop = tripStopTimes[tripStopTimes.length - 1].stop_id.stop_id;
 
@@ -145,7 +151,6 @@ export function RoutesProvider({ children }) {
             }
         }
 
-        console.log(filteredStations);
 
         if (data.next) {
             await getStations(data.next);
@@ -179,7 +184,6 @@ export function RoutesProvider({ children }) {
 
     useEffect(() => {
         if (routeType) {
-            console.log(stations)
             if (locationType != null || locationType != undefined || stations != undefined) {
                 const iteratee = stations.map((e) => e)
                 const result = iteratee.reduce((acc, curr) => {

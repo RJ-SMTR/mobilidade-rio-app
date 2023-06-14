@@ -17,7 +17,7 @@ import { GPSContext } from '../../hooks/getGPS'
 
 export function Header(props) {
     let navigate = useNavigate()
-    const { code, setCode, setStopId } = useContext(CodeContext)
+    const { code, setCode, setStopId, setLinha } = useContext(CodeContext)
     const { setTrip, setSequenceInfo } = useContext(TripContext)
     const {theme, setTheme, setSppo, setRouteType} = useContext(ThemeContext)
     const [newCode, setNewCode] = useState("")
@@ -35,7 +35,7 @@ export function Header(props) {
         setSequenceInfo()
         setPlataforms([])
         setRoutes()
-        setRoutesAndFrequencies()
+        setRoutesAndFrequencies([])
         setResults()
         setTracked()
         setTheme("sppo")
@@ -45,6 +45,7 @@ export function Header(props) {
         stopFetching()
         setRouteType()
         setArrivals()
+        setLinha(false)
     }
 
     useEffect(() => {
@@ -58,11 +59,11 @@ export function Header(props) {
         setValue()
         setPlataforms([])
         setRoutes()
-        setRoutesAndFrequencies()
+        setRoutesAndFrequencies([])
         setSequenceInfo()
         setTracked()
-        setInnerCircle([])
         setArrivals()
+        setLinha(false)
         if (event.target.value.length == 0) {
             setResults()
         }
@@ -84,7 +85,7 @@ export function Header(props) {
     }, [newCode])
 
     useEffect(() => {
-        if (newCode.length == 4 && codeIdentifier === true && !/^[a-zA-Z]+$/.test(newCode)) {
+        if (newCode.length == 4 && codeIdentifier === true /*&& !/^[a-zA-Z]+$/.test(newCode)*/) {
             navigate(`/${newCode}`)
         } else if (newCode.length == 5 && codeIdentifier) {
             navigate(`/${newCode}`)

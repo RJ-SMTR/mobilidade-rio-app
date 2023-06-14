@@ -45,7 +45,21 @@ export function ThemeProvider({ children }) {
 
             });
     }
-
+    function multiModalTheme(PlatformRouteType){
+        if(PlatformRouteType === 702){
+            setBrt();
+            setTheme("")
+        } else if (PlatformRouteType === 700 || 3) {
+            setSppo();
+            setTheme("sppo")
+        }
+    }
+    function resetMultiModalTheme(){
+        if(theme == "sppo"){
+            setBrt()
+            setTheme("")
+        }
+    }
     useEffect(() => {
         if (stopId && serviceId) {
           findTheme(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`)
@@ -55,7 +69,7 @@ export function ThemeProvider({ children }) {
    
 
     return (
-        <ThemeContext.Provider value={{ theme, setTheme, setSppo, setRouteType, routeType }}>
+        <ThemeContext.Provider value={{ theme, setTheme, setSppo, setRouteType, routeType, multiModalTheme, resetMultiModalTheme }}>
             {children}
         </ThemeContext.Provider>
     )

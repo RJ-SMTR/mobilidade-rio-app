@@ -10,7 +10,6 @@ export const ServiceIdContext = createContext()
 
 
 export function ServiceIdProvider({ children }) {
-    const { code } = useContext(CodeContext)
     const [today, setToday] = useState('')
     const [calendar, setCalendar] = useState([])
     const [serviceId, setServiceId] = useState('')
@@ -21,8 +20,8 @@ export function ServiceIdProvider({ children }) {
     };
 
 
+    let allDates = [];
     async function getDates(url) {
-        let allDates = [];
         await api
             .get(url)
             .then(({ data }) => {
@@ -31,8 +30,9 @@ export function ServiceIdProvider({ children }) {
                 });
                 if (data.next) {
                     getDates(data.next);
+                } else {
+                    setCalendar((prevCalendar) => [...prevCalendar, ...allDates]);
                 }
-                setCalendar((prevCalendar) => [...prevCalendar, ...allDates]);
             });
     }
     async function getDayOfWeek(url) {
@@ -43,7 +43,6 @@ export function ServiceIdProvider({ children }) {
                 data.results.forEach((item) => {
                     allDay.push(item);
                 });
-
                 setWeekDay(allDay);
             });
     }
@@ -56,32 +55,51 @@ export function ServiceIdProvider({ children }) {
         setToday(formattedDate)
     }, [])
 
-
     useEffect(() => {
-        if (code.length > 0) {
-            getDayOfWeek('calendar/')
-            getDates('calendar_dates/')
+        const fetchCalendars = async () => {
+            await Promise.all([getDayOfWeek('calendar/'), getDates('calendar_dates/')])
         }
-    }, [code])
+        fetchCalendars()
+    }, [])
 
-
+  
+    let exceptionService = []
+    let baseService = []
     function findService(todayDate) {
-        const service = calendar.find((item) => item.date === todayDate);
-        if (service) {
-            setServiceId(service.service_id);
-        } else if (weekDay) {
-            const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
-            const serviceWorks = weekDay.filter((service) => service[dayOfWeek] === 1);
-            const currentDate = new Date(todayDate);
-            if (serviceWorks.length > 0) {
-                const todayService = serviceWorks.find((service) => {
-                    const startDate = new Date(service.start_date);
-                    const endDate = new Date(service.end_date);
-                    return currentDate >= startDate && currentDate <= endDate;
-                });
-                if (todayService) {
-                    setServiceId(todayService.service_id);
+        const services = calendar.filter((item) => item.date === todayDate)
+        if (services) {
+            const hasExceptionType1 = services.filter(item => item.exception_type === '1')
+
+            const filteredServices = []
+
+            hasExceptionType1.forEach(item => {
+                const matchingExceptionType1 = filteredServices.find(service => service.service_id.includes(item.service_id))
+                if (!matchingExceptionType1) {
+                    filteredServices.push(item)
                 }
+            })
+
+            filteredServices.forEach(i => {
+                exceptionService.push(i.service_id)
+            })
+        }
+
+        const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(new Date()).toLowerCase();
+        const serviceWorks = weekDay.filter((service) => service[dayOfWeek] === 1);
+        const currentDate = new Date(todayDate);
+        if (serviceWorks.length > 0) {
+            const todayService = serviceWorks.filter((service) => {
+                const startDate = new Date(service.start_date);
+                const endDate = new Date(service.end_date);
+                return currentDate >= startDate && currentDate <= endDate && !service.service_id.includes("DESAT") && !service.service_id.includes("OBRA")
+            });
+            baseService.push(todayService)
+
+            if (todayService && exceptionService) {
+                const baseService = todayService[0].service_id
+                const allServices = exceptionService.concat(baseService)
+                setServiceId(allServices);
+
             }
         }
     }
