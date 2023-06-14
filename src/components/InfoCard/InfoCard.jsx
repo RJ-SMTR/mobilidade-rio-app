@@ -34,6 +34,7 @@ export function InfoCard() {
     const { stopFetching } = useContext(GPSContext)
     const { activateForm, setSelectedPlatform } = useContext(FormContext)
     const [sortedPlatforms, setSortedPlatforms] = useState()
+    const { multiModalTheme, resetMultiModalTheme } = useContext(ThemeContext)
 
 
 
@@ -82,7 +83,7 @@ export function InfoCard() {
                         </svg>
                     </button>
                     {!routes ? <></> : <div className='flex justify-end'>
-                        <button onClick={() => (setRoutes(),setRoutesAndFrequencies(), setTracked(), infoLinha(), setArrivals(), stopFetching(), setGpsUrl())}>
+                        <button onClick={() => (setRoutes(), setRoutesAndFrequencies(), setTracked(), infoLinha(), setArrivals(), stopFetching(), setGpsUrl(), resetMultiModalTheme())}>
                             <GrClose />
                         </button>
                     </div>}
@@ -107,7 +108,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : sortedPlatforms.map((e) => Object.values(e).map((values) => {
-                                    return <li key={Object.keys(values)[0]} className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages(`/stop_times/?stop_id=${Object.keys(values)[0]}&service_id=${serviceId}`), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]) }}>
+                                    return <li key={Object.keys(values)[0]} className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages(`/stop_times/?stop_id=${Object.keys(values)[0]}&service_id=${serviceId}`), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]), multiModalTheme(Object.values(values)[0].trip_id.route_id.route_type) }}>
                                         <div className={styles.routeName}>
                                             {!Object.values(values)[0].isConvencionais ? <>
                                                 <div className={` ${styles.shortName} + bg-[#F8AC04]`}>
@@ -170,8 +171,8 @@ export function InfoCard() {
                                                 <path id="wifi3" d="M10.2712 16.3473C11.7236 14.3832 12.5352 11.7606 12.5352 9.03161C12.5352 6.3026 11.7236 3.68003 10.2712 1.71597C10.1629 1.58895 10.0219 1.52003 9.87628 1.52304C9.7307 1.52605 9.59137 1.60076 9.48624 1.73219C9.38112 1.86362 9.31798 2.04204 9.30948 2.23167C9.30098 2.42129 9.34776 2.6081 9.44043 2.75461C10.6882 4.43871 11.3857 6.68936 11.3857 9.03161C11.3857 11.3739 10.6882 13.6245 9.44043 15.3086C9.33735 15.4481 9.27949 15.6342 9.27889 15.8279C9.27919 15.9293 9.29519 16.0296 9.32592 16.1227C9.35665 16.2158 9.40149 16.2999 9.45774 16.3698C9.5681 16.5071 9.71561 16.5817 9.86804 16.5775C10.0205 16.5732 10.1654 16.4905 10.2712 16.3473Z" fill="black" />
                                             </svg>
                                         </p>
-                                    : <>
-                                            {e.closestStartTime && e.trip_id.route_id.route_type === 702 ?
+                                        : <> {e.trip_id.route_id.route_type === 702 ?
+                                            e.closestStartTime ?
                                                 <p className="bg-[#F0EFEF] p-1 font-bold rounded-sm ml-4 flex eta">
                                                     {e.closestStartTime ?? ''}
                                                     <FiClock className="my-1 ml-1" />
@@ -182,6 +183,8 @@ export function InfoCard() {
                                                         <FiAlertTriangle />
                                                     </p>
                                                 </>
+                                            : 
+                                            <></>
                                             }
                                            
                                         </>}
