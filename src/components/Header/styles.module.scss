@@ -4,7 +4,8 @@
 
 }
 .logo{
-    max-width: 98px;
+    max-width: 98px !important;
+    max-height: 49.2px !important;
 }
 .headerText{
     color: var(--text-color);
