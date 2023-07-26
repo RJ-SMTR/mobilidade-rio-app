@@ -2,10 +2,10 @@ import { Header } from '../components/HeaderSearch/Header'
 import qrCode from '../assets/imgs/qrCodeWhite.svg'
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useZxing } from "react-zxing";
+import { QrScanner } from '@yudiel/react-qr-scanner';
 import { CodeContext } from '../hooks/getCode';
 import { NameContext } from '../hooks/getName';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export function SearchMain() {
@@ -13,18 +13,14 @@ export function SearchMain() {
 
     const {searchCode, results, firstCode } = useContext(NameContext)
     const { active, setActive } = useContext(CodeContext)
-    const { ref } = useZxing({
-        onResult(result) {
-            window.location.href = result;
-        },
-    });
+   
     function setBg(){
         document.body.classList.add('homepage');
     }
     useEffect(() => {
         setBg()
     }, [])
-
+ 
 
     return (
         <>
@@ -67,9 +63,12 @@ export function SearchMain() {
                 </ul>
 
             </div>
+            {active ? <QrScanner
+                onDecode={(result) => window.location.href = result}
+                onError={(error) => console.log(error?.message)}
+            /> :  <></>}
+          
 
-
-            <video className={active ? 'mx-auto w-11/12 mt-5' : 'hidden'} ref={ref} />
 
         </>
     )
