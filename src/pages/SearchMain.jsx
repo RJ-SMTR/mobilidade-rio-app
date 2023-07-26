@@ -2,7 +2,6 @@ import { Header } from '../components/HeaderSearch/Header'
 import qrCode from '../assets/imgs/qrCodeWhite.svg'
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useZxing } from "react-zxing";
 import { QrScanner } from '@yudiel/react-qr-scanner';
 import { CodeContext } from '../hooks/getCode';
 import { NameContext } from '../hooks/getName';
