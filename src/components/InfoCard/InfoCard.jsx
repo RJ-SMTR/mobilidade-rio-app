@@ -91,7 +91,7 @@ export function InfoCard() {
                     <h1 className="text-xl font-semibold mb-3">{name}</h1>
                     {linha ?
                         <p className='text-[#707070] text-sm'>Veja o próximo ônibus na estação:</p> :
-                        <p className='text-[#707070] text-sm'>Selecione o sentido para mais informações:</p>
+                        <p className='text-[#707070] text-sm'>Selecione a plataforma para mais informações:</p>
                     }
                     <ul className={styles.routeList}>
                         {!routes ? <>
