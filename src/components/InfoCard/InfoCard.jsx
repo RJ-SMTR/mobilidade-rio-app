@@ -21,6 +21,7 @@ import { TripContext } from '../../hooks/getTrips'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { GPSContext } from "../../hooks/getGPS"
 import { ServiceIdContext } from "../../hooks/getServiceId"
+import { format, parse, addDays } from "date-fns"
 
 
 
@@ -69,6 +70,19 @@ export function InfoCard() {
         );
                 }
     }, [plataforms])
+    function convertTime(timeString) {
+        const [hoursStr, minutesStr] = timeString.split(':');
+        const hours = parseInt(hoursStr, 10);
+        const minutes = parseInt(minutesStr, 10);
+
+        if (hours >= 24) {
+            const baseDate = new Date('1970-01-01');
+            const newDate = addDays(baseDate, Math.floor(hours / 24));
+            return parse(`${format(newDate, 'yyyy-MM-dd')} ${hours % 24}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
+        } else {
+            return parse(`1970-01-01 ${hours}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
+        }
+    }
   
     return (
 
@@ -108,7 +122,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /> : sortedPlatforms.map((e) => Object.values(e).map((values) => {
-                                    return <li key={Object.keys(values)[0]} className='flex justify-between border-b py-2.5' onClick={() => { getMultiplePages(`/stop_times/?stop_id=${Object.keys(values)[0]}&service_id=${serviceId}`), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]), multiModalTheme(Object.values(values)[0].trip_id.route_id.route_type) }}>
+                                    return <li key={Object.keys(values)[0]} className='flex justify-between border-b py-4' onClick={() => { getMultiplePages(`/stop_times/?stop_id=${Object.keys(values)[0]}&service_id=${serviceId}`), infoLinha(), setSelectedPlatform(Object.keys(values)), activateLoader(), setGpsUrl('?stop_id=' + Object.keys(values)[0]), multiModalTheme(Object.values(values)[0].trip_id.route_id.route_type) }}>
                                         <div className={styles.routeName}>
                                             {!Object.values(values)[0].isConvencionais ? <>
                                                 <div className={` ${styles.shortName} + bg-[#F8AC04]`}>
@@ -144,9 +158,9 @@ export function InfoCard() {
                                 />
 
                             : arrivals.map((e) => {
-                                return <li key={e.id} onClick={() => setTrip({ trip_id: e.trip_id, smallestEtas: e.smallestEtas, stop_sequence: e.stop_sequence, frequencies: e.closestStartTime })} className="flex justify-between border-b py-2.5">
+                                return <li key={e.id} onClick={() => setTrip({ trip_id: e.trip_id, smallestEtas: e.smallestEtas, stop_sequence: e.stop_sequence, frequencies: e.closestStartTime })} className="flex justify-between border-b py-4">
                                     <div className={styles.routeName}>
-                                        <div className="flex">
+                                        <div className="flex max-h-[24px]">
                                             <div className={` ${styles.shortName}  ${e.trip_id.route_id.route_type === 702 ? 'bg-[#F8AC04]' :'bg-[#004a80]' }`}>
                                                 {e.trip_id.route_id.route_type === 702 ?<><img src={bus} alt="" />
                                                 <p className='ml-2 font-semibold leading-none'>{e.trip_id.trip_short_name}</p>
@@ -157,7 +171,12 @@ export function InfoCard() {
                                                     </>
                                                 }
                                             </div>
-                                            <p className="text-sm ml-2.5">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
+                                            <div className="flex flex-col  ml-2.5">
+                                                <p className="text-sm">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
+                                                <p className="text-xs">
+                                                    Funcionamento: {format(convertTime(e.start_time), 'HH:mm')} - {format(convertTime(e.end_time), 'HH:mm')}
+                                                </p>
+                                          </div>
                                         </div>
 
                                     </div>
@@ -221,7 +240,7 @@ export function InfoCard() {
                                     strokeWidthSecondary={4}
 
                                 /></> : routesAndFrequencies.map((e) => {
-                                    return <li key={e.id} onClick={() => setTrip({trip_id: e.trip_id})} className="flex justify-between border-b py-2.5">
+                                    return <li key={e.id} onClick={() => setTrip({trip_id: e.trip_id})} className="flex justify-between border-b py-4">
                                         <div className={`${styles.routeName} + flex`}>
                                             <div className={` ${styles.shortName} + bg-[#004a80]`}>
                                                 <img src={busSppo} alt="" />
