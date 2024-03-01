@@ -94,56 +94,33 @@ export function MovingMarkerProvider({ children }) {
     }, [realtime]);
 
 
-    let frequenciesList = [];
     async function getallFrequencies(url) {
-        const fetchTime = new Date();
-        const fetchHour = fetchTime.getHours();
-        const fetchMinute = fetchTime.getMinutes();
-        const fetchSecond = fetchTime.getSeconds();
-
         try {
             const { data } = await api.get(url);
 
-            const filteredData = await Promise.all(
-                data.results.map(async (item) => {
-                    const startTime = item.start_time.split(":").map(Number);
-                    const endTime = item.end_time.split(":").map(Number);
+            const tripTimesMap = {};
 
-                    if (locationType === 1) {
-                        if (
-                            endTime[0] > fetchHour ||
-                            (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
-                            (endTime[0] === fetchHour &&
-                                endTime[1] === fetchMinute &&
-                                endTime[2] > fetchSecond)
-                        ) {
-                            frequenciesList.push(item)
-                        }
-                    } else {
-                        if (
-                            (startTime[0] < fetchHour ||
-                                (startTime[0] === fetchHour && startTime[1] < fetchMinute) ||
-                                (startTime[0] === fetchHour &&
-                                    startTime[1] === fetchMinute &&
-                                    startTime[2] < fetchSecond)) &&
-                            (endTime[0] > fetchHour ||
-                                (endTime[0] === fetchHour && endTime[1] > fetchMinute) ||
-                                (endTime[0] === fetchHour &&
-                                    endTime[1] === fetchMinute &&
-                                    endTime[2] > fetchSecond))
-                        ) {
-                          
-                            frequenciesList.push(item)
-                        }
+            data.results.forEach(item => {
+                const { trip_id, start_time, end_time } = item;
+                const { trip_short_name } = trip_id;
+
+                if (!tripTimesMap[trip_short_name]) {
+                    tripTimesMap[trip_short_name] = {
+                        ...item,
+                        start_time: item.start_time,
+                        end_time: item.end_time,
+                    };
+                } else {
+                    if (start_time < tripTimesMap[trip_short_name].start_time) {
+                        tripTimesMap[trip_short_name].start_time = start_time;
                     }
-                })
-            );
+                    if (end_time > tripTimesMap[trip_short_name].end_time) {
+                        tripTimesMap[trip_short_name].end_time = end_time;
+                    }
+                }
+            });
 
-            if (data.next) {
-                await getallFrequencies(data.next);
-            } else {
-                setFrequencies([...frequenciesList]);
-            }
+            setFrequencies(Object.values(tripTimesMap));
         } catch (error) {
             console.error(error);
         }
@@ -152,11 +129,12 @@ export function MovingMarkerProvider({ children }) {
 
 
 
+
     useEffect(() => {
         if (routes) {
             if (locationType === 1) {
                 const tripsList = routes
-                    .filter((i) => i.stop_sequence === 0)
+                    // .filter((i) => i.stop_sequence === 0)
                     .map((i) => i.trip_id.trip_short_name)
                 getallFrequencies(`/frequencies/?trip_short_name=${tripsList}&service_id=${serviceId}`)
             } else {
@@ -164,56 +142,67 @@ export function MovingMarkerProvider({ children }) {
             }
         }
     }, [routes])
-    useEffect(() => {
-        if (routes && frequencies) {
-            const filteredFrequenciesList = routes.reduce((acc, obj1) => {
-                const matched = frequencies.filter((obj2) => {
-                    return (
-                        obj1.trip_id.trip_short_name === obj2.trip_id.trip_short_name &&
-                        serviceId.includes(obj2.trip_id.service_id)
-                    );
+
+
+
+useEffect(() => {
+    if (routes && frequencies) {
+        const filteredFrequenciesList = routes.reduce((acc, obj1) => {
+            const matched = frequencies.filter((obj2) => {
+                return (
+                    obj1.trip_id.trip_short_name === obj2.trip_id.trip_short_name &&
+                    serviceId.includes(obj2.trip_id.service_id)
+                );
+            });
+            const combinedHeadways = matched.reduce((headwaysAcc, freq) => {
+                const headways = calculateHeadwayUntilEndTime(freq.start_time, freq.end_time, freq.headway_secs, freq.trip_id.shape_id, freq.trip_id.trip_id, freq.trip_id.direction_id);
+                return headwaysAcc.concat(headways);
+            }, []).sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+            const currentTime = new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const filteredObj = { ...obj1, closestStartTime: null, start_time: matched[0].start_time ?? null, end_time: matched[0].end_time ?? null }; 
+
+            if (combinedHeadways.length > 0) {
+               
+
+                const closestStartTime = combinedHeadways.find((headway) => {
+                    if (locationType === 1) {
+                        return headway.start_time > currentTime;
+                    } else {
+                        return headway.end_time > currentTime;
+                    }
                 });
-                const combinedHeadways = matched.reduce((headwaysAcc, freq) => {
-                    const headways = calculateHeadwayUntilEndTime(freq.start_time, freq.end_time, freq.headway_secs, freq.trip_id.shape_id, freq.trip_id.trip_id, freq.trip_id.direction_id);
-                    return headwaysAcc.concat(headways);
-                }, []).sort((a, b) => a.start_time.localeCompare(b.start_time));
 
-                const currentTime = new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                const filteredObj = { ...obj1, closestStartTime: null };
-                if (combinedHeadways.length > 0) {
-                    const closestStartTime = combinedHeadways.find((headway) => {
-                        if (locationType === 1) {
-                            return headway.start_time > currentTime;
-                        } else {
-                            return headway.end_time > currentTime;
-                        }
-                    });
-
-                    if (closestStartTime) {
-                        filteredObj.closestStartTime = closestStartTime.start_time.slice(0, -3);
-                        if (locationType === 0) {
-                            filteredObj.trip_id.shape_id = closestStartTime.shape_id;
-                            filteredObj.trip_id.trip_id = closestStartTime.trip_id;
-                            filteredObj.trip_id.direction_id = closestStartTime.direction_id;
-                        }
-
+                if (closestStartTime) {
+                    filteredObj.closestStartTime = closestStartTime.start_time.slice(0, -3);
+                    if (locationType === 0) {
+                        filteredObj.trip_id.shape_id = closestStartTime.shape_id;
+                        filteredObj.trip_id.trip_id = closestStartTime.trip_id;
+                        filteredObj.trip_id.direction_id = closestStartTime.direction_id;
                     }
                 }
+            }
 
-                if (locationType === 1) {
-                    if (filteredObj.lastStop.stop_id.stop_id !== selectedPlatform[0]) {
-                        acc.push(filteredObj);
-                    }
-                } else {
+
+            if (locationType === 1) {
+                if (filteredObj.lastStop.stop_id.stop_id !== selectedPlatform[0]) {
                     acc.push(filteredObj);
                 }
+            } else {
+                acc.push(filteredObj);
+            }
 
-                return acc;
-            }, []);
+            return acc;
+        }, []);
+        console.log(filteredFrequenciesList)
 
-            setRoutesAndFrequencies(filteredFrequenciesList);
-        }
-    }, [tracked, frequencies]);
+        setRoutesAndFrequencies(filteredFrequenciesList);
+    }
+}, [tracked, frequencies]);
+
+
+
+
 
 
 
@@ -276,7 +265,6 @@ export function MovingMarkerProvider({ children }) {
                 }
                 return obj1;
             });
-
             setArrivals(arrivals);
         }
     }, [tracked, routesAndFrequencies]);
