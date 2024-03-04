@@ -160,7 +160,7 @@ useEffect(() => {
             }, []).sort((a, b) => a.start_time.localeCompare(b.start_time));
 
             const currentTime = new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const filteredObj = { ...obj1, closestStartTime: null, start_time: matched[0].start_time ?? null, end_time: matched[0].end_time ?? null }; 
+            const filteredObj = { ...obj1, closestStartTime: null, start_time: matched[0]?.start_time ?? null, end_time: matched[0]?.end_time ?? null }; 
 
             if (combinedHeadways.length > 0) {
                
@@ -194,7 +194,6 @@ useEffect(() => {
 
             return acc;
         }, []);
-        console.log(filteredFrequenciesList)
 
         setRoutesAndFrequencies(filteredFrequenciesList);
     }
