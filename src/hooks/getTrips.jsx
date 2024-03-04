@@ -2,6 +2,7 @@ import { createContext, useEffect, useState, useContext } from "react";
 import { api } from "../services/api";
 import { CodeContext } from "./getCode";
 import { ServiceIdContext } from "./getServiceId";
+import { findBestMatch } from "string-similarity";
 
 
 export const TripContext = createContext()
@@ -56,16 +57,21 @@ export function TripProvider({ children }) {
 
     useEffect(() => {
         if (!isLoading) {
-            const sortedSequence = allSequenceStops.sort((a, b) =>  a.stop_sequence - b.stop_sequence )
+
+            const sortedSequence = allSequenceStops.sort((a, b) => a.stop_sequence - b.stop_sequence);
+
             if (locationType === 1) {
-                const mapSequence = sortedSequence?.map(e => e.stop_id.stop_name).indexOf(name)
-                const mapSequenceIncludes = sortedSequence?.findIndex(e => e.stop_id.stop_name.includes(name))
-                if (mapSequence === -1) {
-                    const filteredSequenceIncludes = sortedSequence?.splice(mapSequenceIncludes)
-                    setSequenceInfo(filteredSequenceIncludes)
+                const stopNames = sortedSequence.map(e => e.stop_id.stop_name);
+                const matches = findBestMatch(name, stopNames);
+                const bestMatch = matches.bestMatch;
+
+                if (bestMatch.rating > 0.4) {
+                    const index = stopNames.indexOf(bestMatch.target);
+                    const filteredSequenceIncludes = sortedSequence.slice(index);
+                    setSequenceInfo(filteredSequenceIncludes);
                 } else {
-                    const filteredSequence = sortedSequence?.splice(mapSequence)
-                    setSequenceInfo(filteredSequence)
+                    const filteredSequenceIncludes = sortedSequence.slice(index)
+                    setSequenceInfo(filteredSequenceIncludes)
                 }
             } else {
                 const mapSequence = sortedSequence?.map(e => e.stop_id.stop_id).indexOf(stopId)
@@ -73,6 +79,7 @@ export function TripProvider({ children }) {
                 setSequenceInfo(filteredSequence)
             }
         }
+
     }, [allSequenceStops])
     return (
         <TripContext.Provider value={{ trip, setTrip, tripSelector, sequenceInfo, stopInfo, setSequenceInfo, shape }}>

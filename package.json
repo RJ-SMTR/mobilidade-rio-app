@@ -25,6 +25,7 @@
     "react-router-dom": "^6.4.5",
     "react-toastify": "^9.1.1",
     "sass": "^1.56.1",
+    "string-similarity": "^4.0.4",
     "underscore": "^1.13.6"
   },
   "devDependencies": {

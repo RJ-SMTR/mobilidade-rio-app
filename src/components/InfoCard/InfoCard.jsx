@@ -175,7 +175,7 @@ export function InfoCard() {
                                                 <p className="text-sm">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
                                                 {e.trip_id.route_id.route_type === 702 ?
                                                 <p className="text-xs">
-                                                   Funcionamento: format(convertTime(e.start_time), 'HH:mm') - format(convertTime(e.end_time), 'HH:mm')
+                                                   Funcionamento: {format(convertTime(e.start_time), 'HH:mm')} - {format(convertTime(e.end_time), 'HH:mm')}
                                                 </p>
                                                     : null}
                                           </div>
