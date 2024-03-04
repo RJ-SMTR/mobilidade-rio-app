@@ -71,7 +71,7 @@ export function InfoCard() {
                 }
     }, [plataforms])
     function convertTime(timeString) {
-        const [hoursStr, minutesStr] = timeString.split(':');
+        const [hoursStr, minutesStr] = timeString?.split(':');
         const hours = parseInt(hoursStr, 10);
         const minutes = parseInt(minutesStr, 10);
 
@@ -173,9 +173,11 @@ export function InfoCard() {
                                             </div>
                                             <div className="flex flex-col  ml-2.5">
                                                 <p className="text-sm">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
+                                                {e.trip_id.route_id.route_type === 702 ?
                                                 <p className="text-xs">
-                                                    Funcionamento: {format(convertTime(e.start_time), 'HH:mm')} - {format(convertTime(e.end_time), 'HH:mm')}
+                                                   Funcionamento: format(convertTime(e.start_time), 'HH:mm') - format(convertTime(e.end_time), 'HH:mm')
                                                 </p>
+                                                    : null}
                                           </div>
                                         </div>
 
