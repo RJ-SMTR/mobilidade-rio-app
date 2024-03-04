@@ -194,7 +194,6 @@ useEffect(() => {
 
             return acc;
         }, []);
-        console.log(filteredFrequenciesList)
 
         setRoutesAndFrequencies(filteredFrequenciesList);
     }
