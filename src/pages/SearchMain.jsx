@@ -65,7 +65,7 @@ export function SearchMain() {
 
             </div>
             <div className='text-white absolute bottom-0 z-1 right-0 left-0'>
-                <p className='text-center p-4'>
+                <p className='text-center p-4 text-xs'>
                     ❤️ Feito em código aberto, acesse <a href="https://github.com/RJ-SMTR/mobilidade-rio-app" className='underline' target='blank'>aqui</a> e colabore!
                 </p>
             </div>
