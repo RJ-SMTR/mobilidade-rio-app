@@ -57,12 +57,19 @@ export function SearchMain() {
                         <img className="inline-block mr-3" src={qrCode} alt="" />
                         Usar qrcode
                     </button>
+             
                   
-                <ul>
-
-                </ul>
+               
+                
+          
 
             </div>
+            <div className='text-white absolute bottom-0 z-1 right-0 left-0'>
+                <p className='text-center p-4'>
+                    ❤️ Feito em código aberto, acesse <a href="https://github.com/RJ-SMTR/mobilidade-rio-app" className='underline' target='blank'>aqui</a> e colabore!
+                </p>
+            </div>
+          
             {active ? <QrScanner
                 onDecode={(result) => window.location.href = result}
                 onError={(error) => console.log(error?.message)}
