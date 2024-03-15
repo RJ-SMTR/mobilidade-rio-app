@@ -70,20 +70,8 @@ export function InfoCard() {
         );
                 }
     }, [plataforms])
-    function convertTime(timeString) {
-        const [hoursStr, minutesStr] = timeString?.split(':');
-        const hours = parseInt(hoursStr, 10);
-        const minutes = parseInt(minutesStr, 10);
-
-        if (hours >= 24) {
-            const baseDate = new Date('1970-01-01');
-            const newDate = addDays(baseDate, Math.floor(hours / 24));
-            return parse(`${format(newDate, 'yyyy-MM-dd')} ${hours % 24}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
-        } else {
-            return parse(`1970-01-01 ${hours}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
-        }
-    }
   
+ 
     return (
 
         <>
@@ -173,9 +161,9 @@ export function InfoCard() {
                                             </div>
                                             <div className="flex flex-col  ml-2.5">
                                                 <p className="text-sm">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
-                                                {e.trip_id.route_id.route_type === 702 ?
+                                                {e.trip_id.route_id.route_type === 702 && e.start_time && e.end_time ?
                                                 <p className="text-xs">
-                                                   Funcionamento: {format(convertTime(e.start_time), 'HH:mm')} - {format(convertTime(e.end_time), 'HH:mm')}
+                                                        Funcionamento: {format(new Date(`2000-01-01 ${e.start_time}`), 'HH:mm')} - {format(new Date(`2000-01-01 ${e.end_time}`), 'HH:mm')}
                                                 </p>
                                                     : null}
                                           </div>
