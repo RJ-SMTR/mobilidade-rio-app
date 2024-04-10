@@ -62,7 +62,7 @@ export function ServiceIdProvider({ children }) {
         fetchCalendars()
     }, [])
 
-  
+
     let exceptionService = []
     let baseService = []
     function findService(todayDate) {
@@ -96,7 +96,7 @@ export function ServiceIdProvider({ children }) {
             baseService.push(todayService)
 
             if (todayService && exceptionService) {
-                const baseService = todayService[0]?.service_id || 'U_REG'
+                const baseService = todayService.map(item => item.service_id)
                 const allServices = exceptionService.concat(baseService)
                 setServiceId(allServices);
 
