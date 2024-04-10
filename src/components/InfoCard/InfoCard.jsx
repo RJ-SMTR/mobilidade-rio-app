@@ -27,7 +27,7 @@ import { format, parse, addDays } from "date-fns"
 
 
 export function InfoCard() {
-    const { setGpsUrl, name, infoLinha, linha } = useContext(CodeContext)
+    const { setGpsUrl, name, infoLinha, linha, setCancelSearch } = useContext(CodeContext)
     const {serviceId} = useContext(ServiceIdContext)
     const { routes, isParent, getMultiplePages, plataforms, setRoutes, activateLoader } = useContext(RoutesContext)
     const { setTracked, arrivals, setArrivals, setRoutesAndFrequencies, routesAndFrequencies } = useContext(MovingMarkerContext)
@@ -70,18 +70,21 @@ export function InfoCard() {
         );
                 }
     }, [plataforms])
+    
     function convertTime(timeString) {
-        const [hoursStr, minutesStr] = timeString?.split(':');
-        const hours = parseInt(hoursStr, 10);
-        const minutes = parseInt(minutesStr, 10);
+        if(timeString !== null){
+            const [hoursStr, minutesStr] = timeString?.split(':');
+            const hours = parseInt(hoursStr, 10);
+            const minutes = parseInt(minutesStr, 10);
 
-        if (hours >= 24) {
-            const baseDate = new Date('1970-01-01');
-            const newDate = addDays(baseDate, Math.floor(hours / 24));
-            return parse(`${format(newDate, 'yyyy-MM-dd')} ${hours % 24}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
-        } else {
-            return parse(`1970-01-01 ${hours}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
-        }
+            if (hours >= 24) {
+                const baseDate = new Date('1970-01-01');
+                const newDate = addDays(baseDate, Math.floor(hours / 24));
+                return parse(`${format(newDate, 'yyyy-MM-dd')} ${hours % 24}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
+            } else {
+                return parse(`1970-01-01 ${hours}:${minutes}:00`, 'yyyy-MM-dd HH:mm:ss', new Date());
+            }
+        } 
     }
   
     return (
@@ -97,7 +100,7 @@ export function InfoCard() {
                         </svg>
                     </button>
                     {!routes ? <></> : <div className='flex justify-end'>
-                        <button onClick={() => (setRoutes(), setRoutesAndFrequencies(), setTracked(), infoLinha(), setArrivals(), stopFetching(), setGpsUrl(), resetMultiModalTheme())}>
+                        <button onClick={() => (setRoutes(), setRoutesAndFrequencies(), setTracked(), infoLinha(), setArrivals(), stopFetching(), setGpsUrl(), resetMultiModalTheme(), setCancelSearch(true))}>
                             <GrClose />
                         </button>
                     </div>}

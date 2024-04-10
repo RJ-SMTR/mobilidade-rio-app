@@ -27,6 +27,8 @@ export function CodeProvider({ children }) {
     // COORDENADAS PRA USAR NO SHAPE
     const [stopCoords, setStopCoords] = useState()
     const [linha, setLinha] = useState(false)
+    // BACK
+    const [cancelSearch, setCancelSearch] = useState(false)
 
 
 
@@ -63,7 +65,7 @@ export function CodeProvider({ children }) {
     }
 
     return (
-        <CodeContext.Provider value={{ code, setCode, setSearchParams, active, setActive, stopId, locationType, setStopId, gpsUrl, setGpsUrl, name, center, stopCoords, infoLinha, linha, setLinha }}>
+        <CodeContext.Provider value={{ code, setCode, setSearchParams, active, setActive, stopId, locationType, setStopId, gpsUrl, setGpsUrl, name, center, stopCoords, infoLinha, linha, setLinha, cancelSearch, setCancelSearch }}>
             {children}
         </CodeContext.Provider>
     )

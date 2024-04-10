@@ -10,7 +10,7 @@ export const RoutesContext = createContext()
 
 
 export function RoutesProvider({ children }) {
-    const { code, stopId, locationType } = useContext(CodeContext)
+    const { code, stopId, locationType, setCancelSearch, cancelSearch } = useContext(CodeContext)
     const { serviceId } = useContext(ServiceIdContext)
     const { routeType } = useContext(ThemeContext)
     const [routes, setRoutes] = useState()
@@ -49,6 +49,13 @@ export function RoutesProvider({ children }) {
         setLoader(true)
         setPlataforms([])
     }
+    useEffect(() => {
+        if (cancelSearch) {
+            getStations(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`);
+        }
+    }, [cancelSearch])
+
+    
     const rawTrips = [];
     const tripPromises = [];
 
@@ -79,7 +86,6 @@ export function RoutesProvider({ children }) {
                         rawTrips[index].lastStop = specificData[specificData.length - 1];
                     }
                 });
-                getStations(`/stop_times/?stop_id=${stopId}&service_id=${serviceId}`);
             } else {
                 const stopTimeResponses = await Promise.all(tripPromises);
                 stopTimeResponses.forEach((response, index) => {
@@ -94,6 +100,7 @@ export function RoutesProvider({ children }) {
            }) 
             filteredTrips.sort(compareTripName);
             setRoutes([...filteredTrips]);
+            setCancelSearch(false)
         }
     }
 
@@ -124,7 +131,6 @@ export function RoutesProvider({ children }) {
         for (let index = 0; index < stopIdsResponses.length; index++) {
             const response = stopIdsResponses[index];
             const stopTimes = response.data.results;
-
             const tripPromises = stopTimes.map((stopTime) =>
                 api.get(`/stop_times/?trip_id=${stopTime.trip_id.trip_id}`)
             );
