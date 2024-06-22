@@ -21,7 +21,7 @@ import { TripContext } from '../../hooks/getTrips'
 import { RoutesContext } from '../../hooks/getRoutes'
 import { GPSContext } from "../../hooks/getGPS"
 import { ServiceIdContext } from "../../hooks/getServiceId"
-import { format, parse, addDays } from "date-fns"
+import { format, parse, addDays, differenceInHours, parseISO } from "date-fns"
 
 
 
@@ -59,7 +59,7 @@ export function InfoCard() {
                     })
                     .map((p) => {
                         const platform = Object.values(p)[0];
-                        const isConvencionais = platform.stop_id.stop_desc.includes("Convencionais");
+                        const isConvencionais = platform.stop_id?.stop_desc?.includes("Convencionais") || false;
                         const modifiedPlatform = {
                             ...platform,
                             isConvencionais: isConvencionais
@@ -86,6 +86,31 @@ export function InfoCard() {
             }
         } 
     }
+
+    function calculateOperatingTime(startTime, endTime) {
+        const [startHours, startMinutes] = startTime.split(':').map(Number);
+        const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+        let totalStartMinutes = startHours * 60 + startMinutes;
+        let totalEndMinutes = endHours * 60 + endMinutes;
+
+        
+        if (totalEndMinutes < totalStartMinutes) {
+            totalEndMinutes += 24 * 60;
+        }
+
+        const differenceInMinutes = totalEndMinutes - totalStartMinutes;
+        const differenceInHours = differenceInMinutes / 60;
+
+        if (differenceInHours >= 24) {
+            return "serviço 24h";
+        }
+
+        const start = convertTime(startTime);
+        const end = convertTime(endTime);
+        return `${format(start, 'HH:mm')} - ${format(end, 'HH:mm')}`;
+    }
+
   
     return (
 
@@ -177,9 +202,14 @@ export function InfoCard() {
                                             <div className="flex flex-col  ml-2.5">
                                                 <p className="text-sm">{e.trip_id?.trip_headsign ?? 'Circular'}</p>
                                                 {e.trip_id.route_id.route_type === 702 && e.start_time && e.end_time ? (
-                                                    <p className="text-xs">
-                                                        Funcionamento: {format(convertTime(e.start_time), 'HH:mm')} - {format(convertTime(e.end_time), 'HH:mm')}
-                                                    </p>
+                                                    (() => {
+                                                        const operatingTime = calculateOperatingTime(e.start_time, e.end_time);
+                                                        return (
+                                                            <p className="text-xs">
+                                                                Funcionamento: {operatingTime}
+                                                            </p>
+                                                        );
+                                                    })()
                                                 ) : null}
 
                                           </div>
